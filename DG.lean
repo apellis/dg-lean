@@ -50,6 +50,7 @@ import DG.Homotopy.Pretriangulated
 import DG.Homotopy.Products
 import DG.Homotopy.SemiFree
 import DG.Homotopy.Shift
+import DG.Homotopy.Triangulated
 import DG.K0.Abelian
 import DG.K0.Euler
 import DG.K0.Triangulated
