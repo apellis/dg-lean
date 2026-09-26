@@ -7,12 +7,84 @@ The product `M × N` of two dg abelian groups is a dg abelian group with the com
 grading `(M × N)ⁿ = Mⁿ × Nⁿ` and the componentwise differential. For dg `A`-modules `M`, `N`,
 the product is a dg `A`-module, and the projections `M × N → M`, `M × N → N` and the
 inclusions `M → M × N`, `N → M × N` are morphisms of dg modules.
+
+The grading of `M × N` is an internal direct sum decomposition by
+`DirectSum.Decomposition.prod`, the product of two internal direct sum decompositions.
 -/
 
 open DirectSum
 
+namespace DirectSum.Decomposition
 
+variable {ι M N : Type*} [DecidableEq ι] [AddCommGroup M] [AddCommGroup N]
+  (ℳ : ι → AddSubgroup M) (𝒩 : ι → AddSubgroup N) [Decomposition ℳ] [Decomposition 𝒩]
 
+/-- The inclusion `ℳ i →+ ℳ i × 𝒩 i` of the first factor, used for `Decomposition.prod`. -/
+private def prodInl (i : ι) : ℳ i →+ (ℳ i).prod (𝒩 i) :=
+  ((AddMonoidHom.inl M N).comp (ℳ i).subtype).codRestrict _ fun x => ⟨x.2, zero_mem _⟩
+
+/-- The inclusion `𝒩 i →+ ℳ i × 𝒩 i` of the second factor, used for `Decomposition.prod`. -/
+private def prodInr (i : ι) : 𝒩 i →+ (ℳ i).prod (𝒩 i) :=
+  ((AddMonoidHom.inr M N).comp (𝒩 i).subtype).codRestrict _ fun y => ⟨zero_mem _, y.2⟩
+
+/-- The decomposition of the first factor of `M × N`. -/
+private def prodDecomposeFst : M →+ ⨁ i, (ℳ i).prod (𝒩 i) :=
+  (DirectSum.toAddMonoid fun i => (DirectSum.of _ i).comp (prodInl ℳ 𝒩 i)).comp
+    (decomposeAddEquiv ℳ).toAddMonoidHom
+
+/-- The decomposition of the second factor of `M × N`. -/
+private def prodDecomposeSnd : N →+ ⨁ i, (ℳ i).prod (𝒩 i) :=
+  (DirectSum.toAddMonoid fun i => (DirectSum.of _ i).comp (prodInr ℳ 𝒩 i)).comp
+    (decomposeAddEquiv 𝒩).toAddMonoidHom
+
+omit [Decomposition 𝒩] in
+private theorem coe_prodDecomposeFst (m : M) :
+    DirectSum.coeAddMonoidHom (fun i => (ℳ i).prod (𝒩 i)) (prodDecomposeFst ℳ 𝒩 m) = (m, 0) := by
+  induction m using Decomposition.inductionOn ℳ with
+  | zero => simp
+  | homogeneous x =>
+    simp only [prodDecomposeFst, AddMonoidHom.comp_apply, AddEquiv.coe_toAddMonoidHom,
+      decomposeAddEquiv_apply, decompose_coe, toAddMonoid_of, coeAddMonoidHom_of]
+    rfl
+  | add m m' hm hm' => rw [map_add, map_add, hm, hm', Prod.mk_add_mk, add_zero]
+
+omit [Decomposition ℳ] in
+private theorem coe_prodDecomposeSnd (n : N) :
+    DirectSum.coeAddMonoidHom (fun i => (ℳ i).prod (𝒩 i)) (prodDecomposeSnd ℳ 𝒩 n) = (0, n) := by
+  induction n using Decomposition.inductionOn 𝒩 with
+  | zero => simp
+  | homogeneous y =>
+    simp only [prodDecomposeSnd, AddMonoidHom.comp_apply, AddEquiv.coe_toAddMonoidHom,
+      decomposeAddEquiv_apply, decompose_coe, toAddMonoid_of, coeAddMonoidHom_of]
+    rfl
+  | add n n' hn hn' => rw [map_add, map_add, hn, hn', Prod.mk_add_mk, add_zero]
+
+/-- The product of two internal direct sum decompositions:
+`M × N = ⨁ i, ℳ i × 𝒩 i`. -/
+def prod : Decomposition fun i => (ℳ i).prod (𝒩 i) where
+  decompose' p := prodDecomposeFst ℳ 𝒩 p.1 + prodDecomposeSnd ℳ 𝒩 p.2
+  left_inv p := by
+    rw [map_add, coe_prodDecomposeFst, coe_prodDecomposeSnd, Prod.mk_add_mk, add_zero, zero_add]
+  right_inv z := by
+    induction z using DirectSum.induction_on with
+    | zero => simp
+    | of i w =>
+      obtain ⟨⟨x, y⟩, hx, hy⟩ := w
+      have hx : x ∈ ℳ i := hx
+      have hy : y ∈ 𝒩 i := hy
+      dsimp only
+      rw [coeAddMonoidHom_of]
+      simp only [prodDecomposeFst, prodDecomposeSnd, AddMonoidHom.comp_apply,
+        AddEquiv.coe_toAddMonoidHom, decomposeAddEquiv_apply, decompose_of_mem ℳ hx,
+        decompose_of_mem 𝒩 hy, toAddMonoid_of, ← map_add]
+      refine congrArg (DirectSum.of (fun i => (ℳ i).prod (𝒩 i)) i) (Subtype.ext ?_)
+      change ((x, 0) : M × N) + (0, y) = (x, y)
+      rw [Prod.mk_add_mk, add_zero, zero_add]
+    | add z z' hz hz' =>
+      dsimp only at hz hz' ⊢
+      rw [map_add, Prod.fst_add, Prod.snd_add, map_add, map_add, add_add_add_comm, hz, hz']
+
+end DirectSum.Decomposition
 
 namespace DG
 
@@ -20,79 +92,10 @@ section DGAddCommGroup
 
 variable (M N : Type*) [AddCommGroup M] [DGAddCommGroup M] [AddCommGroup N] [DGAddCommGroup N]
 
-/-- The inclusion `Mⁿ →+ Mⁿ × Nⁿ` of the first factor. -/
-private def gradingInl (n : ℤ) :
-    grading (M := M) n →+ (grading (M := M) n).prod (grading (M := N) n) where
-  toFun m := ⟨(m, 0), m.2, zero_mem _⟩
-  map_zero' := rfl
-  map_add' _ _ := by ext <;> simp
-
-/-- The inclusion `Nⁿ →+ Mⁿ × Nⁿ` of the second factor. -/
-private def gradingInr (n : ℤ) :
-    grading (M := N) n →+ (grading (M := M) n).prod (grading (M := N) n) where
-  toFun m := ⟨(0, m), zero_mem _, m.2⟩
-  map_zero' := rfl
-  map_add' _ _ := by ext <;> simp
-
--- Instance search on `⨁ n, ↥(H n)` for subgroups `H n` of a product `M × N` is slow: the
--- `SetLike.gsemiring`-style instances are tried first and explore the ring instances of `M × N`.
-set_option synthInstance.maxHeartbeats 40000
-
-/-- The decomposition of `M × N` into the componentwise homogeneous pieces, as an additive map. -/
-private def prodDecompose :
-    M × N →+ ⨁ n, (grading (M := M) n).prod (grading (M := N) n) :=
-  ((DirectSum.map (gradingInl M N)).comp
-      (DirectSum.decomposeAddEquiv (grading (M := M))).toAddMonoidHom).comp
-    (AddMonoidHom.fst M N) +
-  ((DirectSum.map (gradingInr M N)).comp
-      (DirectSum.decomposeAddEquiv (grading (M := N))).toAddMonoidHom).comp
-    (AddMonoidHom.snd M N)
-
-private theorem prodDecompose_apply (p : M × N) :
-    prodDecompose M N p = DirectSum.map (gradingInl M N) (decompose _ p.1) +
-      DirectSum.map (gradingInr M N) (decompose _ p.2) := rfl
-
-private theorem coeAddMonoidHom_map_gradingInl
-    (x : ⨁ n, grading (M := M) n) :
-    (DirectSum.coeAddMonoidHom _ (DirectSum.map (gradingInl M N) x) : M × N) =
-      (DirectSum.coeAddMonoidHom _ x, 0) := by
-  induction x using DirectSum.induction_on with
-  | zero => simp
-  | of i x => simp [gradingInl]
-  | add x y hx hy => simp only [map_add, hx, hy, Prod.mk_add_mk, add_zero]
-
-private theorem coeAddMonoidHom_map_gradingInr
-    (x : ⨁ n, grading (M := N) n) :
-    (DirectSum.coeAddMonoidHom _ (DirectSum.map (gradingInr M N) x) : M × N) =
-      (0, DirectSum.coeAddMonoidHom _ x) := by
-  induction x using DirectSum.induction_on with
-  | zero => simp
-  | of i x => simp [gradingInr]
-  | add x y hx hy => simp only [map_add, hx, hy, Prod.mk_add_mk, add_zero]
-
 /-- The product of two dg abelian groups, with the componentwise grading and differential. -/
 instance Prod.instDGAddCommGroup : DGAddCommGroup (M × N) where
   grading n := (grading (M := M) n).prod (grading (M := N) n)
-  decomposition :=
-    { decompose' := prodDecompose M N
-      left_inv := fun p => by
-        rw [prodDecompose_apply, map_add, coeAddMonoidHom_map_gradingInl,
-          coeAddMonoidHom_map_gradingInr]
-        change ((decompose _).symm (decompose _ p.1), 0) +
-          (0, (decompose _).symm (decompose _ p.2)) = p
-        simp
-      right_inv := fun x => by
-        induction x using DirectSum.induction_on with
-        | zero => simp
-        | of i x =>
-          obtain ⟨⟨m, n⟩, hm, hn⟩ := x
-          rw [DirectSum.coeAddMonoidHom_of, prodDecompose_apply]
-          change DirectSum.map _ (decompose _ m) + DirectSum.map _ (decompose _ n) = _
-          rw [decompose_of_mem (grading (M := M)) hm, decompose_of_mem (grading (M := N)) hn,
-            DirectSum.map_of, DirectSum.map_of, ← map_add]
-          congr 1
-          ext <;> simp [gradingInl, gradingInr]
-        | add x y hx hy => rw [map_add, map_add, hx, hy] }
+  decomposition := Decomposition.prod _ _
   d := AddMonoidHom.prodMap d d
   d_mem' hm := ⟨d_mem hm.1, d_mem hm.2⟩
   d_d' _ := by ext <;> simp
