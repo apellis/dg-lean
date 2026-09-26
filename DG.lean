@@ -6,6 +6,8 @@ import DG.Algebra.Decompose
 import DG.Algebra.Equiv
 import DG.Algebra.Hom
 import DG.Algebra.Opposite
+import DG.Algebra.Regrading
+import DG.Algebra.RegradingModuleCat
 import DG.Algebra.TensorProduct
 import DG.Basic
 import DG.Bigraded.Basic
@@ -25,7 +27,10 @@ import DG.Examples.Truncation
 import DG.Graded.Basic
 import DG.Graded.Commutative
 import DG.Graded.Hom
+import DG.Graded.ModuleCat
 import DG.Graded.Opposite
+import DG.Graded.Regrading
+import DG.Graded.RegradingModuleCat
 import DG.Graded.TensorProduct
 import DG.Homotopy.Abelian
 import DG.Homotopy.CohomologyComparison
