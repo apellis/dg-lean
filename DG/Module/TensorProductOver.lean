@@ -37,6 +37,23 @@ using the right Leibniz rule `d (m a) = d m a + (-1)^{|m|} m d a` and the left L
 * The unit isomorphism `A ⊗_A N ≅ N`, `a ⊗ n ↦ a • n`, as mutually inverse morphisms of dg
   `A`-modules `DG.TensorProductOver.lid` and `DG.TensorProductOver.lidInv`, and as
   `DG.TensorProductOver.lidLinearEquiv` and `DG.TensorProductOver.lidEquiv`.
+* The right unit isomorphism `M ⊗_A A ≅ M`, `m ⊗ a ↦ m • a` (`DG.TensorProductOver.rid`), which
+  is right `A`-linear (`DG.TensorProductOver.rid_op_smul`).
+* For a dg `(A, B)`-bimodule `N`, the right dg `B`-module structure on `M ⊗_A N` through `N`,
+  `(m ⊗ n) • b = m ⊗ (n • b)`. These instances are scoped
+  (`open scoped DG.TensorProductOver.RightAction`): when `M` also carries a left action of `Bᵐᵒᵖ`
+  commuting with its right `A`-action, the action through the left factor is a second,
+  different `Bᵐᵒᵖ`-module structure on `M ⊗_A N`.
+* Associativity: for a right dg `A`-module `M`, a dg `(A, B)`-bimodule `N` and a left dg
+  `B`-module `P`, the isomorphism of dg abelian groups
+  `DG.TensorProductOver.assocEquiv : (M ⊗_A N) ⊗_B P ≅ M ⊗_A (N ⊗_B P)`,
+  `(m ⊗ n) ⊗ p ↦ m ⊗ (n ⊗ p)` (no signs).
+
+## Implementation notes
+
+For a dg `(B, A)`-bimodule `M`, the action of `B` on `M ⊗_A N` is defined by `Quotient.map'`, so
+that for `B = ℤ` it agrees, with instance transparency, with the `ℤ`-module structure of the
+additive group `M ⊗_A N`.
 -/
 
 open DirectSum TensorProduct MulOpposite
@@ -198,6 +215,12 @@ theorem tmul_zsmul (k : ℤ) (m : M) (n : N) : tmul A m (k • n) = k • tmul A
 theorem zsmul_tmul (k : ℤ) (m : M) (n : N) : tmul A (k • m) n = k • tmul A m n := by
   rw [tmul, ← TensorProduct.smul_tmul', map_zsmul]; rfl
 
+theorem tmul_units_smul (u : ℤˣ) (m : M) (n : N) : tmul A m (u • n) = u • tmul A m n := by
+  rw [Units.smul_def, Units.smul_def, tmul_zsmul]
+
+theorem units_smul_tmul (u : ℤˣ) (m : M) (n : N) : tmul A (u • m) n = u • tmul A m n := by
+  rw [Units.smul_def, Units.smul_def, zsmul_tmul]
+
 /-- Induction principle for `M ⊗_A N`. -/
 @[elab_as_elim]
 theorem induction_on {P : TensorProductOver A M N → Prop} (x : TensorProductOver A M N)
@@ -358,6 +381,22 @@ theorem tmul_mem_grading {i j : ℤ} {m : M} (hm : m ∈ grading i) {n : N} (hn 
     tmul A m n ∈ grading (i + j) :=
   mk_mem_grading (DG.tmul_mem_grading hm hn)
 
+/-- Induction on the homogeneous elements of `M ⊗_A N` of a given degree `k`: they are generated
+by the tensors `m ⊗ n` with `m ∈ Mⁱ`, `n ∈ Nʲ` and `i + j = k`. -/
+theorem induction_on_mem_grading {k : ℤ} {P : TensorProductOver A M N → Prop} (zero : P 0)
+    (tmul : ∀ {i j : ℤ} {m : M} {n : N}, m ∈ grading i → n ∈ grading j → i + j = k →
+      P (tmul A m n))
+    (add : ∀ x y, P x → P y → P (x + y)) (neg : ∀ x, P x → P (-x))
+    {y : TensorProductOver A M N} (hy : y ∈ grading k) : P y := by
+  obtain ⟨x, hx, rfl⟩ := hy
+  induction hx using AddSubgroup.closure_induction with
+  | mem x hx =>
+    obtain ⟨i, j, h, m, hm, n, hn, rfl⟩ := hx
+    exact tmul hm hn h
+  | one => simpa using zero
+  | mul x y _ _ hx hy => rw [map_add]; exact add _ _ hx hy
+  | inv x _ hx => rw [map_neg]; exact neg _ hx
+
 /-- The differential of `M ⊗_A N`: `d (m ⊗ n) = d m ⊗ n + ε m ⊗ d n`, with `ε` the grade
 involution of `M`. -/
 theorem d_tmul (m : M) (n : N) :
@@ -382,6 +421,17 @@ theorem lift_mem (f : M →+ N →+ P)
   obtain ⟨x, hx, rfl⟩ := hy
   simpa using map_mem_grading_of_tmul ((lift f hf).comp (mk A M N)) 0
     (fun hm hn => by simpa using hdeg hm hn) hx
+
+/-- If a balanced bi-additive map sends `Mⁱ × Nʲ` to `Pⁱ⁺ʲ⁺ˢ`, the induced map has degree
+`s`. -/
+theorem lift_mem_add (f : M →+ N →+ P)
+    (hf : ∀ (a : A) (m : M) (n : N), f (op a • m) n = f m (a • n)) (s : ℤ)
+    (hdeg : ∀ {i j : ℤ} {m : M} {n : N}, m ∈ grading i → n ∈ grading j →
+      f m n ∈ grading (i + j + s))
+    {k : ℤ} {y : TensorProductOver A M N} (hy : y ∈ grading k) :
+    lift f hf y ∈ grading (k + s) := by
+  obtain ⟨x, hx, rfl⟩ := hy
+  exact map_mem_grading_of_tmul ((lift f hf).comp (mk A M N)) s (fun hm hn => hdeg hm hn) hx
 
 /-- If a balanced bi-additive map satisfies the Leibniz rule
 `d (f m n) = f (d m) n + (-1)^{|m|} f m (d n)`, the induced map commutes with `d`. -/
@@ -547,5 +597,382 @@ end TensorProductOver
 
 end DG
 
-end DG
+/-! ### The right action and associativity -/
 
+section RightAction
+
+variable {A B M N : Type*} [Ring A] [Ring B] [AddCommGroup M] [Module Aᵐᵒᵖ M]
+  [AddCommGroup N] [Module A N] [Module Bᵐᵒᵖ N] [SMulCommClass A Bᵐᵒᵖ N]
+
+namespace TensorProductOver
+
+variable (A M N) in
+/-- The action of `b ∈ Bᵐᵒᵖ` on `M ⊗_A N` through the right factor, `(m ⊗ n) • b = m ⊗ (n • b)`,
+as an additive map. -/
+def rightAct (b : Bᵐᵒᵖ) : TensorProductOver A M N →+ TensorProductOver A M N :=
+  lift ((tmulAddHom A M N).compl₂ (DistribMulAction.toAddMonoidHom N b)) fun a m n => by
+    simp only [AddMonoidHom.compl₂_apply, DistribMulAction.toAddMonoidHom_apply,
+      tmulAddHom_apply, op_smul_tmul, smul_comm a b n]
+
+@[simp]
+theorem rightAct_tmul (b : Bᵐᵒᵖ) (m : M) (n : N) :
+    rightAct A M N b (tmul A m n) = tmul A m (b • n) :=
+  rfl
+
+/-! Scoped instances making `M ⊗_A N` a right `B`-module through `N`, for an `(A, B)`-bimodule
+`N`: `(m ⊗ n) • b = m ⊗ (n • b)`. They are scoped
+(`open scoped DG.TensorProductOver.RightAction`) because, when `M` also carries a left action of
+`Bᵐᵒᵖ` commuting with its right `A`-action, the action through the left factor
+(`DG.TensorProductOver.instModule`) is a second, different `Bᵐᵒᵖ`-module structure on the same
+type. -/
+namespace RightAction
+
+/-- The action of `Bᵐᵒᵖ` on `M ⊗_A N` through the right factor. -/
+scoped instance instSMulOp : SMul Bᵐᵒᵖ (TensorProductOver A M N) where
+  smul b := rightAct A M N b
+
+/-- `M ⊗_A N` is a right `B`-module through the right factor. -/
+scoped instance instModuleOp : Module Bᵐᵒᵖ (TensorProductOver A M N) where
+  one_smul y := by
+    change rightAct A M N 1 y = y
+    induction y using induction_on with
+    | zero => simp
+    | tmul m n => rw [rightAct_tmul, one_smul]
+    | add x y hx hy => rw [map_add, hx, hy]
+  mul_smul b b' y := by
+    change rightAct A M N (b * b') y = rightAct A M N b (rightAct A M N b' y)
+    induction y using induction_on with
+    | zero => simp
+    | tmul m n => rw [rightAct_tmul, rightAct_tmul, rightAct_tmul, mul_smul]
+    | add x y hx hy => rw [map_add, hx, hy, map_add, map_add]
+  smul_zero b := map_zero (rightAct A M N b)
+  smul_add b := map_add (rightAct A M N b)
+  add_smul b b' y := by
+    change rightAct A M N (b + b') y = rightAct A M N b y + rightAct A M N b' y
+    induction y using induction_on with
+    | zero => simp
+    | tmul m n => rw [rightAct_tmul, rightAct_tmul, rightAct_tmul, add_smul, tmul_add]
+    | add x y hx hy => rw [map_add, hx, hy, map_add, map_add]; abel
+  zero_smul y := by
+    change rightAct A M N 0 y = 0
+    induction y using induction_on with
+    | zero => simp
+    | tmul m n => rw [rightAct_tmul, zero_smul, tmul_zero]
+    | add x y hx hy => rw [map_add, hx, hy, add_zero]
+
+end RightAction
+
+open RightAction
+
+theorem op_smul_eq_rightAct (b : Bᵐᵒᵖ) (y : TensorProductOver A M N) :
+    b • y = rightAct A M N b y := rfl
+
+/-- The right action on `M ⊗_A N` through `N`: `(m ⊗ n) • b = m ⊗ (n • b)`. -/
+theorem op_smul_tmul_right (b : Bᵐᵒᵖ) (m : M) (n : N) : b • tmul A m n = tmul A m (b • n) := rfl
+
+theorem op_smul_units_smul (b : Bᵐᵒᵖ) (u : ℤˣ) (y : TensorProductOver A M N) :
+    b • (u • y) = u • (b • y) :=
+  map_units_zsmul (rightAct A M N b) u y
+
+end TensorProductOver
+
+end RightAction
+
+section DGRightAction
+
+variable {A B M N : Type*} [Ring A] [DGAddCommGroup A] [Ring B] [DGAddCommGroup B]
+  [AddCommGroup M] [DGAddCommGroup M] [Module Aᵐᵒᵖ M] [DGRightModule A M]
+  [AddCommGroup N] [DGAddCommGroup N] [Module A N] [DGModule A N] [Module Bᵐᵒᵖ N]
+  [DGRightModule B N] [SMulCommClass A Bᵐᵒᵖ N]
+
+namespace TensorProductOver
+
+open RightAction
+
+theorem op_smul_mem_grading_right {i j : ℤ} {b : B} (hb : b ∈ grading i)
+    {y : TensorProductOver A M N} (hy : y ∈ grading j) : op b • y ∈ grading (j + i) := by
+  refine induction_on_mem_grading (P := fun y => op b • y ∈ grading (j + i)) ?_ ?_ ?_ ?_ hy
+  all_goals beta_reduce
+  · rw [smul_zero]; exact zero_mem _
+  · intro p q m n hm hn h
+    rw [op_smul_tmul_right, ← h, add_assoc]
+    exact tmul_mem_grading hm (op_smul_mem_grading hb hn)
+  · intro x y hx hy; rw [smul_add]; exact add_mem hx hy
+  · intro x hx; rw [smul_neg]; exact neg_mem hx
+
+theorem d_op_smul_right {j : ℤ} {y : TensorProductOver A M N} (hy : y ∈ grading j) (b : B) :
+    d (op b • y) = op b • d y + koszulSign j • (op (d b) • y) := by
+  refine induction_on_mem_grading
+    (P := fun y => d (op b • y) = op b • d y + koszulSign j • (op (d b) • y)) ?_ ?_ ?_ ?_ hy
+  all_goals beta_reduce
+  · simp
+  · intro p q m n hm hn h
+    rw [op_smul_tmul_right, d_tmul_of_mem hm, d_tmul_of_mem hm, d_op_smul hn, tmul_add,
+      smul_add, smul_add, op_smul_tmul_right, op_smul_units_smul, op_smul_tmul_right,
+      op_smul_tmul_right, tmul_units_smul, smul_smul, ← h, koszulSign_add, add_assoc]
+  · intro x y hx hy
+    rw [smul_add, d_add, hx, hy, d_add, smul_add, smul_add, smul_add]; abel
+  · intro x hx; rw [smul_neg, d_neg, hx, d_neg, smul_neg, smul_neg, smul_neg, neg_add]
+
+namespace RightAction
+
+/-- For a dg `(A, B)`-bimodule `N`, `M ⊗_A N` is a right dg `B`-module through `N`. -/
+scoped instance instDGRightModule : DGRightModule B (TensorProductOver A M N) where
+  op_smul_mem' hb hy := op_smul_mem_grading_right hb hy
+  d_op_smul' hy b := d_op_smul_right hy b
+
+end RightAction
+
+end TensorProductOver
+
+end DGRightAction
+
+/-! ### Associativity -/
+
+section Assoc
+
+variable {A B M N P : Type*} [Ring A] [Ring B] [AddCommGroup M] [Module Aᵐᵒᵖ M]
+  [AddCommGroup N] [Module A N] [Module Bᵐᵒᵖ N] [SMulCommClass A Bᵐᵒᵖ N]
+  [AddCommGroup P] [Module B P]
+
+namespace TensorProductOver
+
+open RightAction
+
+variable (A B M N P)
+
+/-- For fixed `m`, the map `N ⊗_B P → (M ⊗_A N) ⊗_B P`, `n ⊗ p ↦ (m ⊗ n) ⊗ p`. -/
+def assocInvAux (m : M) :
+    TensorProductOver B N P →+ TensorProductOver B (TensorProductOver A M N) P :=
+  lift ((tmulAddHom B (TensorProductOver A M N) P).comp (tmulAddHom A M N m)) fun b n p => by
+    simp only [AddMonoidHom.coe_comp, Function.comp_apply, tmulAddHom_apply]
+    rw [← op_smul_tmul_right, op_smul_tmul]
+
+/-- The map `M ⊗_A (N ⊗_B P) → (M ⊗_A N) ⊗_B P`, `m ⊗ (n ⊗ p) ↦ (m ⊗ n) ⊗ p`. -/
+def assocInv :
+    TensorProductOver A M (TensorProductOver B N P) →+
+      TensorProductOver B (TensorProductOver A M N) P :=
+  lift (AddMonoidHom.mk' (assocInvAux A B M N P) fun m m' => addHom_ext fun n p => by
+      simp only [assocInvAux, lift_tmul, AddMonoidHom.coe_comp, Function.comp_apply,
+        tmulAddHom_apply, AddMonoidHom.add_apply, add_tmul])
+    fun a m y => by
+      induction y using induction_on with
+      | zero => simp
+      | tmul n p =>
+        simp only [AddMonoidHom.mk'_apply, assocInvAux, smul_tmul, lift_tmul,
+          AddMonoidHom.coe_comp, Function.comp_apply, tmulAddHom_apply, op_smul_tmul]
+      | add x y hx hy => rw [smul_add, map_add, map_add, hx, hy]
+
+/-- For fixed `p`, the map `M ⊗_A N → M ⊗_A (N ⊗_B P)`, `m ⊗ n ↦ m ⊗ (n ⊗ p)`. -/
+def assocAux (p : P) :
+    TensorProductOver A M N →+ TensorProductOver A M (TensorProductOver B N P) :=
+  lift ((tmulAddHom A M (TensorProductOver B N P)).compl₂ ((tmulAddHom B N P).flip p))
+    fun a m n => by
+      simp only [AddMonoidHom.compl₂_apply, AddMonoidHom.flip_apply, tmulAddHom_apply]
+      rw [op_smul_tmul, smul_tmul]
+
+/-- The associativity map `(M ⊗_A N) ⊗_B P → M ⊗_A (N ⊗_B P)`,
+`(m ⊗ n) ⊗ p ↦ m ⊗ (n ⊗ p)`. -/
+def assoc :
+    TensorProductOver B (TensorProductOver A M N) P →+
+      TensorProductOver A M (TensorProductOver B N P) :=
+  lift (AddMonoidHom.mk' (assocAux A B M N P) fun p p' => addHom_ext fun m n => by
+      simp only [assocAux, lift_tmul, AddMonoidHom.compl₂_apply, AddMonoidHom.flip_apply,
+        tmulAddHom_apply, AddMonoidHom.add_apply, tmul_add]).flip
+    fun b x p => by
+      induction x using induction_on with
+      | zero => simp
+      | tmul m n =>
+        simp only [AddMonoidHom.flip_apply, AddMonoidHom.mk'_apply, assocAux,
+          op_smul_tmul_right, lift_tmul, AddMonoidHom.compl₂_apply, tmulAddHom_apply,
+          op_smul_tmul]
+      | add x y hx hy => rw [smul_add, map_add, map_add, AddMonoidHom.add_apply, hx, hy,
+          AddMonoidHom.add_apply]
+
+variable {A B M N P}
+
+@[simp]
+theorem assocInvAux_tmul (m : M) (n : N) (p : P) :
+    assocInvAux A B M N P m (tmul B n p) = tmul B (tmul A m n) p := rfl
+
+@[simp]
+theorem assocInv_tmul_tmul (m : M) (n : N) (p : P) :
+    assocInv A B M N P (tmul A m (tmul B n p)) = tmul B (tmul A m n) p := rfl
+
+@[simp]
+theorem assoc_tmul_tmul (m : M) (n : N) (p : P) :
+    assoc A B M N P (tmul B (tmul A m n) p) = tmul A m (tmul B n p) := rfl
+
+theorem assocInv_assoc (z : TensorProductOver B (TensorProductOver A M N) P) :
+    assocInv A B M N P (assoc A B M N P z) = z := by
+  induction z using induction_on with
+  | zero => simp
+  | tmul x p =>
+    induction x using induction_on with
+    | zero => simp
+    | tmul m n => rfl
+    | add x y hx hy => rw [add_tmul, map_add, map_add, hx, hy]
+  | add x y hx hy => rw [map_add, map_add, hx, hy]
+
+theorem assoc_assocInv (z : TensorProductOver A M (TensorProductOver B N P)) :
+    assoc A B M N P (assocInv A B M N P z) = z := by
+  induction z using induction_on with
+  | zero => simp
+  | tmul m y =>
+    induction y using induction_on with
+    | zero => simp
+    | tmul n p => rfl
+    | add x y hx hy => rw [tmul_add, map_add, map_add, hx, hy]
+  | add x y hx hy => rw [map_add, map_add, hx, hy]
+
+end TensorProductOver
+
+end Assoc
+
+section DGAssoc
+
+variable {A B M N P : Type*} [Ring A] [DGAddCommGroup A] [Ring B] [DGAddCommGroup B]
+  [AddCommGroup M] [DGAddCommGroup M] [Module Aᵐᵒᵖ M] [DGRightModule A M]
+  [AddCommGroup N] [DGAddCommGroup N] [Module A N] [DGModule A N] [Module Bᵐᵒᵖ N]
+  [DGRightModule B N] [SMulCommClass A Bᵐᵒᵖ N]
+  [AddCommGroup P] [DGAddCommGroup P] [Module B P] [DGModule B P]
+
+namespace TensorProductOver
+
+open RightAction
+
+theorem assocInv_mem {k : ℤ} {z : TensorProductOver A M (TensorProductOver B N P)}
+    (hz : z ∈ grading k) : assocInv A B M N P z ∈ grading k := by
+  unfold assocInv
+  refine lift_mem _ _ (fun {i j m y} hm hy => ?_) hz
+  rw [add_comm, AddMonoidHom.mk'_apply]
+  unfold assocInvAux
+  refine lift_mem_add _ _ i (fun {p r n q} hn hq => ?_) hy
+  have h := tmul_mem_grading (A := B) (tmul_mem_grading (A := A) hm hn) hq
+  rwa [show i + p + r = p + r + i by ring] at h
+
+theorem assocInv_d (z : TensorProductOver A M (TensorProductOver B N P)) :
+    assocInv A B M N P (d z) = d (assocInv A B M N P z) := by
+  unfold assocInv
+  refine lift_d _ _ (fun {i m} hm y => ?_) z
+  simp only [AddMonoidHom.mk'_apply]
+  induction y using induction_on with
+  | zero => simp
+  | tmul n p =>
+    induction n using DG.induction_on with
+    | h_zero => simp
+    | h_homogeneous n =>
+      rename_i j
+      rw [assocInvAux_tmul, assocInvAux_tmul, d_tmul_of_mem (tmul_mem_grading hm n.2),
+        d_tmul_of_mem hm, add_tmul, units_smul_tmul, d_tmul_of_mem n.2, map_add,
+        map_units_zsmul, assocInvAux_tmul, assocInvAux_tmul, smul_add, smul_smul,
+        ← koszulSign_add, add_assoc]
+    | h_add n n' hn hn' =>
+      simp only [add_tmul, map_add, d_add, hn, hn', smul_add]; abel
+  | add x y hx hy => rw [map_add, d_add, hx, hy, d_add, map_add, map_add, smul_add]; abel
+
+theorem assoc_mem {k : ℤ} {z : TensorProductOver B (TensorProductOver A M N) P}
+    (hz : z ∈ grading k) : assoc A B M N P z ∈ grading k := by
+  exact (DGAddEquiv.ofAddMonoidHom (assocInv A B M N P) (assoc A B M N P) assoc_assocInv
+    assocInv_assoc assocInv_mem assocInv_d).symm.map_mem hz
+
+variable (A B M N P)
+
+/-- Associativity of the tensor product over dg rings: for a right dg `A`-module `M`, a dg
+`(A, B)`-bimodule `N` and a left dg `B`-module `P`, the isomorphism of dg abelian groups
+`(M ⊗_A N) ⊗_B P ≅ M ⊗_A (N ⊗_B P)`, `(m ⊗ n) ⊗ p ↦ m ⊗ (n ⊗ p)` (no signs). The right
+`B`-module structure on `M ⊗_A N` is the scoped instance of
+`DG.TensorProductOver.RightAction`. -/
+def assocEquiv :
+    DGAddEquiv (TensorProductOver B (TensorProductOver A M N) P)
+      (TensorProductOver A M (TensorProductOver B N P)) :=
+  (DGAddEquiv.ofAddMonoidHom (assocInv A B M N P) (assoc A B M N P) assoc_assocInv
+    assocInv_assoc assocInv_mem assocInv_d).symm
+
+variable {A B M N P}
+
+@[simp]
+theorem assocEquiv_tmul_tmul (m : M) (n : N) (p : P) :
+    assocEquiv A B M N P (tmul B (tmul A m n) p) = tmul A m (tmul B n p) := rfl
+
+@[simp]
+theorem assocEquiv_symm_tmul_tmul (m : M) (n : N) (p : P) :
+    (assocEquiv A B M N P).symm (tmul A m (tmul B n p)) = tmul B (tmul A m n) p := rfl
+
+end TensorProductOver
+
+end DGAssoc
+
+/-! ### The right unit isomorphism `M ⊗_A A ≅ M` -/
+
+section RightUnit
+
+variable {A M : Type*} [Ring A] [DGAddCommGroup A] [DGRing A] [AddCommGroup M]
+  [DGAddCommGroup M] [Module Aᵐᵒᵖ M] [DGRightModule A M]
+
+namespace TensorProductOver
+
+variable (A M)
+
+/-- The action map `M ⊗_A A → M`, `m ⊗ a ↦ m • a`. -/
+def ridHom : TensorProductOver A M A →+ M :=
+  lift ((smulAddHom Aᵐᵒᵖ M).comp (MulOpposite.opAddEquiv : A ≃+ Aᵐᵒᵖ).toAddMonoidHom).flip
+    fun a m a' => by
+      simp only [AddMonoidHom.flip_apply, AddMonoidHom.coe_comp, Function.comp_apply,
+        AddEquiv.coe_toAddMonoidHom, MulOpposite.opAddEquiv_apply, smulAddHom_apply, smul_eq_mul,
+        op_mul, mul_smul]
+
+variable {A M}
+
+omit [DGAddCommGroup A] [DGRing A] [DGAddCommGroup M] [DGRightModule A M] in
+@[simp]
+theorem ridHom_tmul (m : M) (a : A) : ridHom A M (tmul A m a) = op a • m := rfl
+
+theorem ridHom_mem {k : ℤ} {y : TensorProductOver A M A} (hy : y ∈ grading k) :
+    ridHom A M y ∈ grading k :=
+  lift_mem _ _ (fun hm ha => op_smul_mem_grading ha hm) hy
+
+theorem ridHom_d (y : TensorProductOver A M A) : ridHom A M (d y) = d (ridHom A M y) :=
+  lift_d _ _ (fun hm a => by
+    simp only [AddMonoidHom.flip_apply, AddMonoidHom.coe_comp, Function.comp_apply,
+      AddEquiv.coe_toAddMonoidHom, MulOpposite.opAddEquiv_apply, smulAddHom_apply]
+    exact d_op_smul hm a) y
+
+variable (A M)
+
+/-- The right unit isomorphism `M ⊗_A A ≅ M`, `m ⊗ a ↦ m • a`, with inverse `m ↦ m ⊗ 1`, as an
+isomorphism of dg abelian groups; it is right `A`-linear (`DG.TensorProductOver.rid_op_smul`). -/
+def rid : DGAddEquiv (TensorProductOver A M A) M :=
+  DGAddEquiv.ofAddMonoidHom (ridHom A M) ((tmulAddHom A M A).flip 1)
+    (fun y => by
+      induction y using induction_on with
+      | zero => simp
+      | tmul m a =>
+        simp only [ridHom_tmul, AddMonoidHom.flip_apply, tmulAddHom_apply, op_smul_tmul,
+          smul_eq_mul, mul_one]
+      | add x y hx hy => rw [map_add, map_add, hx, hy])
+    (fun m => by simp) ridHom_mem ridHom_d
+
+variable {A M}
+
+@[simp]
+theorem rid_tmul (m : M) (a : A) : rid A M (tmul A m a) = op a • m := rfl
+
+@[simp]
+theorem rid_symm_apply (m : M) : (rid A M).symm m = tmul A m (1 : A) := rfl
+
+open RightAction in
+/-- The right unit isomorphism is right `A`-linear. -/
+theorem rid_op_smul (a : A) (y : TensorProductOver A M A) :
+    rid A M (op a • y) = op a • rid A M y := by
+  induction y using induction_on with
+  | zero => simp
+  | tmul m a' =>
+    rw [op_smul_tmul_right, rid_tmul, rid_tmul, op_smul_eq_mul, op_mul, mul_smul]
+  | add x y hx hy => rw [smul_add, map_add, hx, hy, map_add, smul_add]
+
+end TensorProductOver
+
+end RightUnit
+
+end DG
