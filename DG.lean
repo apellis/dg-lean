@@ -1,4 +1,5 @@
 import DG.Algebra.Basic
+import DG.Algebra.Cohomology
 import DG.Algebra.Constructions
 import DG.Algebra.Hom
 import DG.Basic

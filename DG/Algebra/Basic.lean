@@ -289,7 +289,8 @@ theorem d_pow_of_even {n : ℤ} {a : A} (ha : a ∈ grading n) (hn : Even n) (k 
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [koszulSign_even (hn.mul_left _), one_smul]
 
-/-- For `a` homogeneous of even degree commuting with `d a`, `d (a ^ k) = k • (a ^ (k - 1) * d a)`. -/
+/-- For `a` homogeneous of even degree commuting with `d a`,
+`d (a ^ k) = k • (a ^ (k - 1) * d a)`. -/
 theorem d_pow_of_even_of_commute {n : ℤ} {a : A} (ha : a ∈ grading n) (hn : Even n)
     (hc : Commute a (d a)) (k : ℕ) : d (a ^ k) = k • (a ^ (k - 1) * d a) := by
   rw [d_pow_of_even ha hn, Finset.sum_range]

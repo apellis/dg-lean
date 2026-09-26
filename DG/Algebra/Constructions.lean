@@ -1,13 +1,14 @@
 import DG.Algebra.Hom
+import DG.Module.Corner
 import Mathlib.RingTheory.GradedAlgebra.Homogeneous.Ideal
 import Mathlib.RingTheory.Ideal.Quotient.Defs
 
 /-!
 # Constructions of dg rings: graded objects, ideals, quotients and subrings
 
-* `DG.Decomposition.comapSubtype`, `DG.Decomposition.map`: transport of a
-  `DirectSum.Decomposition` to a homogeneous additive subgroup and to the image under a
-  surjective additive map with homogeneous kernel.
+* `DG.Decomposition.map`: transport of a `DirectSum.Decomposition` to the image under a
+  surjective additive map with homogeneous kernel (the transport to a homogeneous subobject is
+  `DG.DGAddCommGroup.ofInjective`).
 * `DG.DGAddCommGroup.ofGraded`, `DG.DGRing.ofGradedRing`: a graded abelian group, resp. a
   graded ring, as a dg object with `d = 0`.
 * `DG.degreeZeroGrading`, `DG.DGAddCommGroup.degreeZero`, `DG.DGRing.degreeZero`,
@@ -68,49 +69,6 @@ theorem Decomposition.mapAux_surjective : Function.Surjective (Decomposition.map
     exact ⟨z + z', map_add _ _ _⟩
 
 variable [Decomposition ℳ]
-
-/-- For `z` in the direct sum of the graded pieces of a homogeneous additive subgroup `S`, the
-homogeneous components of `∑ᵢ zᵢ ∈ M` are the `zᵢ`. -/
-theorem coe_decompose_coeAddMonoidHom_apply {𝒮 : Type*} [SetLike 𝒮 M] [AddSubgroupClass 𝒮 M]
-    (S : 𝒮) (z : ⨁ i, (ℳ i).comap (AddSubgroupClass.subtype S)) (i : ι) :
-    (decompose ℳ
-      (DirectSum.coeAddMonoidHom (fun i => (ℳ i).comap (AddSubgroupClass.subtype S)) z : M) i :
-        M) = ((z i : S) : M) := by
-  induction z using DirectSum.induction_on with
-  | zero => simp
-  | of j x =>
-    rw [coeAddMonoidHom_of]
-    have hx : ((x : S) : M) ∈ ℳ j := AddSubgroup.mem_comap.mp x.2
-    by_cases h : j = i
-    · subst h
-      rw [decompose_of_mem_same ℳ hx, of_eq_same]
-    · rw [decompose_of_mem_ne ℳ hx h, of_eq_of_ne _ _ _ h]
-      rfl
-  | add z z' hz hz' =>
-    simp only [map_add, AddMemClass.coe_add, decompose_add, DirectSum.add_apply, hz, hz']
-
-/-- A homogeneous additive subgroup `S` (given by any `AddSubgroupClass`) of a graded abelian
-group is graded by the preimages `(ℳ i).comap (AddSubgroupClass.subtype S)` of the graded
-pieces. -/
-noncomputable def Decomposition.comapSubtype {𝒮 : Type*} [SetLike 𝒮 M] [AddSubgroupClass 𝒮 M]
-    (S : 𝒮) (hS : SetLike.IsHomogeneous ℳ S) :
-    Decomposition fun i => (ℳ i).comap (AddSubgroupClass.subtype S) := by
-  classical
-  refine DirectSum.IsInternal.chooseDecomposition _ ⟨?_, fun x => ?_⟩
-  · rw [injective_iff_map_eq_zero]
-    intro z hz
-    ext i
-    have h := coe_decompose_coeAddMonoidHom_apply ℳ S z i
-    rw [hz] at h
-    simp only [ZeroMemClass.coe_zero, decompose_zero, DirectSum.zero_apply] at h
-    exact_mod_cast h.symm
-  · refine ⟨∑ i ∈ (decompose ℳ (x : M)).support,
-      DirectSum.of (fun i => (ℳ i).comap (AddSubgroupClass.subtype S)) i
-        ⟨⟨decompose ℳ (x : M) i, hS i x.2⟩, AddSubgroup.mem_comap.mpr (decompose ℳ (x : M) i).2⟩,
-      ?_⟩
-    ext
-    simp only [map_sum, coeAddMonoidHom_of, AddSubmonoidClass.coe_finset_sum]
-    exact DirectSum.sum_support_decompose ℳ (x : M)
 
 theorem Decomposition.mapAux_decompose_eq_of_mem_ker (hker : SetLike.IsHomogeneous ℳ f.ker)
     {a : M} (ha : a ∈ f.ker) : Decomposition.mapAux ℳ f (decompose ℳ a) = 0 := by
@@ -348,7 +306,7 @@ instance : HasQuotient A (DGIdeal A) := ⟨fun I => A ⧸ I.toIdeal⟩
 
 namespace Quotient
 
-instance : Ring (A ⧸ I) := inferInstanceAs (Ring (A ⧸ I.toIdeal))
+instance instRing : Ring (A ⧸ I) := inferInstanceAs (Ring (A ⧸ I.toIdeal))
 
 /-- The quotient map `A → A ⧸ I` as a ring homomorphism; see `DGIdeal.Quotient.mk` for the
 morphism of dg rings. -/
@@ -381,7 +339,7 @@ theorem dQuot_mk (a : A) : dQuot I (mkRingHom I a) = mkRingHom I (d a) := rfl
 
 /-- The dg abelian group structure of `A ⧸ I`: graded by the images of the `Aⁿ`, with the
 differential induced by `d`. -/
-noncomputable instance : DGAddCommGroup (A ⧸ I) where
+noncomputable instance dgAddCommGroup : DGAddCommGroup (A ⧸ I) where
   grading n := (grading (M := A) n).map (mkRingHom I).toAddMonoidHom
   decomposition := DG.Decomposition.map _ _ (mkRingHom_surjective I) (isHomogeneous_ker I)
   d := dQuot I
@@ -405,7 +363,7 @@ theorem mkRingHom_mem_grading {n : ℤ} {a : A} (ha : a ∈ grading n) :
 theorem d_mkRingHom (a : A) : d (mkRingHom I a) = mkRingHom I (d a) := rfl
 
 /-- The quotient of a dg ring by a dg ideal is a dg ring. -/
-instance : DGRing (A ⧸ I) where
+instance dgRing : DGRing (A ⧸ I) where
   one_mem := ⟨1, one_mem_grading, map_one (mkRingHom I)⟩
   mul_mem _ _ _ _ := by
     rintro ⟨a, ha, rfl⟩ ⟨b, hb, rfl⟩
@@ -533,14 +491,10 @@ variable (S)
 
 /-- The dg abelian group structure of a dg subring: graded by `Sⁿ = S ∩ Aⁿ`, with the
 restricted differential. -/
-noncomputable instance : DGAddCommGroup S where
-  grading n := (grading (M := A) n).comap (AddSubgroupClass.subtype S)
-  decomposition := DG.Decomposition.comapSubtype _ S S.isHomogeneous
-  d := ((d : A →+ A).comp (AddSubgroupClass.subtype S)).codRestrict S fun a => d_mem a.2
-  d_mem' ha := by
-    rw [AddSubgroup.mem_comap] at ha ⊢
-    exact DGAddCommGroup.d_mem' ha
-  d_d' _ := Subtype.ext (d_d _)
+noncomputable instance dgAddCommGroup : DGAddCommGroup S :=
+  DGAddCommGroup.ofInjective (AddSubgroupClass.subtype S) Subtype.val_injective
+    (((d : A →+ A).comp (AddSubgroupClass.subtype S)).codRestrict S fun a => d_mem a.2)
+    (fun _ => rfl) fun n a => ⟨⟨_, decompose_mem a.2 n⟩, rfl⟩
 
 theorem mem_grading_iff {n : ℤ} {a : S} : a ∈ grading n ↔ (a : A) ∈ grading n := Iff.rfl
 
@@ -548,7 +502,7 @@ theorem mem_grading_iff {n : ℤ} {a : S} : a ∈ grading n ↔ (a : A) ∈ grad
 theorem coe_d (a : S) : ((d a : S) : A) = d (a : A) := rfl
 
 /-- A dg subring is a dg ring. -/
-instance : DGRing S where
+instance dgRing : DGRing S where
   one_mem := by
     show ((1 : S) : A) ∈ grading (M := A) 0
     rw [OneMemClass.coe_one]

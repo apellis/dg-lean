@@ -276,7 +276,7 @@ section Module
 
 variable (φ : A →ᵈᵍ+* B) (M : Type*) [AddCommGroup M] [Module B M]
 
-instance : Module A (RestrictScalars φ M) := Module.compHom M φ.toRingHom
+instance module : Module A (RestrictScalars φ M) := Module.compHom M φ.toRingHom
 
 variable {M}
 
@@ -287,9 +287,10 @@ end Module
 
 variable (φ : A →ᵈᵍ+* B) (M : Type*) [AddCommGroup M] [DGAddCommGroup M] [Module B M]
 
-instance : DGAddCommGroup (RestrictScalars φ M) := inferInstanceAs (DGAddCommGroup M)
+instance dgAddCommGroup : DGAddCommGroup (RestrictScalars φ M) :=
+  inferInstanceAs (DGAddCommGroup M)
 
-instance [DGModule B M] : DGModule A (RestrictScalars φ M) :=
+instance dgModule [DGModule B M] : DGModule A (RestrictScalars φ M) :=
   DGModule.compHom φ M
 
 end RestrictScalars
