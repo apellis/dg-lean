@@ -34,8 +34,11 @@ import DG.Homotopy.ConeCochain
 import DG.Homotopy.ConeComp
 import DG.Homotopy.Forget
 import DG.Homotopy.Homotopy
+import DG.Homotopy.KProjective
+import DG.Homotopy.Lifting
 import DG.Homotopy.ModuleCat
 import DG.Homotopy.Products
+import DG.Homotopy.SemiFree
 import DG.K0.Abelian
 import DG.K0.Euler
 import DG.K0.Triangulated
