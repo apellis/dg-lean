@@ -179,6 +179,33 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `DG.freeDeriv_freeDeriv_eq_zero_iff`, `DG.SemiFree.liftEquiv`. The `R`-module structure on
     Hom complexes: `DG.Cochain.instModuleGround`, `DG.DGModule.END.instAlgebra`.
 
+## Dg categories (the setting for tiers 3–7)
+
+Tiers 3–7 are to be stated for small dg categories wherever possible, with dg algebras as the
+one-object case (see `docs/CONVENTIONS.md`, "Dg categories"). The dg-algebra results of tier 3
+already in the library are kept as the concrete one-object case and are to be identified with
+the dg-category versions through the one-object equivalence.
+
+D.1 Dg categories: the mixin `DGCategory`, dg functors, the opposite dg category (with the
+    Koszul-signed composition), the categories `Z⁰(C)` and `H⁰(C)`, the one-object dg category
+    `SingleObj A` of a dg ring, and the dg category `C_A` with objects `ℤ` and
+    `C_A(k, l) = A⟨l - k⟩` attached to a dg ring `A` with an internal grading.
+D.2 Dg modules over a dg category: the abelian category `DGModuleCat C`, representable modules
+    and the dg Yoneda lemma (`Hom(C(X, -), M) ≅ Z⁰(M X)`, and the Hom complex version), the
+    equivalence `DGModuleCat A ≌ DGModuleCat (SingleObj A)`, and the equivalence of the
+    category of bigraded dg `A`-modules with `DGModuleCat C_A`.
+D.3 Tier 3 for dg modules over `C`: Hom complexes, shifts, cones, homotopies, the homotopy
+    category, its triangulated structure, compatibility with the one-object case.
+D.4 Tier 4 for `C`: acyclic modules, quasi-isomorphisms, the derived category `D(C)`,
+    K-projective and semi-free modules (cells are shifts of representable modules), resolutions,
+    derived functors along dg functors and bimodules, and Keller's theorem that a
+    quasi-equivalence of dg categories induces a triangulated equivalence of derived categories
+    [Ke, §9].
+D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C)`, so the
+    compact objects are the thick closure of the representables; `K₀(C)`; positive dg
+    categories and Schnürer's theorem; the internal shift of tier 7 as the dg autoequivalence of
+    `C_A` shifting objects by `1`.
+
 ## Tier 3 — The homotopy category
 
 3.1 Homotopy between dg module maps (`f - g = d h + h d` with `h` of degree `-1`), the

@@ -89,6 +89,28 @@ computations. Do not duplicate Mathlib: reuse `GradedRing`, `GradedAlgebra`, `Di
 `CategoryTheory.Localization`, `Pretriangulated`, `IsTriangulated`, and the
 `HasDerivedCategory`-style universe handling.
 
+## Dg categories
+
+From tier 3 on, results are stated for small dg categories wherever possible; a dg ring is the
+one-object case, and a dg ring with an additional internal ("weight") grading is the dg
+category with objects `ℤ` (so the bigraded theory of tier 7 needs no separate development).
+
+- A dg category is a category `C` with `[Category C] [Preadditive C]`, a
+  `DGAddCommGroup (X ⟶ Y)` on every Hom group, and the `Prop` mixin `DGCategory C`:
+  composition is graded (`f ∈ (X ⟶ Y)ⁱ`, `g ∈ (Y ⟶ Z)ʲ` give `f ≫ g ∈ (X ⟶ Z)ⁱ⁺ʲ`), identities
+  have degree `0`, and the Leibniz rule holds in diagrammatic order,
+  `d (f ≫ g) = f ≫ d g + (-1)^{|g|} (d f ≫ g)` for `g` homogeneous (the rule
+  `d (g ∘ f) = d g ∘ f + (-1)^{|g|} g ∘ d f`, matching Mathlib's `HomComplex.δ_comp`). The
+  morphisms of the Lean category are all homogeneous-sum maps; the category of degree-`0`
+  cocycles `Z⁰(C)` and the homotopy category `H⁰(C)` are derived from it.
+- The one-object dg category of a dg ring `A` is Mathlib's `SingleObj A` (composition
+  `f ≫ g = g * f`), for which the mixin is exactly `DGRing A`.
+- A dg module over `C` is a left module, i.e. a covariant dg functor to dg abelian groups:
+  a family `M : C → Type*` of dg abelian groups with actions `(X ⟶ Y) → M X → M Y`, graded,
+  unital, associative (`(f ≫ g) • m = g • (f • m)`) and satisfying
+  `d (f • m) = d f • m + (-1)^{|f|} f • d m`. For `SingleObj A` these are the left dg
+  `A`-modules; the equivalence with `DGModuleCat A` is part of the theory.
+
 ## Naming
 
 - Namespace `DG`. Files under `DG/`, one topic per file, imported from `DG.lean`.
