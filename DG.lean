@@ -1,5 +1,7 @@
 import DG.Algebra.Basic
 import DG.Basic
+import DG.Compact.Basic
+import DG.Compact.Triangulated
 import DG.Graded.Basic
 import DG.Graded.Hom
 import DG.K0.Triangulated
