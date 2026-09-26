@@ -43,6 +43,7 @@ import DG.Homotopy.ConeCochain
 import DG.Homotopy.ConeComp
 import DG.Homotopy.Forget
 import DG.Homotopy.ForgetTriangulated
+import DG.Homotopy.HomShift
 import DG.Homotopy.Homotopy
 import DG.Homotopy.HomotopyCategory
 import DG.Homotopy.KProjective
@@ -71,6 +72,7 @@ import DG.Module.Hom
 import DG.Module.HomAction
 import DG.Module.HomLinear
 import DG.Module.HomShift
+import DG.Module.HomShiftIso
 import DG.Module.HomTensor
 import DG.Module.Opposite
 import DG.Module.PUnit
