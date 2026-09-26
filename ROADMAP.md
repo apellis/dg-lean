@@ -58,9 +58,16 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     cohomology algebra `H(A)` as a graded algebra with zero differential, and the dg algebra
     structure on `H(A)` viewed as a dg algebra. `R` as a dg algebra in degree `0`; a graded
     algebra as a dg algebra with `d = 0`.
+    — done: `DG.DGAddCommGroup`, `DG.DGRing`, `DG.DGAlgebra`, `DG.d_one`, `DG.d_mul`, `DG.d_pow`,
+    `DG.d_list_prod`, `DG.DGRingHom`, `DG.DGAlgHom`, `DG.DGSubring`, `DG.DGIdeal`,
+    `DG.DGIdeal.Quotient.dgRing`, `DG.DGRingHom.ker`, `DG.cocyclesDGSubring`,
+    `DG.coboundariesDGIdeal`, `DG.Cohomology.dgRing` (the cohomology ring with `d = 0`),
+    `DG.DGRingHom.cohomologyRingMap`, `DG.DGRing.ofGradedRing`, `DG.DGAlgebra.degreeZero`.
+    Open: the opposite and tensor product dg algebras, the `R`-algebra structure on `H(A)`.
 2.2 `DGModule A M`: left dg module; right dg modules and bimodules; `DGModuleHom` (degree-`0`
-    chain maps) — done (right dg modules, bimodules): `DG.DGRightModule`,
-    `DG.DGRightModule.regular`, `DG.DGBimodule`, `DG.DGBimodule.regular`;
+    chain maps) — done (modules, right modules, bimodules, restriction of scalars):
+    `DG.DGModule`, `DG.DGModuleHom`, `DG.DGRightModule`, `DG.DGBimodule`,
+    `DG.RestrictScalars`, `DG.DGModuleHom.restrictScalars`;
     the abelian category `DGModuleCat A` **(Mathlib)**: it is `R`-linear,
     abelian, with arbitrary (co)products, and the forgetful functor to
     `CochainComplex (ModuleCat R) ℤ` is exact and faithful. Restriction of scalars along a
@@ -108,6 +115,10 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
 3.1 Homotopy between dg module maps (`f - g = d h + h d` with `h` of degree `-1`), the
     null-homotopic maps form an ideal; the homotopy category `H(A) := DGModuleCat A / ~`
     (`CategoryTheory.Quotient`), additive and `R`-linear; `Hom_{H(A)}(M, N) ≅ H⁰(HOM_A(M, N))`.
+    — done (before the quotient category): `DG.DGHomotopy`, `DG.Homotopic`,
+    `DG.homotopic_equivalence`, `DG.nullHomotopic`, `DG.comp_mem_nullHomotopic`,
+    `DG.quotientNullHomotopicAddEquivCohomology`, `DG.DGHomotopy.cohomology_map_eq`,
+    `DG.DGHomotopyEquiv.isQuasiIso_hom`, `DG.IsContractible.subsingleton_cohomology`.
 3.2 Shift `[1]` on `DGModuleCat A` and on `H(A)` (`CategoryTheory.HasShift`, via
     `Mathlib`'s `hasShiftMk`), with `HOM_A(M, N[n]) ≅ HOM_A(M, N)[n]`.
     — done (on dg modules, not yet categorical): `DG.Shift`, `DG.Shift.instDGModule`,
