@@ -22,6 +22,7 @@ import DG.Compact.Generation
 import DG.Compact.HomotopyColimit
 import DG.Compact.Thick
 import DG.Compact.Triangulated
+import DG.Derived.QuasiIso
 import DG.Derived.Resolution
 import DG.Examples.EndComplex
 import DG.Examples.Koszul
@@ -50,6 +51,7 @@ import DG.Homotopy.Homotopy
 import DG.Homotopy.HomotopyCategory
 import DG.Homotopy.KProjective
 import DG.Homotopy.Lifting
+import DG.Homotopy.Localization
 import DG.Homotopy.ModuleCat
 import DG.Homotopy.Pretriangulated
 import DG.Homotopy.Products
