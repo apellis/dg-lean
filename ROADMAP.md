@@ -186,7 +186,10 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `DG.DGHomotopyEquiv.isQuasiIso_hom`, `DG.IsContractible.subsingleton_cohomology`.
 3.2 Shift `[1]` on `DGModuleCat A` and on `H(A)` (`CategoryTheory.HasShift`, via
     `Mathlib`'s `hasShiftMk`), with `HOM_A(M, N[n]) ≅ HOM_A(M, N)[n]`.
-    — done (except `HOM_A(M, N[n]) ≅ HOM_A(M, N)[n]`): `DG.DGModuleCat.hasShift`,
+    — done: `DG.DGModule.HOM.rightShiftEquiv` (`HOM_A(M, N[n]) ≅ HOM_A(M, N)[n]`),
+    `DG.DGModule.HOM.leftShiftEquiv`, `DG.HomotopyCategory.homShiftAddEquivCohomology`
+    (`Hom_{H(A)}(M, N[n]) ≅ Hⁿ(HOM_A(M, N))`), `DG.HomotopyCategory.shiftFunctor_linear`,
+    `DG.DGModuleCat.hasShift`,
     `DG.HomotopyCategory.hasShift`, `DG.HomotopyCategory.commShiftQuotient`,
     `DG.DGModuleCat.forgetCommShift` (the shift agrees with Mathlib's on underlying complexes);
     `DG.Shift`, `DG.Shift.instDGModule`,
@@ -212,7 +215,8 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     functor on `H(A)`.
     — done: `DG.HomotopyCategory.forget`, `DG.HomotopyCategory.forget_isTriangulated`,
     `DG.Cone.forgetTriangleIso` (the cone agrees with Mathlib's `mappingCone`),
-    `DG.HomotopyCategory.homologyFunctor_isHomological`.
+    `DG.HomotopyCategory.homologyFunctor_isHomological`, `DG.HomotopyCategory.forget_linear`,
+    `DG.HomotopyCategory.homologyFunctorIso` (Mathlib's homology agrees with `DG.cohomology`).
 3.5 Special modules: K-projective (cofibrant) modules (`Hom_{H(A)}(P, N) = 0` for all acyclic
     `N`; equivalently the lifting property against surjective quasi-isomorphisms; prove the
     equivalence), semi-free modules (union of an exhaustive filtration with subquotients
