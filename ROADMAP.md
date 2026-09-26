@@ -55,6 +55,14 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
 1.4 Regrading constructions: from a `ℤ/2`-graded algebra to a 2-periodic `ℤ`-graded one and
     back; from a grading with a map of degree `k` to a grading with a map of degree `1`.
     Acceptance: equivalences of the corresponding categories of graded modules.
+    — done for `ℤ/2` (graded and dg): `DG.Periodize`, `DG.Periodize.periodUnit`,
+    `DG.Periodize.quotientEquiv`, `DG.PeriodicityUnit.periodizeEquiv`, `DG.GradedModuleCat`,
+    `DG.GradedModuleCat.periodizeEquivalence`, `DG.Periodize.dgRing`,
+    `DG.GradedModuleCat.periodizeDGEquivalence`; for a differential of degree `k`, the
+    regrading by residues with the object-level decomposition: `DG.RegradeByDivision`,
+    `DG.residueEquiv`, `DG.residueEquiv_d`, `DG.RegradeByDivision.dgRing` (Leibniz sign
+    `(-1)^{|a|/k}` on `A^{qk}`). Open: the category equivalence for degree-`k` differentials, and
+    the comparison of the periodic dg module category with `DG.DGModuleCat`.
 
 ## Tier 2 — dg algebras and dg modules
 
