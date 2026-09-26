@@ -16,6 +16,7 @@ import DG.Bigraded.InternalShift
 import DG.Bigraded.ModuleCat
 import DG.Bigraded.Positive
 import DG.Compact.Basic
+import DG.Compact.Brown
 import DG.Compact.Generation
 import DG.Compact.HomotopyColimit
 import DG.Compact.Thick
