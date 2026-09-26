@@ -21,6 +21,7 @@ import DG.Compact.Generation
 import DG.Compact.HomotopyColimit
 import DG.Compact.Thick
 import DG.Compact.Triangulated
+import DG.Derived.Resolution
 import DG.Examples.EndComplex
 import DG.Examples.Koszul
 import DG.Examples.SemiFree
@@ -76,6 +77,7 @@ import DG.Module.PUnit
 import DG.Module.Prod
 import DG.Module.Quotient
 import DG.Module.Right
+import DG.Module.SeqColimit
 import DG.Module.Shift
 import DG.Module.Sub
 import DG.Module.SubQuotient
