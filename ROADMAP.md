@@ -332,6 +332,12 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `M⟨1⟩` as an autoequivalence of `DGModuleCat A`, `H(A)` and `D(A)`, commuting with `[1]`,
     triangulated. Compact objects and `K₀` in the bigraded setting; `K₀(A)` is a
     `ℤ[q, q⁻¹]`-module via `q [M] = [M⟨1⟩]`.
+    — done (on dg modules and the module category; not yet on the homotopy or derived category
+    or `K₀`): `DG.InternalGrading`, `DG.BigradedDGRing`, `DG.BigradedDGModule`, `DG.bigrading`,
+    `DG.isInternal_inf_iff`, `DG.InternalShift`, `DG.InternalShift.shiftEquiv`
+    (`M[n]⟨k⟩ ≅ M⟨k⟩[n]`, no sign), `DG.BigradedDGModuleCat`,
+    `DG.BigradedDGModuleCat.internalHasShift`, `DG.BigradedDGModuleCat.internalShiftShiftIso`,
+    `DG.cohomology.wgrading`, `DG.cohomology.internalShiftAddEquiv`.
 7.2 Positive bigraded dg algebras: Schnürer's theorem with internal gradings (the same proof;
     or deduce from 6.2 by forgetting the internal grading and a graded-idempotent argument),
     `K₀(A) ≅ K₀(A⁰)` as `ℤ[q, q⁻¹]`-modules where `A⁰` is the homological degree-`0` part
