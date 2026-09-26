@@ -3,7 +3,10 @@ import DG.Algebra.Basic
 import DG.Algebra.Cohomology
 import DG.Algebra.Constructions
 import DG.Algebra.Decompose
+import DG.Algebra.Equiv
 import DG.Algebra.Hom
+import DG.Algebra.Opposite
+import DG.Algebra.TensorProduct
 import DG.Basic
 import DG.Compact.Basic
 import DG.Compact.Generation
@@ -40,6 +43,7 @@ import DG.Module.Equiv
 import DG.Module.Hom
 import DG.Module.HomLinear
 import DG.Module.HomShift
+import DG.Module.Opposite
 import DG.Module.PUnit
 import DG.Module.Prod
 import DG.Module.Quotient
