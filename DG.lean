@@ -33,7 +33,9 @@ import DG.Graded.Regrading
 import DG.Graded.RegradingModuleCat
 import DG.Graded.TensorProduct
 import DG.Homotopy.Abelian
+import DG.Homotopy.ChangeOfRings
 import DG.Homotopy.CohomologyComparison
+import DG.Homotopy.CohomologyLinear
 import DG.Homotopy.CohomologySequence
 import DG.Homotopy.ConeCochain
 import DG.Homotopy.ConeComp
@@ -50,6 +52,7 @@ import DG.K0.Triangulated
 import DG.Module.Basic
 import DG.Module.Cohomology
 import DG.Module.CohomologyDirectSum
+import DG.Module.CohomologyLinear
 import DG.Module.Cone
 import DG.Module.Corner
 import DG.Module.CornerEnd
