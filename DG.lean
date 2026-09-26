@@ -22,6 +22,9 @@ import DG.Graded.Commutative
 import DG.Graded.Hom
 import DG.Graded.Opposite
 import DG.Graded.TensorProduct
+import DG.Homotopy.Abelian
+import DG.Homotopy.CohomologyComparison
+import DG.Homotopy.CohomologySequence
 import DG.Homotopy.ConeCochain
 import DG.Homotopy.ConeComp
 import DG.Homotopy.Forget
@@ -33,6 +36,7 @@ import DG.K0.Euler
 import DG.K0.Triangulated
 import DG.Module.Basic
 import DG.Module.Cohomology
+import DG.Module.CohomologyDirectSum
 import DG.Module.Cone
 import DG.Module.Corner
 import DG.Module.CornerEnd
@@ -50,6 +54,7 @@ import DG.Module.Quotient
 import DG.Module.Right
 import DG.Module.Shift
 import DG.Module.Sub
+import DG.Module.SubQuotient
 import DG.Module.TensorProduct
 import DG.Module.TensorProductOver
 import DG.Positive.Basic
