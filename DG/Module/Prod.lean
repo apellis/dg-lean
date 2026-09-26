@@ -158,7 +158,17 @@ def inr : N →ᵈᵍ[A] M × N where
   map_mem' hn := ⟨zero_mem _, hn⟩
   map_d' _ := by ext <;> simp
 
+/-- The pairing of two morphisms of dg modules `P →ᵈᵍ[A] M × N`. -/
+def prod {P : Type*} [AddCommGroup P] [DGAddCommGroup P] [Module A P]
+    (f : P →ᵈᵍ[A] M) (g : P →ᵈᵍ[A] N) : P →ᵈᵍ[A] M × N where
+  __ := f.toLinearMap.prod g.toLinearMap
+  map_mem' hx := ⟨f.map_mem hx, g.map_mem hx⟩
+  map_d' x := by ext <;> simp
+
 variable {M N}
+
+@[simp] theorem prod_apply {P : Type*} [AddCommGroup P] [DGAddCommGroup P] [Module A P]
+    (f : P →ᵈᵍ[A] M) (g : P →ᵈᵍ[A] N) (x : P) : prod M N f g x = (f x, g x) := rfl
 
 @[simp] theorem fst_apply (p : M × N) : fst (A := A) M N p = p.1 := rfl
 @[simp] theorem snd_apply (p : M × N) : snd (A := A) M N p = p.2 := rfl
