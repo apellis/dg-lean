@@ -10,6 +10,10 @@ import DG.Compact.Generation
 import DG.Compact.HomotopyColimit
 import DG.Compact.Thick
 import DG.Compact.Triangulated
+import DG.Examples.EndComplex
+import DG.Examples.Koszul
+import DG.Examples.SemiFree
+import DG.Examples.Truncation
 import DG.Graded.Basic
 import DG.Graded.Commutative
 import DG.Graded.Hom
@@ -34,6 +38,7 @@ import DG.Module.End
 import DG.Module.EndBimodule
 import DG.Module.Equiv
 import DG.Module.Hom
+import DG.Module.HomLinear
 import DG.Module.HomShift
 import DG.Module.PUnit
 import DG.Module.Prod
