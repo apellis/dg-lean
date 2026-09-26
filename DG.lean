@@ -12,4 +12,6 @@ import DG.K0.Euler
 import DG.K0.Triangulated
 import DG.Module.Basic
 import DG.Module.Corner
+import DG.Module.End
+import DG.Module.Hom
 import DG.Module.Right

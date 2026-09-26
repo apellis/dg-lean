@@ -69,10 +69,15 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `d f = d_N ∘ f - (-1)^{|f|} f ∘ d_M`; `END_A(M)` as a dg algebra acting on `M` on the right
     (`m · f = (-1)^{|f||m|} f m`); `M` is a dg `(A, END_A(M))`-bimodule. `HOM_A(A e, A e) ≅ e A e`
     as dg algebras for `e` a degree-`0` idempotent with `d e ∈ A e` (the differential on `eAe`
-    is `e a e ↦ e d(a e)`), and `A e` is a dg `(A, eAe)`-bimodule. — done (for `d e = 0`:
-    `eAe` as a dg ring, `A e` as a dg `(A, eAe)`-bimodule, `e A` as a dg `(eAe, A)`-bimodule):
-    `DG.DGIdempotent.Corner.instDGRing`, `DG.DGIdempotent.LeftCorner.instDGBimodule`,
-    `DG.DGIdempotent.RightCorner.instDGBimodule`; `HOM`, `END` and the case `d e ∈ A e` are open.
+    is `e a e ↦ e d(a e)`), and `A e` is a dg `(A, eAe)`-bimodule.
+    — done: the Hom complex and `END`: `DG.Cochain`, `DG.Cochain.comp`, `DG.Cochain.id`,
+    `DG.δ`, `DG.δ_δ`, `DG.δ_comp`, `DG.Cocycle`, `DG.Cocycle.equivHom`, `DG.DGModule.HOM`,
+    `DG.DGModule.END`, `DG.DGModule.END.instDGRing` (product `f * g = (-1)^{|f||g|} g ∘ f`),
+    `DG.DGModule.END.rightAction`; for `d e = 0`: `eAe` as a dg ring, `A e` as a dg
+    `(A, eAe)`-bimodule, `e A` as a dg `(eAe, A)`-bimodule
+    (`DG.DGIdempotent.Corner.instDGRing`, `DG.DGIdempotent.LeftCorner.instDGBimodule`,
+    `DG.DGIdempotent.RightCorner.instDGBimodule`). Open: `M` as a dg `(A, END_A(M))`-bimodule,
+    `HOM_A(A e, A e) ≅ e A e`, the case `d e ∈ A e`.
 2.4 Tensor products: `M ⊗_A N` for a right dg module `M` and left dg module `N`, with the
     signed differential; associativity, `A ⊗_A N ≅ N`, `HOM`–`⊗` adjunction at the level of dg
     modules; `M ⊗_R N` with the signed differential.
