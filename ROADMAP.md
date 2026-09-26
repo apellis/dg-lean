@@ -197,8 +197,23 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     direct summands `Ae[n]` of shifts of `A` for degree-`0` idempotents `e` with `d e = 0`).
     Semi-free ⟹ K-projective; direct summands and shifts of K-projectives are K-projective;
     `A` and finite-cell modules are K-projective. [Ke §3], [BL 10.12], [St].
+    **Erratum.** The "equivalently" above is false as stated: the lifting property against
+    surjective quasi-isomorphisms is equivalent to being K-projective *and* projective as a
+    graded module (`DG.hasLiftingProperty_iff`). Counterexample to the literal statement: over
+    `A = ℤ` in degree `0`, the cone of the identity of `ℚ` is contractible, hence K-projective,
+    but not graded-projective, so it lacks the lifting property.
+    — done (concrete level; statements in terms of homotopy classes of maps rather than the
+    bundled category): `DG.IsAcyclic`, `DG.IsKProjective`,
+    `DG.isKProjective_iff_isAcyclic_hom`, `DG.isKProjective_self`, `DG.IsKProjective.shift`,
+    `DG.IsKProjective.of_retract`, `DG.IsKProjective.directSum`, `DG.IsKProjective.cone`,
+    `DG.DGIdempotent.isKProjective_leftCorner`, `DG.SemiFreeFiltration`,
+    `DG.SemiFreeFiltration.isKProjective`, `DG.FiniteCellFiltration`,
+    `DG.FiniteCellFiltration.isKProjective`, `DG.IsGradedProjective`, `DG.HasLiftingProperty`,
+    `DG.hasLiftingProperty_iff`, `DG.SemiFreeFiltration.hasLiftingProperty`.
 3.6 For `P` K-projective, `HOM_A(P, -)` preserves quasi-isomorphisms and
     `Hom_{H(A)}(P, N) ≅ Hom_{H(A)}(P, N')` along a quasi-isomorphism `N → N'`.
+    — done (concrete level): `DG.DGModuleHom.isQuasiIso_iff_isAcyclic_cone`,
+    `DG.IsKProjective.bijective_cohomology_postcomp`, `DG.IsKProjective.postcompHomotopyEquiv`.
 
 ## Tier 4 — The derived category
 
@@ -296,7 +311,7 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `d = 0` on `A⁰` (equivalently `d : A⁰ → A¹` vanishes). Basic consequences: the
     degree-`0` idempotents of `A⁰` are cocycles, `A e` is a finite-cell module for each such
     `e`, the truncations `A^{≥ n}` are dg ideals.
-    — done (except "`A e` is a finite-cell module", which needs 3.5): `DG.IsPositive`
+    — done: `DG.DGIdempotent.finiteCellFiltration` (`A e` is finite-cell), `DG.IsPositive`
     (conditions (P1)–(P3) of [Sch, §1]), `DG.IsPositive.degreeZero`, `DG.IsPositive.dgIdempotent`,
     `DG.IsPositive.degreeZeroDGSubring`, `DG.IsPositive.projZero`, `DG.IsPositive.ker_projZero`,
     `DG.IsPositive.quotientTruncGEOneEquiv`, `DG.truncGE`, `DG.IsPositive.cohomologyZeroEquiv`,
