@@ -7,6 +7,7 @@ import DG.Compact.Thick
 import DG.Compact.Triangulated
 import DG.Graded.Basic
 import DG.Graded.Hom
+import DG.Homotopy.Homotopy
 import DG.K0.Abelian
 import DG.K0.Euler
 import DG.K0.Triangulated
