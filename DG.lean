@@ -44,6 +44,7 @@ import DG.Homotopy.ConeComp
 import DG.Homotopy.Forget
 import DG.Homotopy.ForgetTriangulated
 import DG.Homotopy.HomShift
+import DG.Homotopy.HomologyFunctor
 import DG.Homotopy.Homotopy
 import DG.Homotopy.HomotopyCategory
 import DG.Homotopy.KProjective
@@ -53,6 +54,7 @@ import DG.Homotopy.Pretriangulated
 import DG.Homotopy.Products
 import DG.Homotopy.SemiFree
 import DG.Homotopy.Shift
+import DG.Homotopy.ShiftLinear
 import DG.Homotopy.Triangulated
 import DG.K0.Abelian
 import DG.K0.Euler
