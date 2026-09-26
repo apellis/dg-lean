@@ -74,7 +74,12 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
 2.2 `DGModule A M`: left dg module; right dg modules and bimodules; `DGModuleHom` (degree-`0`
     chain maps) — done (modules, right modules, bimodules, restriction of scalars):
     `DG.DGModule`, `DG.DGModuleHom`, `DG.DGRightModule`, `DG.DGBimodule`,
-    `DG.RestrictScalars`, `DG.DGModuleHom.restrictScalars`;
+    `DG.RestrictScalars`, `DG.DGModuleHom.restrictScalars`; the category (except kernels,
+    cokernels, `Abelian` and exactness of the forgetful functor): `DG.DGModuleCat`,
+    `DG.DGModuleCat.preadditive`, `DG.DGModuleCat.instLinear`, `DG.DGModuleCat.hasFiniteBiproducts`,
+    `DG.DGModuleCat.hasCoproducts`, `DG.DGModuleCat.hasProducts` (graded products),
+    `DG.DGModuleCat.forget`, `DG.DGModuleCat.forget_faithful`,
+    `DG.DGModuleCat.forget_preservesColimitsOfShape_discrete`, `DG.DGSubmodule`;
     the abelian category `DGModuleCat A` **(Mathlib)**: it is `R`-linear,
     abelian, with arbitrary (co)products, and the forgetful functor to
     `CochainComplex (ModuleCat R) ℤ` is exact and faithful. Restriction of scalars along a
