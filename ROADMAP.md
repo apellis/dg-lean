@@ -282,10 +282,19 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     modules form a thick triangulated subcategory; the class of quasi-isomorphisms is
     compatible with the triangulation (a multiplicative system in Verdier's sense). Use
     Mathlib's `Triangulated.Subcategory` and `Localization.Triangulated`.
+    — done (for dg rings): `DG.HomotopyCategory.quasiIso`, `DG.HomotopyCategory.subcategoryAcyclic`,
+    `DG.HomotopyCategory.quasiIso_eq_subcategoryAcyclic_W`,
+    `DG.HomotopyCategory.quotient_obj_mem_subcategoryAcyclic_iff` (and Mathlib's instances: calculus
+    of fractions, compatibility with the triangulation).
 4.2 `D(A) := H(A)[qis⁻¹]` via `CategoryTheory.Localization`, with a `HasDerivedCategory`-style
     class for a chosen small model; `D(A)` is triangulated and `H(A) ⥤ D(A)` is a
     triangulated localization functor; it has arbitrary coproducts, preserved by the
     localization functor.
+    — done (for dg rings): `DG.HasDerivedCategory`, `DG.DerivedCategory`, `DG.DerivedCategory.Qh`,
+    `DG.DerivedCategory.Q`, `DG.DerivedCategory.pretriangulated`, `DG.DerivedCategory.isTriangulated`,
+    `DG.DerivedCategory.isIso_Q_map_iff`, `DG.DerivedCategory.isZero_Q_obj_iff`,
+    `DG.DerivedCategory.homologyFunctor_isHomological`, `DG.DerivedCategory.hasCoproducts`,
+    `DG.DerivedCategory.Q_preservesCoproducts`; `DG.HomotopyCategory.quotient_isLocalization`.
 4.3 Existence of K-projective (semi-free) resolutions: every dg module `M` admits a
     surjective quasi-isomorphism `P → M` with `P` semi-free (the standard iterated-cone or
     telescope construction, [Ke §3.1], [BL 10.12.2.4], [St, "Resolutions"]). Uniqueness up
