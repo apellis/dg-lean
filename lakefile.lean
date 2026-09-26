@@ -3,6 +3,7 @@ open Lake DSL
 
 package DG where
   moreLeanArgs := #["-DwarningAsError=true"]
+  leanOptions := #[⟨`autoImplicit, false⟩, ⟨`relaxedAutoImplicit, false⟩]
 
 require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git" @
