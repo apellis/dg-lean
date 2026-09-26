@@ -1,5 +1,6 @@
 import DG.Algebra.AddEquiv
 import DG.Algebra.Basic
+import DG.Algebra.Category
 import DG.Algebra.Cohomology
 import DG.Algebra.Constructions
 import DG.Algebra.Decompose
@@ -87,4 +88,9 @@ import DG.Module.Sub
 import DG.Module.SubQuotient
 import DG.Module.TensorProduct
 import DG.Module.TensorProductOver
+import DG.Monoidal.Complex
+import DG.Monoidal.ComplexSum
+import DG.Monoidal.ModComparison
+import DG.Monoidal.MonComparison
+import DG.Monoidal.MonObj
 import DG.Positive.Basic
