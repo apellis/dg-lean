@@ -70,7 +70,14 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `DG.DGIdeal.Quotient.dgRing`, `DG.DGRingHom.ker`, `DG.cocyclesDGSubring`,
     `DG.coboundariesDGIdeal`, `DG.Cohomology.dgRing` (the cohomology ring with `d = 0`),
     `DG.DGRingHom.cohomologyRingMap`, `DG.DGRing.ofGradedRing`, `DG.DGAlgebra.degreeZero`.
-    Open: the opposite and tensor product dg algebras, the `R`-algebra structure on `H(A)`.
+    The opposite dg algebra: `DG.GradedOpposite.instDGAlgebra`, `DG.GradedOpposite.opOpDGAlgEquiv`,
+    `DG.GradedOpposite.opDGAlgEquiv` (graded-commutative case); right dg modules as left dg
+    `Aᵒᵖ`-modules: `DG.rightModuleEquivOpModule`. The tensor product:
+    `DG.GradedTensorProduct.instDGAlgebra`, `DG.GradedTensorProduct.d_tmul`,
+    `DG.GradedTensorProduct.includeLeftDGAlgHom`, `DG.GradedTensorProduct.map`,
+    `DG.GradedTensorProduct.commDGAlgEquiv`, `DG.GradedTensorProduct.assocDGAlgEquiv`,
+    `DG.GradedTensorProduct.lidDGAlgEquiv`; `DG.DGAlgEquiv`. Open: the `R`-algebra structure on
+    `H(A)`.
 2.2 `DGModule A M`: left dg module; right dg modules and bimodules; `DGModuleHom` (degree-`0`
     chain maps) — done (modules, right modules, bimodules, restriction of scalars):
     `DG.DGModule`, `DG.DGModuleHom`, `DG.DGRightModule`, `DG.DGBimodule`,
