@@ -42,6 +42,7 @@ import DG.Homotopy.ConeCochain
 import DG.Homotopy.ConeComp
 import DG.Homotopy.Forget
 import DG.Homotopy.Homotopy
+import DG.Homotopy.HomotopyCategory
 import DG.Homotopy.KProjective
 import DG.Homotopy.Lifting
 import DG.Homotopy.ModuleCat
