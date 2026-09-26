@@ -158,6 +158,13 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     equivalences of categories in both directions. Requires the monoidal structure of
     `Mathlib/Algebra/Homology/Monoidal.lean` with `ComplexShape.TensorSigns` for `ℤ`.
     **(Mathlib)**
+    — done: `DG.DGAlgCat.monEquivalence`
+    (`DGAlgCat R ≌ Mon_ (CochainComplex (ModuleCat R) ℤ)`), `DG.DGModuleCat.modEquivalence`
+    (`DGModuleCat A ≌ Mod_` of the corresponding monoid object), `DG.ComplexTensor.d_tmul`
+    (Mathlib's tensor product of complexes has the library's sign); the instances
+    `CategoryTheory.MonoidalPreadditive.curriedTensor_additive`,
+    `DG.ModuleCat.preservesColimits_curriedTensor_obj` needed for Mathlib's monoidal structure on
+    `CochainComplex (ModuleCat R) ℤ` to be found at the pinned revision.
 2.7 Examples: the Koszul complex `K(x₁, …, xₙ)` on a commutative ring as a commutative dg
     algebra; `END_R(C)` for a cochain complex `C`; the free dg algebra on a graded set with
     prescribed differential (semi-free dg algebras); the truncations. **(stretch:** de Rham
