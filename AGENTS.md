@@ -53,8 +53,9 @@ public. Keep it mathematical and technical.
 DG.lean                 root imports
 DG/Basic.lean           sign conventions (koszulSign)
 DG/Graded/              graded modules and algebras with Koszul signs (tier 1)
-DG/Algebra/             dg algebras, maps, tensor products, opposite, cohomology
-DG/Module/              dg modules, HOM/END, tensor, cohomology, corners
+DG/Algebra/             dg abelian groups, dg rings and algebras (`DG/Algebra/Basic.lean`),
+                        maps, tensor products, opposite, cohomology
+DG/Module/              dg modules (`DG/Module/Basic.lean`), HOM/END, tensor, cohomology, corners
 DG/Homotopy/            DGModuleCat, homotopies, homotopy category, shift, cone, triangulated
 DG/Derived/             quasi-isomorphisms, localization, resolutions, derived functors, Keller
 DG/Compact/             compact objects, perfect derived category

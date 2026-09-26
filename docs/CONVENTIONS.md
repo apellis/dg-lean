@@ -36,8 +36,10 @@ In particular:
   is a left dg `Aᵒᵖ`-module.
 - Tensor product of dg modules over `R`: `d (m ⊗ n) = d m ⊗ n + (-1)^{|m|} m ⊗ d n`;
   `(a ⊗ b) (a' ⊗ b') = (-1)^{|b||a'|} (a a') ⊗ (b b')` on tensor products of dg algebras.
-- Shift: `(M[1])ⁿ = Mⁿ⁺¹`, `d_{M[1]} = -d_M`. Mapping cone of `f : M ⟶ N`:
-  `C(f) = N ⊕ M[1]` with `d = (d_N, f; 0, -d_M)`.
+- Shift: `(M[1])ⁿ = Mⁿ⁺¹`, `d_{M[1]} = -d_M`, and the action is twisted by the Koszul sign,
+  `a •_{M[1]} m = (-1)^{|a|} (a • m)` (this is forced by the Leibniz rule once `d_{M[1]} = -d_M`).
+  Mapping cone of `f : M ⟶ N`: `C(f) = N ⊕ M[1]` with `d = (d_N, f; 0, -d_M)` and the
+  componentwise action.
 
 **Match Mathlib.** The underlying cochain complex of a dg module is a
 `CochainComplex (ModuleCat R) ℤ`, and the shift and cone above must agree, on underlying
@@ -51,14 +53,27 @@ Mathlib's `Int.negOnePow` API (`Int.negOnePow_add`, `Int.negOnePow_succ`, ...) r
 
 ## Definitions: concrete first, categorical second
 
-The core objects are concrete structures on types, in Mathlib's style for graded rings:
+The core objects are concrete structures on types, in Mathlib's style for graded rings, with
+the data in one class and compatibilities as `Prop`-valued mixins (as `Ring A` / `Module R M` /
+`IsScalarTower R A M` in Mathlib):
 
-- a dg algebra is a type `A` with `Ring A`, `Algebra R A`, a grading `𝒜 : ℤ → Submodule R A`
-  with `GradedAlgebra 𝒜`, and `d : A →ₗ[R] A` with `d (𝒜 n) ⊆ 𝒜 (n+1)`, `d ∘ d = 0`, and the
-  Leibniz rule on homogeneous elements;
-- a dg module is a type `M` with `AddCommGroup M`, `Module A M` (hence `Module R M`), a grading
-  `ℳ : ℤ → Submodule R M` with `GradedModule`-style compatibility `𝒜 i • ℳ j ≤ ℳ (i+j)` and an
-  internal direct sum, and `d : M →ₗ[R] M` with the signed Leibniz rule.
+- `DGAddCommGroup M` (the data): an abelian group with an internal grading
+  `grading : ℤ → AddSubgroup M` (a `DirectSum.Decomposition`) and a differential `d : M →+ M`
+  with `d (Mⁿ) ⊆ Mⁿ⁺¹` and `d ∘ d = 0`. This is an internally graded cochain complex of abelian
+  groups; the same `d` and `grading` are used for rings and modules.
+- `DGRing A` (`Prop`): for `[Ring A] [DGAddCommGroup A]`, the grading is a ring grading
+  (`SetLike.GradedMonoid`, hence `GradedRing`) and `d` satisfies the graded Leibniz rule on
+  homogeneous elements.
+- `DGAlgebra R A` (`Prop`): for `[Algebra R A]`, the image of `R` lies in degree `0` and is
+  killed by `d`. Consequences, not axioms: `d` is `R`-linear and every `Aⁿ` is an `R`-submodule
+  (`DGAlgebra.gradingSubmodule R A`, a `GradedAlgebra`). Every dg ring is a dg `ℤ`-algebra.
+- `DGModule A M` (`Prop`): for `[Module A M] [DGAddCommGroup M]`, the action is graded
+  (`SetLike.GradedSMul`) and satisfies the signed Leibniz rule. A dg ring is a dg module over
+  itself. With `[Module R M] [IsScalarTower R A M]` and `DGAlgebra R A`, `d` is `R`-linear.
+  Right dg modules are the mixin for `Module Aᵐᵒᵖ M` with the right-handed sign rule; bimodules
+  are two mixins plus `SMulCommClass`.
+- Morphisms `DGModuleHom A M N` (notation `M →ᵈᵍ[A] N`): `A`-linear maps of degree `0`
+  commuting with `d`.
 
 Categorical packagings (`DGModuleCat A`, the homotopy category, the derived category) are
 built on top, together with the comparisons to monoid and module objects in Mathlib's
@@ -72,8 +87,8 @@ computations. Do not duplicate Mathlib: reuse `GradedRing`, `GradedAlgebra`, `Di
 ## Naming
 
 - Namespace `DG`. Files under `DG/`, one topic per file, imported from `DG.lean`.
-- Structures: `DGAlgebra R A` (class-style, on a type), `DGModule A M`, `DGAlgHom`,
-  `DGModuleHom` (degree-`0` chain maps), `DGModuleCat A`, `HomotopyCategory A`,
+- Structures: `DGAddCommGroup M`, `DGRing A`, `DGAlgebra R A`, `DGModule A M`, `DGRingHom`,
+  `DGModuleHom` (degree-`0` chain maps, `M →ᵈᵍ[A] N`), `DGModuleCat A`, `HomotopyCategory A`,
   `DerivedCategory A`, `DGModule.HOM`, `DGModule.END`, `DGModule.cohomology`.
 - Theorems are named by Mathlib conventions (`d_mul`, `d_smul`, `d_comp_d`, `cohomology_map`,
   ...). A theorem from the literature gets a docstring citing the source (author, title,
