@@ -111,8 +111,12 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `DG.LeftDGIdempotent.LeftCorner.instDGBimodule`, `DG.LeftDGIdempotent.endLeftCornerEquiv`.
 2.4 Tensor products: `M ⊗_A N` for a right dg module `M` and left dg module `N`, with the
     signed differential; associativity, `A ⊗_A N ≅ N`, `HOM`–`⊗` adjunction at the level of dg
-    modules; `M ⊗_R N` with the signed differential. — done (except the `HOM`–`⊗` adjunction,
-    and with `M ⊗_R N` over `R = ℤ`): `DG.instDGAddCommGroupTensorProduct`,
+    modules; `M ⊗_R N` with the signed differential. — done (with `M ⊗_R N` over `R = ℤ`):
+    the adjunction `DG.TensorProductOver.curryEquiv`
+    (`HOM_A(M ⊗_B N, P) ≅ HOM_B(N, HOM_A(M, P))`), `DG.TensorProductOver.homEquiv`,
+    `DG.TensorProductOver.homEquiv_comp_lTensor`, `DG.TensorProductOver.homEquiv_comp`,
+    `DG.DGModule.HOM.LeftAction.instDGModule`, `DG.DGModule.HOM.evalOneEquiv`
+    (`HOM_A(A, P) ≅ P`); `DG.instDGAddCommGroupTensorProduct`,
     `DG.d_tmul_of_mem`, `DG.gradeInvolution`, `DG.tensorMap`, `DG.tensorComm`,
     `DG.tensorAssoc`, `DG.instDGModuleTensorProduct`, `DG.DGAddEquiv`,
     `DG.IsDGAddSubgroup`, `DG.DGAddCommGroup.quotient`, `DG.TensorProductOver`,
