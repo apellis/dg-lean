@@ -38,6 +38,13 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
 1.2 Graded (super)commutativity, the opposite graded algebra with the signed product, graded
     tensor product of graded algebras over `R` with the signed product; associativity, unit,
     symmetry `A ⊗ B ≅ B ⊗ A` with the Koszul sign.
+    — done: `DG.IsGradedComm`, `DG.IsGradedCommStrict`, `DG.GradedOpposite` (with
+    `DG.GradedOpposite.op_mul_op`, `DG.GradedOpposite.opOpAlgEquiv`, `DG.isGradedComm_iff_op_mul`);
+    the tensor product is Mathlib's `GradedTensorProduct` for `ι = ℤ` (its sign is
+    `DG.koszulSign`, `DG.uzpow_neg_one_eq_koszulSign`), with `DG.GradedTensorProduct.grading`,
+    `DG.GradedTensorProduct.instGradedAlgebra`, `DG.GradedTensorProduct.tmul_mul_tmul`,
+    `DG.GradedTensorProduct.comm_tmul`, `DG.GradedTensorProduct.assoc`,
+    `DG.GradedTensorProduct.lid`.
 1.3 Graded modules over graded algebras: left, right, bimodules; a right module is a left
     module over the opposite algebra; graded `Hom_A`, graded tensor product `M ⊗_A N` with
     signs; the corner algebra `eAe` and the modules `Ae`, `eA` for a homogeneous idempotent
