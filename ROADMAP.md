@@ -151,8 +151,13 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `HomotopyCategory.Pretriangulated`/`Triangulated` files for cochain complexes (the proofs
     are the same with `A`-linearity carried along). `H(A)` is triangulated (octahedral axiom).
     — done (on dg modules, not yet categorical): `DG.Cone`, `DG.Cone.instDGModule`,
-    `DG.Cone.inr`, `DG.Cone.fst`, `DG.Cone.inl`, `DG.Cone.snd`, `DG.Cone.map`,
-    `DG.Cone.contraction`, `DG.Cone.d_contraction_add_contraction_d`.
+    `DG.Cone.inr`, `DG.Cone.fstHom`, `DG.Cone.map`; the cochain-level API ported from
+    Mathlib's `MappingCone.lean` with identical signs: `DG.Cone.inl`, `DG.Cone.fst`,
+    `DG.Cone.snd`, `DG.Cone.δ_inl`, `DG.Cone.δ_snd`, `DG.Cone.desc`, `DG.Cone.lift`,
+    `DG.Cone.descHomotopy`, `DG.Cone.liftHomotopy`, `DG.Cone.mapOfHomotopy`,
+    `DG.Cone.isContractible_id`, `DG.Cone.mappingConeCompHomotopyEquiv`; shifts of cochains
+    `DG.Cochain.rightShift`, `DG.Cochain.leftShift`, `DG.Cochain.shift`, `DG.δ_rightShift`,
+    `DG.δ_leftShift`.
 3.4 The forgetful functor `H(A) ⥤ HomotopyCategory (ModuleCat R) (ComplexShape.up ℤ)`
     commutes with shifts and cones, hence is a triangulated functor; `H` is a homological
     functor on `H(A)`.
