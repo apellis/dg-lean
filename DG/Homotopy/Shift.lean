@@ -68,6 +68,14 @@ theorem shiftShiftEquiv_apply (a b c : ℤ) (h : a + b = c) (x : Shift c M) :
 theorem shiftShiftEquiv_symm_apply (a b c : ℤ) (h : a + b = c) (y : Shift b (Shift a M)) :
     (shiftShiftEquiv (A := A) a b c h).symm y = mk c (unmk a (unmk b y)) := rfl
 
+/-- The identification `M⟦a⟧⟦b⟧ ≃ M⟦b⟧⟦a⟧`, the identity on underlying elements. -/
+def shiftComm (a b : ℤ) : Shift b (Shift a M) ≃ᵈᵍ[A] Shift a (Shift b M) :=
+  (shiftShiftEquiv a b (a + b) rfl).symm.trans (shiftShiftEquiv b a (a + b) (add_comm b a))
+
+@[simp]
+theorem shiftComm_apply (a b : ℤ) (x : Shift b (Shift a M)) :
+    shiftComm (A := A) a b x = mk a (mk b (unmk a (unmk b x))) := rfl
+
 variable (R : Type*) [CommRing R] [Algebra R A] [DGAlgebra R A]
 
 theorem twist_algebraMap (n : ℤ) (r : R) : twist A n (algebraMap R A r) = algebraMap R A r := by
@@ -189,6 +197,11 @@ theorem shiftFunctorComm_hom_app_apply (a b : ℤ) (M : DGModuleCat.{v} A)
   rw [shiftFunctorComm_eq _ a b _ rfl, Iso.trans_hom, Iso.symm_hom, NatTrans.comp_app,
     comp_apply, shiftFunctorAdd'_inv_app_apply, shiftFunctorAdd'_hom_app_apply]
   rfl
+
+theorem shiftFunctorComm_hom_app_eq (a b : ℤ) (M : DGModuleCat.{v} A) :
+    (shiftFunctorComm (DGModuleCat.{v} A) a b).hom.app M =
+      ofHom (Shift.shiftComm (M := M) a b).toDGModuleHom :=
+  hom_ext_apply fun x => shiftFunctorComm_hom_app_apply a b M x
 
 instance (n : ℤ) : (shiftFunctor (DGModuleCat.{v} A) n).Additive where
   map_add := rfl

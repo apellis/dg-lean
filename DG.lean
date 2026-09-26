@@ -46,6 +46,7 @@ import DG.Homotopy.HomotopyCategory
 import DG.Homotopy.KProjective
 import DG.Homotopy.Lifting
 import DG.Homotopy.ModuleCat
+import DG.Homotopy.Pretriangulated
 import DG.Homotopy.Products
 import DG.Homotopy.SemiFree
 import DG.Homotopy.Shift
