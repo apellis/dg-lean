@@ -45,8 +45,10 @@ import DG.Module.End
 import DG.Module.EndBimodule
 import DG.Module.Equiv
 import DG.Module.Hom
+import DG.Module.HomAction
 import DG.Module.HomLinear
 import DG.Module.HomShift
+import DG.Module.HomTensor
 import DG.Module.Opposite
 import DG.Module.PUnit
 import DG.Module.Prod
