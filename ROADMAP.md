@@ -254,6 +254,12 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     to homotopy equivalence over `M`. Consequently the K-projective modules form a full
     subcategory of `H(A)` equivalent to `D(A)`, and `Hom_{D(A)}(M, N) ≅ H⁰(HOM_A(P_M, N))`.
     Dually **(stretch)**: K-injective resolutions.
+    — done (concrete level, before `D(A)`): `DG.exists_semiFreeResolution` (a surjective
+    quasi-isomorphism from a semi-free module, [St 09KP]), `DG.SemiFreeResolution`,
+    `DG.SemiFreeResolution.dgHomotopyEquiv` (uniqueness up to homotopy equivalence over `M`),
+    `DG.SemiFreeResolution.lift`, `DG.SemiFreeResolution.homotopic_lift`;
+    `DG.hasLiftingProperty_iff_exists_retract` (cofibrant = retract of semi-free),
+    `DG.isKProjective_iff_exists_dgHomotopyEquiv`.
 4.4 Derived functors: `M ⊗^L_B -` and `RHOM_A(M, -)` for a dg `(A, B)`-bimodule `M`, defined
     on `D(B)` resp. `D(A)` via K-projective resolutions, well defined up to canonical
     isomorphism, triangulated; the derived tensor–Hom adjunction; compatibility with shifts
