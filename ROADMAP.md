@@ -136,6 +136,15 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     algebra; `END_R(C)` for a cochain complex `C`; the free dg algebra on a graded set with
     prescribed differential (semi-free dg algebras); the truncations. **(stretch:** de Rham
     complex of a polynomial algebra.)
+    — done (except the de Rham stretch goal): `DG.KoszulComplex` (for a linear form
+    `φ : M → R`; `DG.KoszulComplex.ofElements x` is `K(x₁, …, xₙ)`), `DG.KoszulComplex.instDGAlgebra`,
+    `DG.KoszulComplex.isGradedCommStrict`, `DG.KoszulComplex.ofElements.cohomologyZeroAddEquiv`
+    (`H⁰ ≅ R ⧸ (x₁, …, xₙ)`); `DG.DGModule.END.instDGAlgebra`, `DG.DGModule.END.cohomologyZeroAddEquiv`
+    (`H⁰(END_A(M))` = maps up to homotopy); `DG.truncLEZero`, `DG.bijective_cohomologyMap_truncLEZero`,
+    `DG.truncGEZeroπ`, `DG.bijective_cohomologyMap_truncGEZeroπ`; `DG.SemiFree`
+    (free dg algebra on graded generators with prescribed differential),
+    `DG.freeDeriv_freeDeriv_eq_zero_iff`, `DG.SemiFree.liftEquiv`. The `R`-module structure on
+    Hom complexes: `DG.Cochain.instModuleGround`, `DG.DGModule.END.instAlgebra`.
 
 ## Tier 3 — The homotopy category
 
