@@ -1,5 +1,6 @@
 import DG.Module.TensorProduct
 import DG.Module.Quotient
+import DG.Module.Equiv
 
 /-!
 # Tensor products over a dg ring
@@ -36,6 +37,7 @@ using the right Leibniz rule `d (m a) = d m a + (-1)^{|m|} m d a` and the left L
   `B`-module, `b • (m ⊗ n) = (b • m) ⊗ n`.
 * The unit isomorphism `A ⊗_A N ≅ N`, `a ⊗ n ↦ a • n`, as mutually inverse morphisms of dg
   `A`-modules `DG.TensorProductOver.lid` and `DG.TensorProductOver.lidInv`, and as
+  `DG.TensorProductOver.lidDGModuleEquiv : A ⊗_A N ≃ᵈᵍ[A] N`, also as
   `DG.TensorProductOver.lidLinearEquiv` and `DG.TensorProductOver.lidEquiv`.
 * The right unit isomorphism `M ⊗_A A ≅ M`, `m ⊗ a ↦ m • a` (`DG.TensorProductOver.rid`), which
   is right `A`-linear (`DG.TensorProductOver.rid_op_smul`).
@@ -590,6 +592,20 @@ def lidEquiv : DGAddEquiv (TensorProductOver A A N) N :=
   DGAddEquiv.ofAddMonoidHom (lid A N).toLinearMap.toAddMonoidHom
     (lidInv A N).toLinearMap.toAddMonoidHom lidInv_lid lid_lidInv
     (fun hy => (lid A N).map_mem hy) (lid A N).map_d
+
+/-- The unit isomorphism `A ⊗_A N ≅ N`, `a ⊗ n ↦ a • n`, as an isomorphism of dg `A`-modules. -/
+def lidDGModuleEquiv : TensorProductOver A A N ≃ᵈᵍ[A] N where
+  __ := lidLinearEquiv A N
+  map_mem' hy := (lid A N).map_mem hy
+  map_d' y := (lid A N).map_d y
+
+@[simp]
+theorem lidDGModuleEquiv_tmul (a : A) (n : N) :
+    lidDGModuleEquiv A N (tmul A a n) = a • n := rfl
+
+@[simp]
+theorem lidDGModuleEquiv_symm_apply (n : N) :
+    (lidDGModuleEquiv A N).symm n = tmul A (1 : A) n := rfl
 
 end Unit
 

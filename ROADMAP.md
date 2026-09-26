@@ -98,7 +98,18 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `DG.LeftDGIdempotent.LeftCorner.instDGBimodule`, `DG.LeftDGIdempotent.endLeftCornerEquiv`.
 2.4 Tensor products: `M ⊗_A N` for a right dg module `M` and left dg module `N`, with the
     signed differential; associativity, `A ⊗_A N ≅ N`, `HOM`–`⊗` adjunction at the level of dg
-    modules; `M ⊗_R N` with the signed differential.
+    modules; `M ⊗_R N` with the signed differential. — done (except the `HOM`–`⊗` adjunction,
+    and with `M ⊗_R N` over `R = ℤ`): `DG.instDGAddCommGroupTensorProduct`,
+    `DG.d_tmul_of_mem`, `DG.gradeInvolution`, `DG.tensorMap`, `DG.tensorComm`,
+    `DG.tensorAssoc`, `DG.instDGModuleTensorProduct`, `DG.DGAddEquiv`,
+    `DG.IsDGAddSubgroup`, `DG.DGAddCommGroup.quotient`, `DG.TensorProductOver`,
+    `DG.TensorProductOver.instDGAddCommGroup`, `DG.TensorProductOver.d_tmul_of_mem`,
+    `DG.TensorProductOver.op_smul_tmul`, `DG.TensorProductOver.lift`,
+    `DG.TensorProductOver.lift_unique`, `DG.TensorProductOver.map`,
+    `DG.TensorProductOver.instDGModule`, `DG.TensorProductOver.lidDGModuleEquiv`,
+    `DG.TensorProductOver.rid`, `DG.TensorProductOver.RightAction.instDGRightModule`,
+    `DG.TensorProductOver.assocEquiv` (`DG/Module/TensorProduct.lean`,
+    `DG/Module/TensorProductOver.lean`, `DG/Module/Quotient.lean`, `DG/Algebra/AddEquiv.lean`).
 2.5 Cohomology `H(M)` as a graded `H(A)`-module, functorial; `H` commutes with finite direct
     sums and with arbitrary direct sums; quasi-isomorphisms; the long exact cohomology
     sequence of a short exact sequence of dg modules (reduce to Mathlib's
