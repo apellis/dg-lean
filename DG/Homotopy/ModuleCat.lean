@@ -340,7 +340,8 @@ variable {A} {R : Type*} [CommRing R] [Algebra R A] [DGRing A] [DGAlgebra R A]
   [AddCommGroup N] [DGAddCommGroup N] [Module A N] [DGModule A N]
   [AddCommGroup P] [DGAddCommGroup P] [Module A P] [DGModule A P]
 
-/-- The action of `R` on `M →ᵈᵍ[A] N` for a dg `R`-algebra `A`: `(r • f) m = algebraMap R A r • f m`.
+/-- The action of `R` on `M →ᵈᵍ[A] N` for a dg `R`-algebra `A`:
+`(r • f) m = algebraMap R A r • f m`.
 See the implementation notes of `DG.Homotopy.ModuleCat` for the priority. -/
 instance (priority := 100) instSMul : SMul R (M →ᵈᵍ[A] N) :=
   ⟨fun r f =>

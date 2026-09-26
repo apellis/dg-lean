@@ -67,7 +67,8 @@ instance hasCoproducts : HasCoproducts.{w} (DGModuleCat.{max v w} A) := fun J =>
   { has_colimit := fun K => by
       letI := Classical.decEq J
       exact HasColimit.mk
-        ⟨(Cocones.precompose Discrete.natIsoFunctor.hom).obj (coproductCocone (K.obj ∘ Discrete.mk)),
+        ⟨(Cocones.precompose Discrete.natIsoFunctor.hom).obj
+          (coproductCocone (K.obj ∘ Discrete.mk)),
           (IsColimit.precomposeHomEquiv _ _).symm (coproductCoconeIsColimit _)⟩ }
 
 instance hasCoproducts' : HasCoproducts.{v} (DGModuleCat.{v} A) :=
