@@ -177,10 +177,17 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     triangulated equivalences, additivity over finite filtrations (iterated cones), the
     Euler characteristic of a bounded complex with values in `K₀` of an abelian category
     (comparison with Mathlib's derived category of an abelian category where possible).
-    — done (except the Euler characteristic of a bounded complex): `DG.K0`, `DG.K0.mk`,
+    — done: `DG.K0`, `DG.K0.mk`,
     `DG.K0.lift`, `DG.K0.mk_obj₂`, `DG.K0.mk_eq_of_iso`, `DG.K0.mk_shift_one`,
     `DG.K0.mk_shift`, `DG.K0.mk_biprod`, `DG.K0.mk_last_eq_add_sum`, `DG.K0.map`,
-    `DG.K0.map_id`, `DG.K0.map_comp`, `DG.K0.mapEquiv` (`DG/K0/Triangulated.lean`).
+    `DG.K0.map_id`, `DG.K0.map_comp`, `DG.K0.mapEquiv` (`DG/K0/Triangulated.lean`);
+    `DG.AbelianK0`, `DG.AbelianK0.mk_X₂`, `DG.AbelianK0.lift`, `DG.AbelianK0.map`,
+    `DG.AbelianK0.mapEquiv` (`DG/K0/Abelian.lean`); `DG.AbelianK0.eulerChar`,
+    `DG.AbelianK0.eulerChar_eq_finsum_homology`, `DG.AbelianK0.eulerChar_X₂`,
+    `DG.AbelianK0.eulerChar_eq_zero_of_exactAt`, `DG.AbelianK0.toDerived`,
+    `DG.AbelianK0.toDerived_eulerChar`, `DG.K0.mk_Q_obj_eq_toDerived` (`DG/K0/Euler.lean`;
+    Mathlib has no bounded derived category at the pin, so the comparison is the map
+    `K₀(C) → K₀(D(C))` and its compatibility with `χ`).
 5.5 `K₀(A) := K₀(D^c(A))`; functoriality along dg algebra maps (induction preserves compacts);
     invariance under quasi-isomorphisms of dg algebras (from 4.5); for a finite-cell module
     with subquotients `A e_i [n_i]`, `[M] = Σ (-1)^{n_i} [A e_i]`.

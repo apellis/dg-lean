@@ -4,6 +4,8 @@ import DG.Compact.Basic
 import DG.Compact.Triangulated
 import DG.Graded.Basic
 import DG.Graded.Hom
+import DG.K0.Abelian
+import DG.K0.Euler
 import DG.K0.Triangulated
 import DG.Module.Basic
 import DG.Module.Corner
