@@ -18,19 +18,23 @@ written in the other order.
 
 * `DG.Cone f`: the mapping cone, a `def` (a type synonym for `Shift 1 M × N`) with explicit
   `AddCommGroup`, `Module A`, `DGAddCommGroup` and `DGModule A` instances.
-* `DG.Cone.inr f : N →ᵈᵍ[A] Cone f` and `DG.Cone.fst f : Cone f →ᵈᵍ[A] Shift 1 M`, the
-  morphisms of the standard triangle `M → N → Cone f → M⟦1⟧`, with `fst ∘ inr = 0`.
-  (Mathlib's standard triangle `CochainComplex.mappingCone.triangle` uses `-fst` as its third
-  morphism.)
-* `DG.Cone.inl f : Shift 1 M →ₗ[A] Cone f` and `DG.Cone.snd f : Cone f →ₗ[A] N`, the other
-  two structure maps: `A`-linear, graded of degree `0`, but not chain maps. They satisfy
-  `snd ∘ inl = 0`, `snd ∘ inr = id`, `fst ∘ inl = id`, `inl ∘ fst + inr ∘ snd = id`, and
-  `d ∘ inl - inl ∘ d = inr ∘ f` (`DG.Cone.d_inl`), expressing that `inl` is a chain map up to
-  the homotopy `f`.
+* `DG.Cone.inr f : N →ᵈᵍ[A] Cone f` and `DG.Cone.fstHom f : Cone f →ᵈᵍ[A] Shift 1 M`, the
+  morphisms of the standard triangle `M → N → Cone f → M⟦1⟧`, with `fstHom ∘ inr = 0`.
+  (Mathlib's standard triangle `CochainComplex.mappingCone.triangle` uses `-fstHom` as its
+  third morphism.)
+* `DG.Cone.inlLinear f : Shift 1 M →ₗ[A] Cone f` and `DG.Cone.sndLinear f : Cone f →ₗ[A] N`,
+  the other two structure maps: `A`-linear, graded of degree `0`, but not chain maps. They
+  satisfy `sndLinear ∘ inlLinear = 0`, `sndLinear ∘ inr = id`, `fstHom ∘ inlLinear = id`,
+  `inlLinear ∘ fstHom + inr ∘ sndLinear = id`, and `d ∘ inlLinear - inlLinear ∘ d = inr ∘ f`
+  (`DG.Cone.d_inlLinear`), expressing that `inlLinear` is a chain map up to the homotopy `f`.
 * `DG.Cone.contraction M`: the degree `-1` map `h (x, y) = (y, 0)` on the cone of the identity
   of `M`, with `d ∘ h + h ∘ d = id`: the cone of the identity is contractible.
 * `DG.Cone.map`: functoriality, a commutative square `g ∘ f = f' ∘ e` induces
   `Cone f →ᵈᵍ[A] Cone f'`.
+
+The cochain-level structure maps with Mathlib's names and degrees (`DG.Cone.inl`, a
+`(-1)`-cochain from `M`; `DG.Cone.fst`, a `1`-cocycle to `M`; `DG.Cone.snd`, a `0`-cochain) and
+the universal properties of the cone in terms of them are in `DG.Homotopy.ConeCochain`.
 -/
 
 namespace DG
@@ -55,11 +59,11 @@ instance : Module A (Cone f) := inferInstanceAs (Module A (Shift 1 M × N))
 
 /-- The inclusion of `M⟦1⟧` into the cone, `x ↦ (x, 0)`: `A`-linear and graded of degree `0`,
 but not a chain map (see `Cone.d_inl`). -/
-def inl : Shift 1 M →ₗ[A] Cone f := LinearMap.inl A (Shift 1 M) N
+def inlLinear : Shift 1 M →ₗ[A] Cone f := LinearMap.inl A (Shift 1 M) N
 
 /-- The projection of the cone onto `N`, `(x, y) ↦ y`: `A`-linear and graded of degree `0`,
 but not a chain map (see `Cone.snd_d`). -/
-def snd : Cone f →ₗ[A] N := LinearMap.snd A (Shift 1 M) N
+def sndLinear : Cone f →ₗ[A] N := LinearMap.snd A (Shift 1 M) N
 
 /-- The inclusion of `N` into the cone, `y ↦ (0, y)`, as an `A`-linear map; see `Cone.inr` for
 the morphism of dg modules. -/
@@ -81,12 +85,13 @@ instance : DGAddCommGroup (Cone f) where
   decomposition := DGAddCommGroup.decomposition (M := Shift 1 M × N)
   d := dAddMonoidHom f
   d_mem' {k p} hp := by
-    have hp' : fstLinear f p ∈ grading k ∧ snd f p ∈ grading k := hp
+    have hp' : fstLinear f p ∈ grading k ∧ sndLinear f p ∈ grading k := hp
     exact ⟨d_mem hp'.1, add_mem (f.map_mem (unmk_mem_grading hp'.1)) (d_mem hp'.2)⟩
   d_d' p := by
     apply Prod.ext
     · exact d_d _
-    · change f (unmk 1 (d (fstLinear f p))) + d (f (unmk 1 (fstLinear f p)) + d (snd f p)) = 0
+    · change f (unmk 1 (d (fstLinear f p))) +
+        d (f (unmk 1 (fstLinear f p)) + d (sndLinear f p)) = 0
       rw [unmk_d, koszulSign, Int.negOnePow_one, Units.neg_smul, one_smul, map_neg, d_add, d_d,
         add_zero, f.map_d, neg_add_cancel]
 
@@ -101,7 +106,7 @@ def inr : N →ᵈᵍ[A] Cone f where
       rw [unmk_zero, map_zero, zero_add]
 
 /-- The projection of the cone onto `M⟦1⟧`, `(x, y) ↦ x`, as a morphism of dg modules. -/
-def fst : Cone f →ᵈᵍ[A] Shift 1 M where
+def fstHom : Cone f →ᵈᵍ[A] Shift 1 M where
   __ := fstLinear f
   map_mem' hp := hp.1
   map_d' _ := rfl
@@ -110,51 +115,58 @@ def fst : Cone f →ᵈᵍ[A] Shift 1 M where
 
 variable {f}
 
-@[simp] theorem fst_inl (x : Shift 1 M) : fst f (inl f x) = x := rfl
-@[simp] theorem snd_inl (x : Shift 1 M) : snd f (inl f x) = 0 := rfl
-@[simp] theorem fst_inr (y : N) : fst f (inr f y) = 0 := rfl
-@[simp] theorem snd_inr (y : N) : snd f (inr f y) = y := rfl
+@[simp] theorem fstHom_inlLinear (x : Shift 1 M) : fstHom f (inlLinear f x) = x := rfl
+@[simp] theorem sndLinear_inlLinear (x : Shift 1 M) : sndLinear f (inlLinear f x) = 0 := rfl
+@[simp] theorem fstHom_inr (y : N) : fstHom f (inr f y) = 0 := rfl
+@[simp] theorem sndLinear_inr (y : N) : sndLinear f (inr f y) = y := rfl
 
-theorem fstLinear_apply (p : Cone f) : fstLinear f p = fst f p := rfl
+theorem fstLinear_apply (p : Cone f) : fstLinear f p = fstHom f p := rfl
 theorem inrLinear_apply (y : N) : inrLinear f y = inr f y := rfl
 
 @[ext]
-theorem ext {p q : Cone f} (h₁ : fst f p = fst f q) (h₂ : snd f p = snd f q) : p = q :=
+theorem ext {p q : Cone f} (h₁ : fstHom f p = fstHom f q)
+    (h₂ : sndLinear f p = sndLinear f q) : p = q :=
   Prod.ext h₁ h₂
 
-theorem inl_fst_add_inr_snd (p : Cone f) : inl f (fst f p) + inr f (snd f p) = p :=
+theorem inlLinear_fstHom_add_inr_sndLinear (p : Cone f) :
+    inlLinear f (fstHom f p) + inr f (sndLinear f p) = p :=
   ext (add_zero _) (zero_add _)
 
 variable (f) in
 @[simp]
-theorem fst_comp_inr : (fst f).comp (inr f) = 0 := rfl
+theorem fstHom_comp_inr : (fstHom f).comp (inr f) = 0 := rfl
 
 theorem mem_grading_iff {k : ℤ} {p : Cone f} :
-    p ∈ grading k ↔ fst f p ∈ grading k ∧ snd f p ∈ grading k :=
+    p ∈ grading k ↔ fstHom f p ∈ grading k ∧ sndLinear f p ∈ grading k :=
   Iff.rfl
 
-theorem inl_mem {k : ℤ} {x : Shift 1 M} (hx : x ∈ grading k) : inl f x ∈ grading k :=
+theorem inlLinear_mem {k : ℤ} {x : Shift 1 M} (hx : x ∈ grading k) :
+    inlLinear f x ∈ grading k :=
   ⟨hx, zero_mem _⟩
 
-theorem snd_mem {k : ℤ} {p : Cone f} (hp : p ∈ grading k) : snd f p ∈ grading k :=
+theorem sndLinear_mem {k : ℤ} {p : Cone f} (hp : p ∈ grading k) : sndLinear f p ∈ grading k :=
   hp.2
 
-/-- The first component of the differential of the cone: `fst` is a chain map. -/
-theorem fst_d (p : Cone f) : fst f (d p) = d (fst f p) := rfl
+/-- The first component of the differential of the cone: `fstHom` is a chain map. -/
+theorem fstHom_d (p : Cone f) : fstHom f (d p) = d (fstHom f p) := rfl
 
 /-- The second component of the differential of the cone. -/
-theorem snd_d (p : Cone f) : snd f (d p) = f (unmk 1 (fst f p)) + d (snd f p) := rfl
+theorem sndLinear_d (p : Cone f) :
+    sndLinear f (d p) = f (unmk 1 (fstHom f p)) + d (sndLinear f p) := rfl
 
-theorem d_inl (x : Shift 1 M) : d (inl f x) = inl f (d x) + inr f (f (unmk 1 x)) :=
-  ext (by simp [fst_d]) (by simp [snd_d])
+theorem d_inlLinear (x : Shift 1 M) :
+    d (inlLinear f x) = inlLinear f (d x) + inr f (f (unmk 1 x)) :=
+  ext (by simp [fstHom_d]) (by simp [sndLinear_d])
 
-/-- `inl` is a chain map up to the homotopy `f`: `d ∘ inl - inl ∘ d = inr ∘ f`. -/
-theorem d_inl_sub_inl_d (x : Shift 1 M) : d (inl f x) - inl f (d x) = inr f (f (unmk 1 x)) := by
-  rw [d_inl, add_sub_cancel_left]
+/-- `inlLinear` is a chain map up to the homotopy `f`:
+`d ∘ inlLinear - inlLinear ∘ d = inr ∘ f`. -/
+theorem d_inlLinear_sub_inlLinear_d (x : Shift 1 M) :
+    d (inlLinear f x) - inlLinear f (d x) = inr f (f (unmk 1 x)) := by
+  rw [d_inlLinear, add_sub_cancel_left]
 
-theorem d_inl_add_inr (x : Shift 1 M) (y : N) :
-    d (inl f x + inr f y) = inl f (d x) + inr f (f (unmk 1 x) + d y) :=
-  ext (by simp [fst_d]) (by simp [snd_d])
+theorem d_inlLinear_add_inr (x : Shift 1 M) (y : N) :
+    d (inlLinear f x + inr f y) = inlLinear f (d x) + inr f (f (unmk 1 x) + d y) :=
+  ext (by simp [fstHom_d]) (by simp [sndLinear_d])
 
 /-! ### The dg module structure -/
 
@@ -167,8 +179,8 @@ instance : DGModule A (Cone f) where
     ⟨smul_mem_grading ha hp.1, smul_mem_grading ha hp.2⟩
   d_smul' {i} a ha p := by
     refine ext ?_ ?_
-    · simp only [fst_d, map_add, map_smul, Units.smul_def, map_zsmul, d_smul ha]
-    · simp only [snd_d, map_add, map_smul, Units.smul_def, map_zsmul, unmk_smul ha, one_mul,
+    · simp only [fstHom_d, map_add, map_smul, Units.smul_def, map_zsmul, d_smul ha]
+    · simp only [sndLinear_d, map_add, map_smul, Units.smul_def, map_zsmul, unmk_smul ha, one_mul,
         d_smul ha, smul_add]
       abel
 
@@ -184,27 +196,27 @@ variable (M)
 degree `-1` with `d ∘ h + h ∘ d = id` (`Cone.d_contraction_add_contraction_d`). It is graded
 `A`-linear up to the Koszul sign, `h (a • p) = (-1)^{|a|} a • h p` (`Cone.contraction_smul`). -/
 def contraction : Cone (DGModuleHom.id : M →ᵈᵍ[A] M) →+ Cone (DGModuleHom.id : M →ᵈᵍ[A] M) :=
-  ((inl _).toAddMonoidHom.comp (Shift.mk 1).toAddMonoidHom).comp (snd _).toAddMonoidHom
+  ((inlLinear _).toAddMonoidHom.comp (Shift.mk 1).toAddMonoidHom).comp (sndLinear _).toAddMonoidHom
 
 variable {M}
 
 theorem contraction_apply (p : Cone (DGModuleHom.id : M →ᵈᵍ[A] M)) :
-    contraction M p = inl _ (Shift.mk 1 (snd _ p)) := rfl
+    contraction M p = inlLinear _ (Shift.mk 1 (sndLinear _ p)) := rfl
 
 /-- The cone of the identity is contractible: `d ∘ h + h ∘ d = id`. -/
 theorem d_contraction_add_contraction_d (p : Cone (DGModuleHom.id : M →ᵈᵍ[A] M)) :
     d (contraction M p) + contraction M (d p) = p := by
   refine ext ?_ ?_
-  · simp only [contraction_apply, map_add, fst_d, fst_inl, snd_d, d_mk, unmk_mk,
+  · simp only [contraction_apply, map_add, fstHom_d, fstHom_inlLinear, sndLinear_d, d_mk, unmk_mk,
       DGModuleHom.id_apply, mk_add, koszulSign, Int.negOnePow_one, Units.neg_smul, one_smul,
       mk_neg, mk_unmk]
     abel
-  · simp [contraction_apply, snd_d]
+  · simp [contraction_apply, sndLinear_d]
 
 /-- The contracting homotopy has degree `-1`. -/
 theorem contraction_mem {k : ℤ} {p : Cone (DGModuleHom.id : M →ᵈᵍ[A] M)} (hp : p ∈ grading k) :
     contraction M p ∈ grading (k - 1) :=
-  inl_mem (mk_mem_grading (snd_mem hp))
+  inlLinear_mem (mk_mem_grading (sndLinear_mem hp))
 
 /-- The contracting homotopy is graded `A`-linear of degree `-1`, with the Koszul sign. -/
 theorem contraction_smul {i : ℤ} {a : A} (ha : a ∈ grading i)
@@ -231,25 +243,25 @@ def map (h : g.comp f = f'.comp e) : Cone f →ᵈᵍ[A] Cone f' where
   map_d' p := by
     refine ext ?_ ?_
     · exact ((e.shift 1).map_d _)
-    · change g (f (unmk 1 (fst f p)) + d (snd f p)) =
-        f' (unmk 1 (e.shift 1 (fst f p))) + d (g (snd f p))
+    · change g (f (unmk 1 (fstHom f p)) + d (sndLinear f p)) =
+        f' (unmk 1 (e.shift 1 (fstHom f p))) + d (g (sndLinear f p))
       rw [map_add, g.map_d, DGModuleHom.unmk_shift_apply, ← DGModuleHom.comp_apply, h,
         DGModuleHom.comp_apply]
 
 @[simp]
-theorem fst_map (h : g.comp f = f'.comp e) (p : Cone f) :
-    fst f' (map e g h p) = e.shift 1 (fst f p) := rfl
+theorem fstHom_map (h : g.comp f = f'.comp e) (p : Cone f) :
+    fstHom f' (map e g h p) = e.shift 1 (fstHom f p) := rfl
 
 @[simp]
-theorem snd_map (h : g.comp f = f'.comp e) (p : Cone f) :
-    snd f' (map e g h p) = g (snd f p) := rfl
+theorem sndLinear_map (h : g.comp f = f'.comp e) (p : Cone f) :
+    sndLinear f' (map e g h p) = g (sndLinear f p) := rfl
 
 theorem map_comp_inr (h : g.comp f = f'.comp e) :
     (map e g h).comp (inr f) = (inr f').comp g :=
   DGModuleHom.ext fun y => ext (by simp) rfl
 
-theorem fst_comp_map (h : g.comp f = f'.comp e) :
-    (fst f').comp (map e g h) = (e.shift 1).comp (fst f) :=
+theorem fstHom_comp_map (h : g.comp f = f'.comp e) :
+    (fstHom f').comp (map e g h) = (e.shift 1).comp (fstHom f) :=
   rfl
 
 end Map

@@ -14,6 +14,7 @@ import DG.Graded.Commutative
 import DG.Graded.Hom
 import DG.Graded.Opposite
 import DG.Graded.TensorProduct
+import DG.Homotopy.ConeCochain
 import DG.Homotopy.Homotopy
 import DG.K0.Abelian
 import DG.K0.Euler
@@ -27,6 +28,7 @@ import DG.Module.End
 import DG.Module.EndBimodule
 import DG.Module.Equiv
 import DG.Module.Hom
+import DG.Module.HomShift
 import DG.Module.Prod
 import DG.Module.Quotient
 import DG.Module.Right
