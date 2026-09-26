@@ -48,6 +48,7 @@ import DG.Homotopy.Lifting
 import DG.Homotopy.ModuleCat
 import DG.Homotopy.Products
 import DG.Homotopy.SemiFree
+import DG.Homotopy.Shift
 import DG.K0.Abelian
 import DG.K0.Euler
 import DG.K0.Triangulated
