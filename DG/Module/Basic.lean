@@ -62,6 +62,13 @@ theorem d_smul_of_d_eq_zero {n : ℤ} {a : A} (ha : a ∈ grading n) (hda : d a 
     d (a • m) = koszulSign n • (a • d m) := by
   rw [d_smul ha, hda, zero_smul, zero_add]
 
+/-- For a cocycle `m`, `d (a • m) = d a • m` for every `a`. -/
+theorem d_smul_of_d_eq_zero_right {m : M} (hm : d m = 0) (a : A) : d (a • m) = d a • m := by
+  induction a using induction_on with
+  | h_zero => simp
+  | h_homogeneous a => rw [d_smul a.2, hm, smul_zero, smul_zero, add_zero]
+  | h_add a a' ha ha' => rw [add_smul, d_add, ha, ha', d_add, add_smul]
+
 /-- A dg ring is a dg module over itself. -/
 instance DGModule.regular {A : Type*} [Ring A] [DGAddCommGroup A] [DGRing A] : DGModule A A where
   smul_mem _ _ _ _ ha hb := mul_mem_grading ha hb
