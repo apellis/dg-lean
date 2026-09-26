@@ -15,6 +15,7 @@ import DG.Graded.Hom
 import DG.Graded.Opposite
 import DG.Graded.TensorProduct
 import DG.Homotopy.ConeCochain
+import DG.Homotopy.ConeComp
 import DG.Homotopy.Homotopy
 import DG.K0.Abelian
 import DG.K0.Euler
