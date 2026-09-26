@@ -2,6 +2,7 @@ import DG.Algebra.AddEquiv
 import DG.Algebra.Basic
 import DG.Algebra.Cohomology
 import DG.Algebra.Constructions
+import DG.Algebra.Decompose
 import DG.Algebra.Hom
 import DG.Basic
 import DG.Compact.Basic
@@ -16,7 +17,10 @@ import DG.Graded.Opposite
 import DG.Graded.TensorProduct
 import DG.Homotopy.ConeCochain
 import DG.Homotopy.ConeComp
+import DG.Homotopy.Forget
 import DG.Homotopy.Homotopy
+import DG.Homotopy.ModuleCat
+import DG.Homotopy.Products
 import DG.K0.Abelian
 import DG.K0.Euler
 import DG.K0.Triangulated
@@ -25,15 +29,18 @@ import DG.Module.Cohomology
 import DG.Module.Cone
 import DG.Module.Corner
 import DG.Module.CornerEnd
+import DG.Module.DirectSum
 import DG.Module.End
 import DG.Module.EndBimodule
 import DG.Module.Equiv
 import DG.Module.Hom
 import DG.Module.HomShift
+import DG.Module.PUnit
 import DG.Module.Prod
 import DG.Module.Quotient
 import DG.Module.Right
 import DG.Module.Shift
+import DG.Module.Sub
 import DG.Module.TensorProduct
 import DG.Module.TensorProductOver
 import DG.Positive.Basic
