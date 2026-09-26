@@ -132,6 +132,61 @@ theorem coboundaries_le_grading (n : ℤ) : coboundaries M n ≤ grading n :=
 theorem cocycles_le_grading (n : ℤ) : cocycles M n ≤ grading n :=
   inf_le_left
 
+variable {N : Type*} [AddCommGroup N] [DGAddCommGroup N]
+
+/-- An additive map of degree `k` commutes with taking homogeneous components. -/
+theorem decompose_map {k : ℤ} (f : M →+ N)
+    (hf : ∀ {n : ℤ} {m : M}, m ∈ grading n → f m ∈ grading (n + k)) (m : M) (n : ℤ) :
+    (decompose (grading (M := N)) (f m) (n + k) : N) =
+      f (decompose (grading (M := M)) m n) := by
+  induction m using induction_on with
+  | h_zero => simp
+  | h_homogeneous m =>
+    obtain ⟨m, hm⟩ := m
+    rename_i i
+    by_cases h : i = n
+    · subst h
+      rw [decompose_of_mem_same _ hm, decompose_of_mem_same _ (hf hm)]
+    · rw [decompose_of_mem_ne _ hm h, decompose_of_mem_ne _ (hf hm) (by omega), map_zero]
+  | h_add m m' hm hm' =>
+    simp only [map_add, decompose_add, DirectSum.add_apply, AddSubgroup.coe_add, hm, hm']
+
+/-- The differential commutes with taking homogeneous components: the degree-`n + 1`
+component of `d m` is `d` of the degree-`n` component of `m`. -/
+theorem decompose_d (m : M) (n : ℤ) :
+    (decompose (grading (M := M)) (d m) (n + 1) : M) =
+      d (decompose (grading (M := M)) m n : M) :=
+  decompose_map (k := 1) d (fun hm => d_mem hm) m n
+
+/-- Induction over a homogeneous additive subgroup: a predicate which holds for `0`, for the
+homogeneous elements of `S` and is closed under addition holds on all of `S`. -/
+theorem induction_on_of_isHomogeneous {S : AddSubgroup M}
+    (hS : SetLike.IsHomogeneous (grading (M := M)) S) {P : M → Prop} (h_zero : P 0)
+    (h_homogeneous : ∀ {n : ℤ} {m : M}, m ∈ grading n → m ∈ S → P m)
+    (h_add : ∀ m m' : M, P m → P m' → P (m + m')) {m : M} (hm : m ∈ S) : P m := by
+  classical
+  rw [← DirectSum.sum_support_decompose (grading (M := M)) m]
+  refine Finset.sum_induction _ P h_add h_zero fun n _ => ?_
+  exact h_homogeneous (decompose (grading (M := M)) m n).2 (hS n hm)
+
+/-- The kernel of the differential is a homogeneous subgroup. -/
+theorem isHomogeneous_ker_d : SetLike.IsHomogeneous (grading (M := M)) (d : M →+ M).ker := by
+  intro n m hm
+  rw [AddMonoidHom.mem_ker] at hm ⊢
+  rw [← decompose_d, hm, decompose_zero, DirectSum.zero_apply, ZeroMemClass.coe_zero]
+
+/-- The image of the differential is a homogeneous subgroup. -/
+theorem isHomogeneous_range_d :
+    SetLike.IsHomogeneous (grading (M := M)) (d : M →+ M).range := by
+  rintro n _ ⟨m, rfl⟩
+  refine ⟨decompose (grading (M := M)) m (n - 1), ?_⟩
+  rw [← decompose_d, sub_add_cancel]
+
+/-- A cocycle has cocycle homogeneous components. -/
+theorem d_decompose_eq_zero {m : M} (hm : d m = 0) (n : ℤ) :
+    d (decompose (grading (M := M)) m n : M) = 0 :=
+  isHomogeneous_ker_d n (AddMonoidHom.mem_ker.mpr hm)
+
 end DGAddCommGroup
 
 /-- A differential graded ring: a ring `A` which is a `DGAddCommGroup` such that the grading is
@@ -190,6 +245,86 @@ theorem d_mul_of_mem_zero {a : A} (ha : a ∈ grading 0) (b : A) :
 theorem d_mul_right {n : ℤ} {a : A} (ha : a ∈ grading n) (b : A) :
     koszulSign n • (a * d b) = d (a * b) - d a * b := by
   rw [d_mul ha, add_sub_cancel_left]
+
+/-- If `b` is a cocycle then `d (a * b) = d a * b` for every `a`. -/
+theorem d_mul_of_d_eq_zero_right {b : A} (hb : d b = 0) (a : A) : d (a * b) = d a * b := by
+  induction a using induction_on with
+  | h_zero => simp
+  | h_homogeneous a => rw [d_mul a.2, hb, mul_zero, smul_zero, add_zero]
+  | h_add a a' ha ha' => rw [add_mul, d_add, ha, ha', d_add, add_mul]
+
+/-- If `a` is a homogeneous cocycle of degree `n` then `d (a * b) = (-1)^n • (a * d b)`. -/
+theorem d_mul_of_d_eq_zero_left {n : ℤ} {a : A} (ha : a ∈ grading n) (hda : d a = 0) (b : A) :
+    d (a * b) = koszulSign n • (a * d b) := by
+  rw [d_mul ha, hda, zero_mul, zero_add]
+
+/-- The Leibniz rule for powers: for `a` homogeneous of degree `n`,
+`d (a ^ k) = ∑ i < k, (-1)^(i n) • (a ^ i * d a * a ^ (k - 1 - i))`. -/
+theorem d_pow {n : ℤ} {a : A} (ha : a ∈ grading n) (k : ℕ) :
+    d (a ^ k) = ∑ i ∈ Finset.range k, koszulSign (i * n) • (a ^ i * d a * a ^ (k - 1 - i)) := by
+  induction k with
+  | zero => simp
+  | succ k ih =>
+    rw [pow_succ', d_mul ha, ih, Finset.sum_range_succ', Finset.mul_sum, Finset.smul_sum,
+      add_comm]
+    congr 1
+    · refine Finset.sum_congr rfl fun i _ => ?_
+      rw [mul_smul_comm, smul_smul, ← koszulSign_add, pow_succ', mul_assoc a, mul_assoc a]
+      congr 2
+      · push_cast; ring
+      · congr 2
+        omega
+    · simp
+
+/-- For `a ∈ A⁰`, `d (a ^ k) = ∑ i < k, a ^ i * d a * a ^ (k - 1 - i)`. -/
+theorem d_pow_of_mem_zero {a : A} (ha : a ∈ grading 0) (k : ℕ) :
+    d (a ^ k) = ∑ i ∈ Finset.range k, a ^ i * d a * a ^ (k - 1 - i) := by
+  rw [d_pow ha]
+  simp
+
+/-- For `a` homogeneous of even degree, `d (a ^ k) = ∑ i < k, a ^ i * d a * a ^ (k - 1 - i)`. -/
+theorem d_pow_of_even {n : ℤ} {a : A} (ha : a ∈ grading n) (hn : Even n) (k : ℕ) :
+    d (a ^ k) = ∑ i ∈ Finset.range k, a ^ i * d a * a ^ (k - 1 - i) := by
+  rw [d_pow ha]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [koszulSign_even (hn.mul_left _), one_smul]
+
+/-- For `a` homogeneous of even degree commuting with `d a`, `d (a ^ k) = k • (a ^ (k - 1) * d a)`. -/
+theorem d_pow_of_even_of_commute {n : ℤ} {a : A} (ha : a ∈ grading n) (hn : Even n)
+    (hc : Commute a (d a)) (k : ℕ) : d (a ^ k) = k • (a ^ (k - 1) * d a) := by
+  rw [d_pow_of_even ha hn, Finset.sum_range]
+  rw [Finset.sum_eq_card_nsmul (b := a ^ (k - 1) * d a) fun i _ => ?_]
+  · simp
+  · have hi := i.isLt
+    rw [(hc.pow_left _).eq, mul_assoc, ← pow_add, ← (hc.pow_left _).eq]
+    congr 3
+    omega
+
+/-- For `a ∈ A⁰` commuting with `d a`, `d (a ^ k) = k • (a ^ (k - 1) * d a)`. -/
+theorem d_pow_of_mem_zero_of_commute {a : A} (ha : a ∈ grading 0) (hc : Commute a (d a))
+    (k : ℕ) : d (a ^ k) = k • (a ^ (k - 1) * d a) :=
+  d_pow_of_even_of_commute ha Even.zero hc k
+
+/-- The graded Leibniz rule for `n`-fold products. For a list `l` of homogeneous elements
+(each given with its degree), `d (l₁ ⋯ lₙ) = ∑ᵢ (-1)^{|l₁| + ⋯ + |lᵢ₋₁|} • (l₁ ⋯ d lᵢ ⋯ lₙ)`. -/
+theorem d_list_prod (l : List (Σ n : ℤ, grading (M := A) n)) :
+    d (l.map fun x => (x.2 : A)).prod =
+      ∑ i : Fin l.length, koszulSign ((l.take i).map (·.1)).sum •
+        (((l.take i).map fun x => (x.2 : A)).prod * d (l[i].2 : A) *
+          ((l.drop (i + 1)).map fun x => (x.2 : A)).prod) := by
+  induction l with
+  | nil => simp
+  | cons x l ih =>
+    rw [List.map_cons, List.prod_cons, d_mul x.2.2, ih]
+    erw [Fin.sum_univ_succ]
+    rw [Finset.mul_sum, Finset.smul_sum]
+    congr 1
+    · simp
+    · refine Finset.sum_congr rfl fun i _ => ?_
+      simp only [Fin.val_succ, List.take_succ_cons, List.map_cons, List.sum_cons, List.prod_cons,
+        List.drop_succ_cons, Fin.getElem_fin, List.getElem_cons_succ, koszulSign_add, mul_smul,
+        mul_assoc, mul_smul_comm]
+      rfl
 
 end DGRing
 

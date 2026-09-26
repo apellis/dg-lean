@@ -1,4 +1,6 @@
 import DG.Algebra.Basic
+import DG.Algebra.Constructions
+import DG.Algebra.Hom
 import DG.Basic
 import DG.Compact.Basic
 import DG.Compact.Generation
