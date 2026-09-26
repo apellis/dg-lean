@@ -23,7 +23,8 @@ under `d`.
 
 Throughout, the idempotent is assumed to be a cocycle, `d e = 0`. For an idempotent with only
 `d e ∈ A e` the left ideal `A e` is still `d`-stable, but the differential on `e A e` has to be
-modified (`e a e ↦ e * d (a e)`); this more general case is not treated here.
+modified (`e a e ↦ e * d (a e)`); this more general case is `DG.LeftDGIdempotent`
+(`DG.Module.CornerEnd`).
 -/
 
 open DirectSum MulOpposite
