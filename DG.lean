@@ -22,6 +22,9 @@ import DG.Compact.Generation
 import DG.Compact.HomotopyColimit
 import DG.Compact.Thick
 import DG.Compact.Triangulated
+import DG.Derived.Basic
+import DG.Derived.Coproducts
+import DG.Derived.LocalizationCoproducts
 import DG.Derived.QuasiIso
 import DG.Derived.Resolution
 import DG.Examples.EndComplex
@@ -43,6 +46,7 @@ import DG.Homotopy.CohomologyLinear
 import DG.Homotopy.CohomologySequence
 import DG.Homotopy.ConeCochain
 import DG.Homotopy.ConeComp
+import DG.Homotopy.Coproducts
 import DG.Homotopy.Forget
 import DG.Homotopy.ForgetTriangulated
 import DG.Homotopy.HomShift
