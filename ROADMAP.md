@@ -26,6 +26,15 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     elements, degree, graded linear maps of degree `n`, the graded `Hom` (`⊕ₙ Hom^n`), and the
     Koszul-signed composition and evaluation rules. Reuse Mathlib's `GradedRing`,
     `GradedAlgebra`, `DirectSum.GAlgebra`, `SetLike.GradedMonoid`.
+    — done (graded maps and the graded `Hom`; the Koszul-signed rules for the interaction of
+    graded maps with graded actions are part of 1.3): `DG.HasDegree`, `DG.GradedHom`,
+    `DG.GradedHom.comp`, `DG.GradedHom.id`, `DG.GradedHom.liftEquiv`,
+    `DG.GradedHom.ext_homogeneous`, `DG.GradedHOM`, `DG.GradedHOM.grading`,
+    `DG.GradedHOM.eval`, `DG.GradedHOM.compHom`, `DG.GradedHOM.eval_compHom`, `DG.GradedEND`,
+    `DG.GradedEND.instGRing`, `DG.GradedEND.instGradedRing`, `DG.GradedEND.evalRingHom`;
+    generic helpers `DG.summand`, `DG.instDecompositionSummand`, `DG.instGradedRingSummand`,
+    `DG.proj`, `DG.liftHomogeneous`, `DG.decompose_addHom_ext` (`DG/Graded/Basic.lean`,
+    `DG/Graded/Hom.lean`).
 1.2 Graded (super)commutativity, the opposite graded algebra with the signed product, graded
     tensor product of graded algebras over `R` with the signed product; associativity, unit,
     symmetry `A ⊗ B ≅ B ⊗ A` with the Koszul sign.
