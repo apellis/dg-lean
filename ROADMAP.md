@@ -41,7 +41,10 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
 1.3 Graded modules over graded algebras: left, right, bimodules; a right module is a left
     module over the opposite algebra; graded `Hom_A`, graded tensor product `M ⊗_A N` with
     signs; the corner algebra `eAe` and the modules `Ae`, `eA` for a homogeneous idempotent
-    `e` of degree `0`.
+    `e` of degree `0`. — done (left, right and bimodules; `eAe`, `Ae`, `eA` for a degree-`0`
+    idempotent cocycle `e`): `DG.DGModule`, `DG.DGRightModule`, `DG.DGBimodule`,
+    `DG.DGIdempotent`, `DG.DGIdempotent.Corner`, `DG.DGIdempotent.LeftCorner`,
+    `DG.DGIdempotent.RightCorner`; the opposite algebra, `Hom_A`, `⊗_A` are open.
 1.4 Regrading constructions: from a `ℤ/2`-graded algebra to a 2-periodic `ℤ`-graded one and
     back; from a grading with a map of degree `k` to a grading with a map of degree `1`.
     Acceptance: equivalences of the corresponding categories of graded modules.
@@ -56,7 +59,9 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     structure on `H(A)` viewed as a dg algebra. `R` as a dg algebra in degree `0`; a graded
     algebra as a dg algebra with `d = 0`.
 2.2 `DGModule A M`: left dg module; right dg modules and bimodules; `DGModuleHom` (degree-`0`
-    chain maps); the abelian category `DGModuleCat A` **(Mathlib)**: it is `R`-linear,
+    chain maps) — done (right dg modules, bimodules): `DG.DGRightModule`,
+    `DG.DGRightModule.regular`, `DG.DGBimodule`, `DG.DGBimodule.regular`;
+    the abelian category `DGModuleCat A` **(Mathlib)**: it is `R`-linear,
     abelian, with arbitrary (co)products, and the forgetful functor to
     `CochainComplex (ModuleCat R) ℤ` is exact and faithful. Restriction of scalars along a
     `DGAlgHom`, and extension of scalars `A ⊗_B -`.
@@ -64,7 +69,10 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `d f = d_N ∘ f - (-1)^{|f|} f ∘ d_M`; `END_A(M)` as a dg algebra acting on `M` on the right
     (`m · f = (-1)^{|f||m|} f m`); `M` is a dg `(A, END_A(M))`-bimodule. `HOM_A(A e, A e) ≅ e A e`
     as dg algebras for `e` a degree-`0` idempotent with `d e ∈ A e` (the differential on `eAe`
-    is `e a e ↦ e d(a e)`), and `A e` is a dg `(A, eAe)`-bimodule.
+    is `e a e ↦ e d(a e)`), and `A e` is a dg `(A, eAe)`-bimodule. — done (for `d e = 0`:
+    `eAe` as a dg ring, `A e` as a dg `(A, eAe)`-bimodule, `e A` as a dg `(eAe, A)`-bimodule):
+    `DG.DGIdempotent.Corner.instDGRing`, `DG.DGIdempotent.LeftCorner.instDGBimodule`,
+    `DG.DGIdempotent.RightCorner.instDGBimodule`; `HOM`, `END` and the case `d e ∈ A e` are open.
 2.4 Tensor products: `M ⊗_A N` for a right dg module `M` and left dg module `N`, with the
     signed differential; associativity, `A ⊗_A N ≅ N`, `HOM`–`⊗` adjunction at the level of dg
     modules; `M ⊗_R N` with the signed differential.

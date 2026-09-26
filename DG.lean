@@ -6,3 +6,5 @@ import DG.Graded.Basic
 import DG.Graded.Hom
 import DG.K0.Triangulated
 import DG.Module.Basic
+import DG.Module.Corner
+import DG.Module.Right
