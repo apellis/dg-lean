@@ -83,8 +83,12 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `DG.DGModule.END.rightAction`; for `d e = 0`: `eAe` as a dg ring, `A e` as a dg
     `(A, eAe)`-bimodule, `e A` as a dg `(eAe, A)`-bimodule
     (`DG.DGIdempotent.Corner.instDGRing`, `DG.DGIdempotent.LeftCorner.instDGBimodule`,
-    `DG.DGIdempotent.RightCorner.instDGBimodule`). Open: `M` as a dg `(A, END_A(M))`-bimodule,
-    `HOM_A(A e, A e) ≅ e A e`, the case `d e ∈ A e`.
+    `DG.DGIdempotent.RightCorner.instDGBimodule`); `M` as a dg `(A, END_A(M))`-bimodule:
+    `DG.DGModule.END.instDGBimodule`; `END_A(A e) ≅ e A e`:
+    `DG.DGIdempotent.endLeftCornerEquiv`, `DG.DGModule.END.selfEquiv`; the case `d e ∈ A e`
+    with the differential `e a e ↦ e d(a e)`: `DG.LeftDGIdempotent`,
+    `DG.LeftDGIdempotent.Corner.instDGRing`, `DG.LeftDGIdempotent.Corner.coe_d_mk`,
+    `DG.LeftDGIdempotent.LeftCorner.instDGBimodule`, `DG.LeftDGIdempotent.endLeftCornerEquiv`.
 2.4 Tensor products: `M ⊗_A N` for a right dg module `M` and left dg module `N`, with the
     signed differential; associativity, `A ⊗_A N ≅ N`, `HOM`–`⊗` adjunction at the level of dg
     modules; `M ⊗_R N` with the signed differential.
