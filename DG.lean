@@ -1,3 +1,4 @@
+import DG.Algebra.AddEquiv
 import DG.Algebra.Basic
 import DG.Algebra.Cohomology
 import DG.Algebra.Constructions
@@ -27,6 +28,9 @@ import DG.Module.EndBimodule
 import DG.Module.Equiv
 import DG.Module.Hom
 import DG.Module.Prod
+import DG.Module.Quotient
 import DG.Module.Right
 import DG.Module.Shift
+import DG.Module.TensorProduct
+import DG.Module.TensorProductOver
 import DG.Positive.Basic
