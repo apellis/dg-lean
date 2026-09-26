@@ -1,6 +1,9 @@
 import DG.Algebra.Basic
 import DG.Basic
 import DG.Compact.Basic
+import DG.Compact.Generation
+import DG.Compact.HomotopyColimit
+import DG.Compact.Thick
 import DG.Compact.Triangulated
 import DG.Graded.Basic
 import DG.Graded.Hom
