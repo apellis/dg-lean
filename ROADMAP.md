@@ -156,6 +156,10 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     triangulated equivalences, additivity over finite filtrations (iterated cones), the
     Euler characteristic of a bounded complex with values in `K₀` of an abelian category
     (comparison with Mathlib's derived category of an abelian category where possible).
+    — done (except the Euler characteristic of a bounded complex): `DG.K0`, `DG.K0.mk`,
+    `DG.K0.lift`, `DG.K0.mk_obj₂`, `DG.K0.mk_eq_of_iso`, `DG.K0.mk_shift_one`,
+    `DG.K0.mk_shift`, `DG.K0.mk_biprod`, `DG.K0.mk_last_eq_add_sum`, `DG.K0.map`,
+    `DG.K0.map_id`, `DG.K0.map_comp`, `DG.K0.mapEquiv` (`DG/K0/Triangulated.lean`).
 5.5 `K₀(A) := K₀(D^c(A))`; functoriality along dg algebra maps (induction preserves compacts);
     invariance under quasi-isomorphisms of dg algebras (from 4.5); for a finite-cell module
     with subquotients `A e_i [n_i]`, `[M] = Σ (-1)^{n_i} [A e_i]`.
