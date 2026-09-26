@@ -177,20 +177,29 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
 3.1 Homotopy between dg module maps (`f - g = d h + h d` with `h` of degree `-1`), the
     null-homotopic maps form an ideal; the homotopy category `H(A) := DGModuleCat A / ~`
     (`CategoryTheory.Quotient`), additive and `R`-linear; `Hom_{H(A)}(M, N) ≅ H⁰(HOM_A(M, N))`.
-    — done (before the quotient category): `DG.DGHomotopy`, `DG.Homotopic`,
+    — done: `DG.HomotopyCategory`, `DG.HomotopyCategory.quotient`,
+    `DG.HomotopyCategory.instLinear`, `DG.HomotopyCategory.homAddEquivCohomology`
+    (`Hom_{H(A)}(M, N) ≅ H⁰(HOM_A(M, N))`), `DG.HomotopyCategory.isZero_quotient_obj_iff`;
+    `DG.DGHomotopy`, `DG.Homotopic`,
     `DG.homotopic_equivalence`, `DG.nullHomotopic`, `DG.comp_mem_nullHomotopic`,
     `DG.quotientNullHomotopicAddEquivCohomology`, `DG.DGHomotopy.cohomology_map_eq`,
     `DG.DGHomotopyEquiv.isQuasiIso_hom`, `DG.IsContractible.subsingleton_cohomology`.
 3.2 Shift `[1]` on `DGModuleCat A` and on `H(A)` (`CategoryTheory.HasShift`, via
     `Mathlib`'s `hasShiftMk`), with `HOM_A(M, N[n]) ≅ HOM_A(M, N)[n]`.
-    — done (on dg modules, not yet categorical): `DG.Shift`, `DG.Shift.instDGModule`,
+    — done (except `HOM_A(M, N[n]) ≅ HOM_A(M, N)[n]`): `DG.DGModuleCat.hasShift`,
+    `DG.HomotopyCategory.hasShift`, `DG.HomotopyCategory.commShiftQuotient`,
+    `DG.DGModuleCat.forgetCommShift` (the shift agrees with Mathlib's on underlying complexes);
+    `DG.Shift`, `DG.Shift.instDGModule`,
     `DG.DGModuleHom.shift`, `DG.Shift.zeroEquiv`, `DG.Shift.addEquiv`.
 3.3 Mapping cone `C(f) = N ⊕ M[1]`, the standard triangle `M → N → C(f) → M[1]`, and the
     pretriangulated structure on `H(A)` **(Mathlib)**: distinguished triangles are those
     isomorphic to standard ones; verify the axioms TR1–TR4 following Mathlib's
     `HomotopyCategory.Pretriangulated`/`Triangulated` files for cochain complexes (the proofs
     are the same with `A`-linearity carried along). `H(A)` is triangulated (octahedral axiom).
-    — done (on dg modules, not yet categorical): `DG.Cone`, `DG.Cone.instDGModule`,
+    — done: `DG.HomotopyCategory.pretriangulated`, `DG.HomotopyCategory.isTriangulated`,
+    `DG.Cone.triangle`, `DG.HomotopyCategory.triangleh_distinguished`,
+    `DG.Cone.rotateHomotopyEquiv`, `DG.Cone.shiftTriangleIso`,
+    `DG.HomotopyCategory.mappingConeCompTriangleh_distinguished`; `DG.Cone`, `DG.Cone.instDGModule`,
     `DG.Cone.inr`, `DG.Cone.fstHom`, `DG.Cone.map`; the cochain-level API ported from
     Mathlib's `MappingCone.lean` with identical signs: `DG.Cone.inl`, `DG.Cone.fst`,
     `DG.Cone.snd`, `DG.Cone.δ_inl`, `DG.Cone.δ_snd`, `DG.Cone.desc`, `DG.Cone.lift`,
@@ -201,6 +210,9 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
 3.4 The forgetful functor `H(A) ⥤ HomotopyCategory (ModuleCat R) (ComplexShape.up ℤ)`
     commutes with shifts and cones, hence is a triangulated functor; `H` is a homological
     functor on `H(A)`.
+    — done: `DG.HomotopyCategory.forget`, `DG.HomotopyCategory.forget_isTriangulated`,
+    `DG.Cone.forgetTriangleIso` (the cone agrees with Mathlib's `mappingCone`),
+    `DG.HomotopyCategory.homologyFunctor_isHomological`.
 3.5 Special modules: K-projective (cofibrant) modules (`Hom_{H(A)}(P, N) = 0` for all acyclic
     `N`; equivalently the lifting property against surjective quasi-isomorphisms; prove the
     equivalence), semi-free modules (union of an exhaustive filtration with subquotients
