@@ -84,8 +84,8 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `DG.GradedTensorProduct.instDGAlgebra`, `DG.GradedTensorProduct.d_tmul`,
     `DG.GradedTensorProduct.includeLeftDGAlgHom`, `DG.GradedTensorProduct.map`,
     `DG.GradedTensorProduct.commDGAlgEquiv`, `DG.GradedTensorProduct.assocDGAlgEquiv`,
-    `DG.GradedTensorProduct.lidDGAlgEquiv`; `DG.DGAlgEquiv`. Open: the `R`-algebra structure on
-    `H(A)`.
+    `DG.GradedTensorProduct.lidDGAlgEquiv`; `DG.DGAlgEquiv`. The `R`-algebra `H(A)`:
+    `DG.Cohomology.galgebra`, `DG.Cohomology.dgAlgebra`, `DG.DGAlgHom.cohomologyAlgHom`.
 2.2 `DGModule A M`: left dg module; right dg modules and bimodules; `DGModuleHom` (degree-`0`
     chain maps) — done (modules, right modules, bimodules, restriction of scalars):
     `DG.DGModule`, `DG.DGModuleHom`, `DG.DGRightModule`, `DG.DGBimodule`,
@@ -96,6 +96,9 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `DG.DGModuleCat.hasCoproducts`, `DG.DGModuleCat.hasProducts` (graded products),
     `DG.DGModuleCat.forget`, `DG.DGModuleCat.forget_faithful`,
     `DG.DGModuleCat.forget_preservesColimitsOfShape_discrete`, `DG.DGSubmodule`;
+    restriction and extension of scalars: `DG.DGModuleCat.restrictScalars`,
+    `DG.DGModuleCat.extendScalars`, `DG.DGModuleCat.extendRestrictScalarsAdj`,
+    `DG.DGModuleCat.restrictScalars_preservesFiniteLimits`;
     the abelian category `DGModuleCat A` **(Mathlib)**: it is `R`-linear,
     abelian, with arbitrary (co)products, and the forgetful functor to
     `CochainComplex (ModuleCat R) ℤ` is exact and faithful. Restriction of scalars along a
