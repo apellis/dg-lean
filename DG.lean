@@ -41,6 +41,7 @@ import DG.Homotopy.CohomologySequence
 import DG.Homotopy.ConeCochain
 import DG.Homotopy.ConeComp
 import DG.Homotopy.Forget
+import DG.Homotopy.ForgetTriangulated
 import DG.Homotopy.Homotopy
 import DG.Homotopy.HomotopyCategory
 import DG.Homotopy.KProjective
