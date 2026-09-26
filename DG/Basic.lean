@@ -19,6 +19,8 @@ namespace DG
 /-- The Koszul sign `(-1)^n` of a degree `n : ℤ`, as a unit of `ℤ`. -/
 abbrev koszulSign (n : ℤ) : ℤˣ := Int.negOnePow n
 
+@[simp] theorem koszulSign_zero : koszulSign 0 = 1 := rfl
+
 theorem koszulSign_add (m n : ℤ) : koszulSign (m + n) = koszulSign m * koszulSign n :=
   Int.negOnePow_add m n
 

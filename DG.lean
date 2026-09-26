@@ -9,7 +9,10 @@ import DG.Compact.HomotopyColimit
 import DG.Compact.Thick
 import DG.Compact.Triangulated
 import DG.Graded.Basic
+import DG.Graded.Commutative
 import DG.Graded.Hom
+import DG.Graded.Opposite
+import DG.Graded.TensorProduct
 import DG.Homotopy.Homotopy
 import DG.K0.Abelian
 import DG.K0.Euler
