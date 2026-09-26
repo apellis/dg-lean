@@ -1,6 +1,6 @@
 import Mathlib.LinearAlgebra.CliffordAlgebra.Contraction
 import Mathlib.LinearAlgebra.ExteriorAlgebra.Grading
-import DG.Graded.Commutative
+import DG.Algebra.Commutative
 import DG.Module.Cohomology
 
 /-!
@@ -25,7 +25,8 @@ complex `K(x₁, …, xₙ)` of the elements `xᵢ ∈ R` (`DG.KoszulComplex.ofE
   (`DG.koszulGrading.isGradedCommStrict`).
 * `DG.KoszulComplex φ`: a type synonym for `ExteriorAlgebra R M` carrying the dg structure,
   with instances `DGAddCommGroup`, `DGRing`, `DGAlgebra R`, and
-  `DG.KoszulComplex.isGradedCommStrict` (strict graded commutativity of the dg algebra).
+  `DG.KoszulComplex.isGradedCommStrict` (strict graded commutativity of the dg algebra), so that
+  it is a commutative dg algebra (`DG.KoszulComplex.isCDGA`).
 * `DG.KoszulComplex.cohomologyZeroAddEquiv`: `H⁰(K(φ)) ≅ R ⧸ φ(M)`; for the Koszul complex of
   elements, `H⁰(K(x₁, …, xₙ)) ≅ R ⧸ (x₁, …, xₙ)`
   (`DG.KoszulComplex.ofElements.cohomologyZeroAddEquiv`).
@@ -381,6 +382,10 @@ instance isGradedCommStrict :
     IsGradedCommStrict (DGAlgebra.gradingSubmodule R (KoszulComplex φ)) where
   mul_comm_of_mem ha hb := IsGradedComm.mul_comm_of_mem (𝒜 := koszulGrading R M) ha hb
   mul_self_of_odd ha hi := IsGradedCommStrict.mul_self_of_odd (𝒜 := koszulGrading R M) ha hi
+
+/-- The Koszul complex is a commutative dg algebra. -/
+instance isCDGA : IsCDGA (KoszulComplex φ) :=
+  IsCDGA.of_isGradedCommStrict R
 
 /-- The Koszul differential is the unique additive map satisfying the graded Leibniz rule, killing
 the scalars and sending `m ∈ M = ⋀¹ M` to `φ m`. -/

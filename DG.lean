@@ -2,9 +2,11 @@ import DG.Algebra.AddEquiv
 import DG.Algebra.Basic
 import DG.Algebra.Category
 import DG.Algebra.Cohomology
+import DG.Algebra.Commutative
 import DG.Algebra.Constructions
 import DG.Algebra.Decompose
 import DG.Algebra.Equiv
+import DG.Algebra.Hochschild
 import DG.Algebra.Hom
 import DG.Algebra.Opposite
 import DG.Algebra.Regrading
@@ -75,6 +77,7 @@ import DG.Homotopy.Triangulated
 import DG.K0.Abelian
 import DG.K0.Euler
 import DG.K0.Triangulated
+import DG.Lie.Basic
 import DG.Module.Basic
 import DG.Module.Cohomology
 import DG.Module.CohomologyDirectSum
