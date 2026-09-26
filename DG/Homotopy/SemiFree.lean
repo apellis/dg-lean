@@ -29,7 +29,7 @@ K-projective.
 ## Main results
 
 * `DG.SemiFreeFiltration.isKProjective`: semi-free dg modules are K-projective [Keller,
-  Prop. 3.1], [BL 10.12.2.3], [Stacks 09KL].
+  Prop. 3.1], [BL 10.12.2.3], [Stacks 09KM].
 * `DG.FiniteCellFiltration.isKProjective`: finite-cell dg modules are K-projective.
 * `DG.Cochain.exists_lift_directSum_shift`, `DG.Cochain.exists_lift_shift_leftCorner`: direct
   sums of shifts of `A`, and shifts of `A e`, are projective as graded modules, relative to
@@ -39,7 +39,7 @@ K-projective.
 
 * [B. Keller, *Deriving DG categories*, Ann. Sci. ÉNS 27 (1994), §3]
 * [J. Bernstein, V. Lunts, *Equivariant sheaves and functors*, LNM 1578 (1994), §10.12]
-* [The Stacks project, Tags 09KK, 09KL]
+* [The Stacks project, Tags 09KK, 09KM]
 * [O. M. Schnürer, *Perfect derived categories of positively graded DG algebras*,
   Appl. Categ. Structures 19 (2011); arXiv:0809.4782v2, §3]
 -/
@@ -368,7 +368,7 @@ noncomputable def gradedSplitting (i : ℕ) :
 
 include S in
 /-- Semi-free dg modules are K-projective [Keller, *Deriving DG categories*, Prop. 3.1 (b)];
-[Bernstein–Lunts 10.12.2.3]; [Stacks 09KL]. The null-homotopy of a morphism to an acyclic module
+[Bernstein–Lunts 10.12.2.3]; [Stacks 09KM]. The null-homotopy of a morphism to an acyclic module
 is constructed on `F i` by induction on `i`, each step extending the previous one along the
 graded-split inclusion `F i → F (i + 1)` (`DG.GradedSplitting.exists_extension`), and the
 compatible family is glued on the union (`DG.Cochain.glue`). -/
