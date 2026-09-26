@@ -271,7 +271,7 @@ open Shift DGModuleCat.Algebra
 variable (R : Type w) {A : Type u} [CommRing R] [Ring A] [DGAddCommGroup A] [Algebra R A]
   [DGRing A] [DGAlgebra R A]
 
-theorem toComplex_d_apply (M : DGModuleCat.{v} A) {i j : ℤ} (h : i + 1 = j)
+theorem toComplex_d_hom_apply (M : DGModuleCat.{v} A) {i j : ℤ} (h : i + 1 = j)
     (x : DGModule.gradingSubmodule R A M i) :
     (((toComplex R M).d i j).hom x).1 = d (x : M) := by
   subst h
@@ -319,9 +319,9 @@ def forgetShiftIso (n : ℤ) (M : DGModuleCat.{v} A) :
     (fun i => (shiftGradingLinearEquiv R M n i).toModuleIso) (by
       rintro i j (rfl : i + 1 = j)
       refine ModuleCat.hom_ext (LinearMap.ext fun x => Subtype.ext ?_)
-      have h1 := toComplex_d_apply R M (show i + n + 1 = i + 1 + n by ring)
+      have h1 := toComplex_d_hom_apply R M (show i + n + 1 = i + 1 + n by ring)
         (shiftGradingLinearEquiv R M n i x)
-      have h2 := toComplex_d_apply R ((shiftFunctor (DGModuleCat.{v} A) n).obj M) rfl x
+      have h2 := toComplex_d_hom_apply R ((shiftFunctor (DGModuleCat.{v} A) n).obj M) rfl x
       change n.negOnePow • (((toComplex R M).d (i + n) (i + 1 + n)).hom
           (shiftGradingLinearEquiv R M n i x)).1 =
         unmk n (((toComplex R ((shiftFunctor (DGModuleCat.{v} A) n).obj M)).d i (i + 1)).hom x).1

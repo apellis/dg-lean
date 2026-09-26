@@ -57,7 +57,7 @@ private theorem Submodule.coe_units_smul {X : Type*} [AddCommGroup X] [Module R 
 theorem DGModuleCat.forget_obj_d_apply (M : DGModuleCat.{v} A) {i j : ℤ} (h : i + 1 = j)
     (x : DGModule.gradingSubmodule R A M i) :
     ((((forget R A).obj M).d i j).hom x).1 = d (x : M) :=
-  toComplex_d_apply R M h x
+  toComplex_d_hom_apply R M h x
 
 theorem DGModuleCat.forget_obj_XIsoOfEq_inv_apply (M : DGModuleCat.{v} A) {i j : ℤ} (h : i = j)
     (x : DGModule.gradingSubmodule R A M j) :
