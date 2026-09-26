@@ -110,11 +110,16 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     (`CategoryTheory.Quotient`), additive and `R`-linear; `Hom_{H(A)}(M, N) ≅ H⁰(HOM_A(M, N))`.
 3.2 Shift `[1]` on `DGModuleCat A` and on `H(A)` (`CategoryTheory.HasShift`, via
     `Mathlib`'s `hasShiftMk`), with `HOM_A(M, N[n]) ≅ HOM_A(M, N)[n]`.
+    — done (on dg modules, not yet categorical): `DG.Shift`, `DG.Shift.instDGModule`,
+    `DG.DGModuleHom.shift`, `DG.Shift.zeroEquiv`, `DG.Shift.addEquiv`.
 3.3 Mapping cone `C(f) = N ⊕ M[1]`, the standard triangle `M → N → C(f) → M[1]`, and the
     pretriangulated structure on `H(A)` **(Mathlib)**: distinguished triangles are those
     isomorphic to standard ones; verify the axioms TR1–TR4 following Mathlib's
     `HomotopyCategory.Pretriangulated`/`Triangulated` files for cochain complexes (the proofs
     are the same with `A`-linearity carried along). `H(A)` is triangulated (octahedral axiom).
+    — done (on dg modules, not yet categorical): `DG.Cone`, `DG.Cone.instDGModule`,
+    `DG.Cone.inr`, `DG.Cone.fst`, `DG.Cone.inl`, `DG.Cone.snd`, `DG.Cone.map`,
+    `DG.Cone.contraction`, `DG.Cone.d_contraction_add_contraction_d`.
 3.4 The forgetful functor `H(A) ⥤ HomotopyCategory (ModuleCat R) (ComplexShape.up ℤ)`
     commutes with shifts and cones, hence is a triangulated functor; `H` is a homological
     functor on `H(A)`.

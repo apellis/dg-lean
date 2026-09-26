@@ -36,10 +36,15 @@ In particular:
   is a left dg `Aᵒᵖ`-module.
 - Tensor product of dg modules over `R`: `d (m ⊗ n) = d m ⊗ n + (-1)^{|m|} m ⊗ d n`;
   `(a ⊗ b) (a' ⊗ b') = (-1)^{|b||a'|} (a a') ⊗ (b b')` on tensor products of dg algebras.
-- Shift: `(M[1])ⁿ = Mⁿ⁺¹`, `d_{M[1]} = -d_M`, and the action is twisted by the Koszul sign,
-  `a •_{M[1]} m = (-1)^{|a|} (a • m)` (this is forced by the Leibniz rule once `d_{M[1]} = -d_M`).
-  Mapping cone of `f : M ⟶ N`: `C(f) = N ⊕ M[1]` with `d = (d_N, f; 0, -d_M)` and the
-  componentwise action.
+- Shift: `(M[n])ᵏ = Mᵏ⁺ⁿ`, `d_{M[n]} = (-1)^n d_M`, and the action is twisted by the Koszul
+  sign, `a •_{M[n]} m = (-1)^{n|a|} (a • m)` (forced by the Leibniz rule once
+  `d_{M[n]} = (-1)^n d_M`). In Lean: `DG.Shift n M`, a type synonym of `M`.
+- Mapping cone of `f : M ⟶ N`: `C(f) = M[1] ⊕ N` with `d (x, y) = (-d_M x, f x + d_N y)` and the
+  componentwise action (`DG.Cone f`, underlying type `Shift 1 M × N`). The summands are
+  ordered as in Mathlib's `CochainComplex.mappingCone` (`X i = F.X (i + 1) ⊞ G.X i`), so that
+  the first and second projections correspond to Mathlib's `mappingCone.fst` and
+  `mappingCone.snd`. The standard triangle is `M → N → C(f) → M[1]` with maps `f`, the
+  inclusion of `N`, and `-` the first projection, as in Mathlib's `mappingCone.triangle`.
 
 **Match Mathlib.** The underlying cochain complex of a dg module is a
 `CochainComplex (ModuleCat R) ℤ`, and the shift and cone above must agree, on underlying
