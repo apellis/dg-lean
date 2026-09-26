@@ -251,7 +251,15 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `d = 0` on `A⁰` (equivalently `d : A⁰ → A¹` vanishes). Basic consequences: the
     degree-`0` idempotents of `A⁰` are cocycles, `A e` is a finite-cell module for each such
     `e`, the truncations `A^{≥ n}` are dg ideals.
-6.2 Schnürer's theorem [Sch, Thm 1.1/Cor. 1.2] over a field: for a positive dg algebra `A`, a
+    — done (except "`A e` is a finite-cell module", which needs 3.5): `DG.IsPositive`
+    (conditions (P1)–(P3) of [Sch, §1]), `DG.IsPositive.degreeZero`, `DG.IsPositive.dgIdempotent`,
+    `DG.IsPositive.degreeZeroDGSubring`, `DG.IsPositive.projZero`, `DG.IsPositive.ker_projZero`,
+    `DG.IsPositive.quotientTruncGEOneEquiv`, `DG.truncGE`, `DG.IsPositive.cohomologyZeroEquiv`,
+    `DG.IsPositive.subsingleton_cohomology_of_neg`.
+6.2 Schnürer's theorem [Sch, Thm. 1, proved as Thms. 13 and 16; numbering of arXiv:0809.4782v2]
+    (Schnürer works over a commutative ring `k`, with right dg modules; left dg modules over
+    `A` are right dg modules over the graded opposite, which is positive when `A` is, so no
+    field hypothesis is needed for this item): for a positive dg algebra `A`, a
     dg module is compact in `D(A)` iff it is isomorphic in `D(A)` to a finite-cell module
     (Schnürer: `D^c(A)` is the thick closure of the modules `A e` with `e` a primitive
     idempotent of `A⁰`, and every object of this thick closure is isomorphic to a finite-cell
