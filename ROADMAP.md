@@ -84,7 +84,15 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
 2.5 Cohomology `H(M)` as a graded `H(A)`-module, functorial; `H` commutes with finite direct
     sums and with arbitrary direct sums; quasi-isomorphisms; the long exact cohomology
     sequence of a short exact sequence of dg modules (reduce to Mathlib's
-    `HomologicalComplex.homologySequence`).
+    `HomologicalComplex.homologySequence`). — done (except arbitrary direct sums and the long
+    exact sequence): `DG.cohomology`, `DG.cohomology.mk`, `DG.cohomology.mkOf`,
+    `DG.cohomology.lift`, `DG.cohomology.map` (`map_id`, `map_comp`, `map_zero`, `map_add`),
+    `DG.DGModuleHom.IsQuasiIso` (`isQuasiIso_id`, `IsQuasiIso.comp`,
+    `IsQuasiIso.of_comp_left`, `IsQuasiIso.of_comp_right`), `DG.Cohomology`
+    (`DG.Cohomology.instDGAddCommGroup`), `DG.cohomology.smulHom`, `DG.Cohomology.gring`,
+    `DG.Cohomology.ring`, `DG.Cohomology.dgRing`, `DG.Cohomology.gmodule`,
+    `DG.Cohomology.module`, `DG.Cohomology.dgModule`, `DG.cohomology.prodAddEquiv`
+    (with `DG.Prod.instDGAddCommGroup`, `DG.Prod.instDGModule`).
 2.6 Comparison with Mathlib's monoidal category: a `DGAlgebra R A` is the same as a monoid
     object `Mon_ (CochainComplex (ModuleCat R) ℤ)` and a dg module is a `Mod_` object;
     equivalences of categories in both directions. Requires the monoidal structure of

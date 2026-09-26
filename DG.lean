@@ -11,7 +11,9 @@ import DG.K0.Abelian
 import DG.K0.Euler
 import DG.K0.Triangulated
 import DG.Module.Basic
+import DG.Module.Cohomology
 import DG.Module.Corner
 import DG.Module.End
 import DG.Module.Hom
+import DG.Module.Prod
 import DG.Module.Right
