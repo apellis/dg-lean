@@ -23,10 +23,12 @@ import DG.Category.Basic
 import DG.Category.Comparison
 import DG.Category.Coproducts
 import DG.Category.Derived.Basic
+import DG.Category.Derived.Comparison
 import DG.Category.Derived.Coproducts
 import DG.Category.Derived.HomotopyCoproducts
 import DG.Category.Derived.Localization
 import DG.Category.Derived.QuasiIso
+import DG.Category.Derived.Restriction
 import DG.Category.Functor
 import DG.Category.Homotopy.Acyclic
 import DG.Category.Homotopy.Comparison
