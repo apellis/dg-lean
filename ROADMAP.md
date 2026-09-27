@@ -201,6 +201,12 @@ D.2 Dg modules over a dg category: the abelian category `DGModuleCat C`, represe
     `DG.CatModule.eval`, `DG.CatModule.representable`, `DG.CatModule.yonedaEquiv`,
     `DG.CatModule.yonedaFullyFaithful`, `DG.CatModule.singleObjEquivalence`,
     `DG.CatModule.weightEquivalence`, `DG.BigradedDGModuleCat.internalShiftToCatModuleIso`.
+    Also: the Hom-complex Yoneda lemma `DG.CatModule.yonedaHOM` (`HOM(C(X, -), M) ≅ M X`); right
+    modules (`CatModule (DGOpposite C)`, `DG.CatModule.ract`), bimodules `DG.CatBimodule`, the tensor
+    product `DG.CatTensorProduct` with `DG.CatTensorProduct.lid` (co-Yoneda) and
+    `DG.CatTensorProduct.singleObjEquiv` (agrees with `⊗_A`), induction along a dg functor
+    `DG.CatModule.induction` with `DG.CatModule.inductionAdjunction` and
+    `DG.CatModule.inductionRepresentableIso`.
 D.3 Tier 3 for dg modules over `C`: Hom complexes, shifts, cones, homotopies, the homotopy
     category, its triangulated structure, compatibility with the one-object case.
     — done: `DG.CatModule.Cochain`, `DG.CatModule.HOM`, `DG.CatModule.DGHomotopy`,
