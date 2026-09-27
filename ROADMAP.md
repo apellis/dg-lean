@@ -446,7 +446,16 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
 ## Tier 8 — Filling out (candidates for upstreaming)
 
 - Commutative dg algebras, dg Lie algebras and the Chevalley–Eilenberg dg algebra **(stretch)**.
+  — done: `DG.IsCDGA` (with `DG.Cohomology.isCDGA`, `DG.GradedTensorProduct.isCDGA`,
+  `DG.KoszulComplex.isCDGA`), `DG.DGLieAlgebra`, `DG.DGLieAlgebra.ofDGAlgebra` (graded commutator),
+  `DG.DGModule.END.dgLieAlgebra`; for an ordinary Lie algebra with trivial coefficients:
+  `DG.ChevalleyEilenberg.ceComplex`, `DG.ChevalleyEilenberg.ceD_ceD`,
+  `DG.ChevalleyEilenberg.ceCohomologyZeroEquiv`, `DG.ChevalleyEilenberg.ceCohomologyOneEquiv`
+  (`H¹ ≅ (𝔤/[𝔤,𝔤])^*`), `DG.ChevalleyEilenberg.CEAlgebra.isCDGA`. Open: graded `𝔤`, coefficients.
 - Hochschild cochain complex of a dg algebra as a dg module; `HH⁰ = Z(A)` for `d = 0`.
+  — done for `d = 0`: `DG.hochschildComplex`, `DG.hochschildDiff_hochschildDiff`,
+  `DG.hochschildCohomologyZeroEquiv` (`HH⁰(A, M)ᵏ ≅` the degree-`k` graded center),
+  `DG.HochschildTotal`. Open: the internal differentials for general dg `A`.
 - The bar construction and the standard semi-free resolution `A ⊗ T(sĀ) ⊗ M`; comparison with
   the resolution of 4.3.
   — done over `ℤ` (unnormalized bar construction): `DG.Bar`, `DG.Bar.instDGModule`,
