@@ -51,7 +51,8 @@ theorem IsQuasiIso.comp {φ : M ⟶ N} {ψ : N ⟶ P} (hφ : IsQuasiIso φ) (hψ
   exact (hψ X n).comp (hφ X n)
 
 theorem IsQuasiIso.of_isIso (φ : M ⟶ N) [IsIso φ] : IsQuasiIso φ := fun X n => by
-  refine Function.bijective_iff_has_inverse.mpr ⟨cohomologyMap (inv φ) X n, fun x => ?_, fun y => ?_⟩
+  refine Function.bijective_iff_has_inverse.mpr
+    ⟨cohomologyMap (inv φ) X n, fun x => ?_, fun y => ?_⟩
   · rw [← cohomologyMap_comp_apply, IsIso.hom_inv_id, cohomologyMap_id, AddMonoidHom.id_apply]
   · rw [← cohomologyMap_comp_apply, IsIso.inv_hom_id, cohomologyMap_id, AddMonoidHom.id_apply]
 
