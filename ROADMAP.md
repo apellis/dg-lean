@@ -203,6 +203,14 @@ D.2 Dg modules over a dg category: the abelian category `DGModuleCat C`, represe
     `DG.CatModule.weightEquivalence`, `DG.BigradedDGModuleCat.internalShiftToCatModuleIso`.
 D.3 Tier 3 for dg modules over `C`: Hom complexes, shifts, cones, homotopies, the homotopy
     category, its triangulated structure, compatibility with the one-object case.
+    — done: `DG.CatModule.Cochain`, `DG.CatModule.HOM`, `DG.CatModule.DGHomotopy`,
+    `DG.CatModule.HomotopyCategory`, `DG.CatModule.HomotopyCategory.homAddEquivCohomology`,
+    `DG.CatModule.hasShift`, `DG.CatModule.cone`, `DG.CatModule.HomotopyCategory.pretriangulated`,
+    `DG.CatModule.HomotopyCategory.isTriangulated`, `DG.CatModule.HomotopyCategory.precomp_isTriangulated`
+    (restriction along a dg functor), `DG.CatModule.HomotopyCategory.eval_isTriangulated`,
+    `DG.CatModule.HomotopyCategory.cohomologyFunctor_isHomological`,
+    `DG.CatModule.HomotopyCategory.singleObjEquivalence` (with `DG.HomotopyCategory A`). Open:
+    `R`-linearity, `HOM(M, N[n]) ≅ HOM(M, N)[n]`.
 D.4 Tier 4 for `C`: acyclic modules, quasi-isomorphisms, the derived category `D(C)`,
     K-projective and semi-free modules (cells are shifts of representable modules), resolutions,
     derived functors along dg functors and bimodules, and Keller's theorem that a
