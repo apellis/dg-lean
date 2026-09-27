@@ -31,6 +31,7 @@ import DG.Category.Homotopy.HomShift
 import DG.Category.Homotopy.Homotopy
 import DG.Category.Homotopy.HomotopyCategory
 import DG.Category.Homotopy.HomotopyShift
+import DG.Category.Homotopy.Pretriangulated
 import DG.Category.Homotopy.Shift
 import DG.Category.Module
 import DG.Category.Opposite

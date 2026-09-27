@@ -366,7 +366,6 @@ variable {C}
 theorem shiftFunctor_obj (n : ℤ) (M : CatModule.{w} C) :
     (shiftFunctor (CatModule.{w} C) n).obj M = shift n M := rfl
 
-@[simp]
 theorem shiftFunctor_map (n : ℤ) {M N : CatModule.{w} C} (φ : M ⟶ N) :
     (shiftFunctor (CatModule.{w} C) n).map φ = shiftMap n φ := rfl
 
