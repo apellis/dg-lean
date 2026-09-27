@@ -22,6 +22,9 @@ import DG.Category.Abelian
 import DG.Category.Basic
 import DG.Category.Comparison
 import DG.Category.Coproducts
+import DG.Category.Derived.Basic
+import DG.Category.Derived.Localization
+import DG.Category.Derived.QuasiIso
 import DG.Category.Functor
 import DG.Category.Homotopy.Acyclic
 import DG.Category.Homotopy.Comparison
