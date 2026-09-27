@@ -30,6 +30,7 @@ import DG.Compact.Generation
 import DG.Compact.HomotopyColimit
 import DG.Compact.Thick
 import DG.Compact.Triangulated
+import DG.Derived.Bar
 import DG.Derived.Basic
 import DG.Derived.Coproducts
 import DG.Derived.LocalizationCoproducts
