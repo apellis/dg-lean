@@ -23,6 +23,9 @@ import DG.Category.Basic
 import DG.Category.Comparison
 import DG.Category.Coproducts
 import DG.Category.Functor
+import DG.Category.Homotopy.Cone
+import DG.Category.Homotopy.ConeCochain
+import DG.Category.Homotopy.ConeComp
 import DG.Category.Homotopy.Hom
 import DG.Category.Homotopy.HomShift
 import DG.Category.Homotopy.Homotopy
