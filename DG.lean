@@ -42,6 +42,11 @@ import DG.Category.Module
 import DG.Category.Opposite
 import DG.Category.SingleObj
 import DG.Category.SubQuotient
+import DG.Category.Tensor.Basic
+import DG.Category.Tensor.Bimodule
+import DG.Category.Tensor.Induction
+import DG.Category.Tensor.RightModule
+import DG.Category.Tensor.SingleObj
 import DG.Category.Weight
 import DG.Category.WeightComparison
 import DG.Category.Yoneda
