@@ -27,6 +27,7 @@ import DG.Category.Homotopy.Comparison
 import DG.Category.Homotopy.Cone
 import DG.Category.Homotopy.ConeCochain
 import DG.Category.Homotopy.ConeComp
+import DG.Category.Homotopy.Evaluation
 import DG.Category.Homotopy.Hom
 import DG.Category.Homotopy.HomShift
 import DG.Category.Homotopy.Homotopy
