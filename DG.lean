@@ -16,6 +16,14 @@ import DG.Bigraded.Cohomology
 import DG.Bigraded.InternalShift
 import DG.Bigraded.ModuleCat
 import DG.Bigraded.Positive
+import DG.Category.Basic
+import DG.Category.Comparison
+import DG.Category.Functor
+import DG.Category.Module
+import DG.Category.Opposite
+import DG.Category.SingleObj
+import DG.Category.Weight
+import DG.Category.Yoneda
 import DG.Compact.Basic
 import DG.Compact.Brown
 import DG.Compact.Generation
