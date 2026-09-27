@@ -28,6 +28,7 @@ import DG.Category.Opposite
 import DG.Category.SingleObj
 import DG.Category.SubQuotient
 import DG.Category.Weight
+import DG.Category.WeightComparison
 import DG.Category.Yoneda
 import DG.Compact.Basic
 import DG.Compact.Brown
