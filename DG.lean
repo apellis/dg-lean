@@ -24,6 +24,8 @@ import DG.Category.Comparison
 import DG.Category.Coproducts
 import DG.Category.Functor
 import DG.Category.Homotopy.Hom
+import DG.Category.Homotopy.Homotopy
+import DG.Category.Homotopy.HomotopyCategory
 import DG.Category.Module
 import DG.Category.Opposite
 import DG.Category.SingleObj
