@@ -79,6 +79,7 @@ import DG.K0.Euler
 import DG.K0.Triangulated
 import DG.Lie.Basic
 import DG.Lie.ChevalleyEilenberg
+import DG.Lie.ChevalleyEilenbergAlgebra
 import DG.Module.Basic
 import DG.Module.Cohomology
 import DG.Module.CohomologyDirectSum

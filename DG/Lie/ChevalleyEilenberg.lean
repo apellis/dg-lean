@@ -30,6 +30,9 @@ differential
   `H⁰(𝔤, R) ≅ R` (`DG.ChevalleyEilenberg.ceCohomologyZeroEquiv`) and
   `H¹(𝔤, R) ≅ (𝔤 / [𝔤, 𝔤])^*` (`DG.ChevalleyEilenberg.ceCohomologyOneEquiv`).
 
+The wedge product and the commutative dg algebra structure on `⨁ₙ Cⁿ(𝔤)` are in
+`DG.Lie.ChevalleyEilenbergAlgebra`.
+
 ## Implementation notes
 
 The differential is first defined on all multilinear cochains (`DG.ChevalleyEilenberg.ceDiff`)
