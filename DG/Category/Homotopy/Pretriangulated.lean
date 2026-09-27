@@ -185,7 +185,8 @@ theorem fst_hom_apply (x : (shift n (cone f)).obj X) :
 
 @[simp]
 theorem snd_hom_apply (x : (shift n (cone f)).obj X) :
-    (snd (shiftMap n f)).app X ((hom f n).app X x) = shift.mk n ((snd f).app X (shift.unmk n x)) := by
+    (snd (shiftMap n f)).app X ((hom f n).app X x) =
+      shift.mk n ((snd f).app X (shift.unmk n x)) := by
   simp [hom, lift_apply]
   rfl
 
