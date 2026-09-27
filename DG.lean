@@ -23,6 +23,7 @@ import DG.Category.Basic
 import DG.Category.Comparison
 import DG.Category.Coproducts
 import DG.Category.Functor
+import DG.Category.Homotopy.Hom
 import DG.Category.Module
 import DG.Category.Opposite
 import DG.Category.SingleObj
