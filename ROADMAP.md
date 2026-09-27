@@ -222,6 +222,13 @@ D.4 Tier 4 for `C`: acyclic modules, quasi-isomorphisms, the derived category `D
     derived functors along dg functors and bimodules, and Keller's theorem that a
     quasi-equivalence of dg categories induces a triangulated equivalence of derived categories
     [Ke, §9].
+    — D.4 partly done: the derived category `DG.CatModule.DerivedCategory C` (triangulated
+    localization at quasi-isomorphisms, `DG.CatModule.DerivedCategory.isIso_Q_map_iff`,
+    `DG.CatModule.DerivedCategory.isZero_Q_obj_iff`, cohomology at each object homological,
+    coproducts preserved by `Q`), `DG.CatModule.DerivedCategory.singleObjEquivalence`
+    (`D(SingleObj A) ≌ D(A)`, triangulated), `DG.CatModule.DerivedCategory.restrict`
+    (triangulated restriction along a dg functor). Open: K-projective and semi-free modules,
+    resolutions, derived induction, Keller's theorem.
 D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C)`, so the
     compact objects are the thick closure of the representables; `K₀(C)`; positive dg
     categories and Schnürer's theorem; the internal shift of tier 7 as the dg autoequivalence of
