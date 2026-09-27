@@ -47,6 +47,8 @@ import DG.Category.Homotopy.Shift
 import DG.Category.Homotopy.Triangulated
 import DG.Category.Module
 import DG.Category.Opposite
+import DG.Category.Resolution.Generator
+import DG.Category.Resolution.KProjective
 import DG.Category.SingleObj
 import DG.Category.SubQuotient
 import DG.Category.Tensor.Basic
