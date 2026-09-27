@@ -464,10 +464,21 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     (`M[n]⟨k⟩ ≅ M⟨k⟩[n]`, no sign), `DG.BigradedDGModuleCat`,
     `DG.BigradedDGModuleCat.internalHasShift`, `DG.BigradedDGModuleCat.internalShiftShiftIso`,
     `DG.cohomology.wgrading`, `DG.cohomology.internalShiftAddEquiv`.
-7.2 Positive bigraded dg algebras: Schnürer's theorem with internal gradings (the same proof;
-    or deduce from 6.2 by forgetting the internal grading and a graded-idempotent argument),
-    `K₀(A) ≅ K₀(A⁰)` as `ℤ[q, q⁻¹]`-modules where `A⁰` is the homological degree-`0` part
-    graded by weight; `K₀(k) ≅ ℤ[q, q⁻¹]` for a field `k` in bidegree `(0,0)`.
+7.2 Positive bigraded dg algebras, in two versions, both to be proved:
+    (a) *graded*: `Aⁿ = 0` for `n < 0`, `d = 0` on `A⁰`, and `A⁰` (the homological degree-`0` part,
+    graded by weight) is graded semisimple (every graded `A⁰`-module is a direct sum of graded
+    simple modules). Obtained from Schnürer's theorem for positive dg categories (D.5) applied to
+    the weight dg category `C_A` of D.1, whose degree-`0` category has semisimple module category
+    exactly when `A⁰` is graded semisimple. Conclusions: compact objects of `D(A)` are the
+    finite-cell modules (cells shifted in both gradings); `K₀(A) ≅ K₀(A⁰)` as `ℤ[q, q⁻¹]`-modules.
+    Here `K₀(A⁰)` need not be free: a graded simple module isomorphic to its shift `⟨d⟩` (e.g. over
+    a graded division ring with a unit of weight `d`) contributes `ℤ[q, q⁻¹]/(q^d - 1)`.
+    (b) *ungraded*: as (a) with `A⁰` semisimple as a ring. Deduced from (a) via "semisimple implies
+    graded semisimple" (the degree-`0` component of a projection onto a graded submodule is a
+    graded projection), with the sharper conclusion that `K₀(A) ≅ K₀(A⁰)` is free over
+    `ℤ[q, q⁻¹]` on the classes of the simple `A⁰`-modules up to shift; `K₀(k) ≅ ℤ[q, q⁻¹]` for a
+    field `k` in bidegree `(0, 0)`. Also: for `A⁰` finite-dimensional over a field the two
+    hypotheses coincide.
 7.3 Graded Morita theory: for a bigraded dg algebra `A` and a degree-`(0,0)` idempotent `e`
     with `d e = 0` such that `A e A = A`, the functors `Ae ⊗_{eAe} -` and `eA ⊗_A -` induce an
     equivalence `D(eAe) ≃ D(A)` compatible with shifts; `K₀(eAe) ≅ K₀(A)`.
