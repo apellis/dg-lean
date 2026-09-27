@@ -93,7 +93,8 @@ theorem DGModule.ground_smul_mem {n : ℤ} (r : R) {m : M} (hm : m ∈ grading n
 variable {R} in
 /-- The differential of a dg module over a dg `R`-algebra is `R`-linear. -/
 theorem d_ground_smul (r : R) (m : M) : d (r • m) = r • d m := by
-  rw [← algebraMap_smul A r m, d_smul (algebraMap_mem_grading R (A := A) r), d_algebraMap, zero_smul,
+  rw [← algebraMap_smul A r m, d_smul (algebraMap_mem_grading R (A := A) r), d_algebraMap,
+    zero_smul,
     zero_add, koszulSign, Int.negOnePow_zero, one_smul, algebraMap_smul]
 
 variable (M)

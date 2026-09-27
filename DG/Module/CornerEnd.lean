@@ -121,7 +121,8 @@ noncomputable def endToCorner (F : DGModule.END A e.LeftCorner) : e.Corner :=
 /-- For a dg idempotent `e` (`e ∈ A⁰`, `e * e = e`, `d e = 0`), the endomorphism dg ring of
 the dg left `A`-module `A e` is the corner dg ring `e A e`: the ring isomorphism sends `F` to
 `e · F`, which on a homogeneous `f` of degree `n` is `f e`
-(`DG.DGIdempotent.endLeftCornerEquiv_of`); it preserves the degrees and the differentials. With the product
+(`DG.DGIdempotent.endLeftCornerEquiv_of`); it preserves the degrees and the differentials. With
+the product
 `f * g = (-1)^{|f||g|} • g ∘ f` of `END` there is no opposite ring: `(f * g) e = f e * g e`.
 The inverse sends `y ∈ e A e` to the right multiplication `x ↦ x * y` on `A e`. -/
 noncomputable def endLeftCornerEquiv : DGModule.END A e.LeftCorner ≃+* e.Corner :=
