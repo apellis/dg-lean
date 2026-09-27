@@ -328,6 +328,10 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     equivalent to Mathlib's `DerivedCategory (ModuleCat R)` as triangulated categories.
     More generally `D(A)` for a graded ring with zero differential vs. the derived category of
     graded modules **(stretch)**.
+    — done (except the graded stretch): `DG.DGModuleCat.cochainComplexEquivalence`,
+    `DG.HomotopyCategory.comparisonEquivalence` (triangulated), `DG.DerivedCategory.comparisonEquivalence`
+    (`D(R) ≌ DerivedCategory (ModuleCat R)`, with `DG.DerivedCategory.comparison_isTriangulated`);
+    `R` in degree `0` via the scoped instances of `DG.DegreeZero`.
 4.7 **(stretch)** dg categories: the definitions of tiers 2–4 for a small dg category `𝒜`
     (Keller's setting), with a dg algebra as the one-object case; the dg category of dg
     modules and its `HOM` complexes; the Yoneda dg functor. This is the natural level of
