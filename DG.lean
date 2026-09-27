@@ -33,6 +33,7 @@ import DG.Category.Homotopy.HomotopyCategory
 import DG.Category.Homotopy.HomotopyShift
 import DG.Category.Homotopy.Pretriangulated
 import DG.Category.Homotopy.Shift
+import DG.Category.Homotopy.Triangulated
 import DG.Category.Module
 import DG.Category.Opposite
 import DG.Category.SingleObj
