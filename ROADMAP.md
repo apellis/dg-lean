@@ -449,6 +449,13 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
 - Hochschild cochain complex of a dg algebra as a dg module; `HH⁰ = Z(A)` for `d = 0`.
 - The bar construction and the standard semi-free resolution `A ⊗ T(sĀ) ⊗ M`; comparison with
   the resolution of 4.3.
+  — done over `ℤ` (unnormalized bar construction): `DG.Bar`, `DG.Bar.instDGModule`,
+  `DG.Bar.isQuasiIso_augmentation` (via the contracting homotopy `DG.Bar.d_homotopy_add_homotopy_d`),
+  `DG.Bar.isKProjective` and `DG.Bar.semiFreeResolution` under the hypothesis that each term
+  `A ⊗ (A[1])^{⊗n} ⊗ M` is K-projective, resp. a direct sum of shifts of `A`,
+  `DG.Bar.exists_dgHomotopyEquiv_semiFreeResolution`. Note: freeness of `A` and `M` as graded groups
+  does not make the filtration by tensor length semi-free when the differentials are nonzero.
+  Open: a general commutative ground ring, the normalized version with `Ā`.
 - Minimal models over a field (`d = 0` on `A^0`, indecomposables) for positive/connected dg
   algebras; uniqueness up to isomorphism.
 - Perfect complexes over a ring and `K₀(D^{perf}(R)) ≅ K₀(R\text{-proj})` (comparison with
