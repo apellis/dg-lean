@@ -493,6 +493,15 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     (`M[n]⟨k⟩ ≅ M⟨k⟩[n]`, no sign), `DG.BigradedDGModuleCat`,
     `DG.BigradedDGModuleCat.internalHasShift`, `DG.BigradedDGModuleCat.internalShiftShiftIso`,
     `DG.cohomology.wgrading`, `DG.cohomology.internalShiftAddEquiv`.
+    — done on `H(C_A)`, `D(C_A)` and `K₀` (via the weight dg category): the internal shift
+    `⟨s⟩` as restriction along `k ↦ k + s`, `DG.CatModule.DerivedCategory.internalShift`
+    (triangulated, `internalShiftAddIso`, `internalShiftEquiv`, `internalShiftShiftIso`,
+    compatible with modules via `toCatModuleCompInternalShiftIso`), preservation of compact
+    objects (`isCompact_internalShift_obj_iff`), and the `ℤ[q, q⁻¹]`-module structure on `K₀` of
+    `H(C_A)`, `D(C_A)` and `D(C_A)^c` with `qⁿ • [M] = [M⟨n⟩]` (`DG.TriangulatedIntAction`,
+    `DerivedCategory.T_smul_mk`, `T_smul_mk_compact`); functoriality of restriction
+    (`DG.CatModule.DerivedCategory.restrictCompIso`, `restrictNatIso`). Coherence of the
+    ℤ-action beyond isomorphism classes is not formalized.
 7.2 Positive bigraded dg algebras, in two versions, both to be proved:
     (a) *graded*: `Aⁿ = 0` for `n < 0`, `d = 0` on `A⁰`, and `A⁰` (the homological degree-`0` part,
     graded by weight) is graded semisimple (every graded `A⁰`-module is a direct sum of graded
