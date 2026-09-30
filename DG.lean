@@ -10,6 +10,7 @@ import DG.Algebra.Hochschild
 import DG.Algebra.Hom
 import DG.Algebra.Opposite
 import DG.Algebra.Regrading
+import DG.Algebra.RegradingDGModuleCat
 import DG.Algebra.RegradingModuleCat
 import DG.Algebra.TensorProduct
 import DG.Basic
