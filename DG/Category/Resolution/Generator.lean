@@ -2,6 +2,7 @@ import DG.Category.Homotopy.Homotopy
 import DG.Category.Homotopy.Shift
 import DG.Category.SubQuotient
 import DG.Category.Yoneda
+import DG.Module.ULift
 
 /-!
 # Generators of dg modules over a dg category
@@ -91,42 +92,6 @@ end Idempotent
 
 end DGCategory
 
-/-! ### Universe lifts -/
-
-section ULift
-
-variable (A : Type w) [AddCommGroup A] [DGAddCommGroup A]
-
-/-- `ULift.down`, as an additive map. -/
-def ULift.downAddHom : ULift.{w'} A →+ A where
-  toFun := ULift.down
-  map_zero' := rfl
-  map_add' _ _ := rfl
-
-/-- `ULift.up`, as an additive map. -/
-def ULift.upAddHom : A →+ ULift.{w'} A where
-  toFun := ULift.up
-  map_zero' := rfl
-  map_add' _ _ := rfl
-
-/-- The dg abelian group `ULift A`, with the grading and differential of `A`. -/
-noncomputable instance ULift.instDGAddCommGroup : DGAddCommGroup (ULift.{w'} A) :=
-  DGAddCommGroup.ofInjective (ULift.downAddHom A) (fun _ _ h => ULift.ext _ _ h)
-    ((ULift.upAddHom A).comp ((d : A →+ A).comp (ULift.downAddHom A))) (fun _ => rfl)
-    fun _ _ => ⟨ULift.up _, rfl⟩
-
-variable {A}
-
-theorem ULift.mem_grading_iff {n : ℤ} {a : ULift.{w'} A} : a ∈ grading n ↔ a.down ∈ grading n :=
-  Iff.rfl
-
-@[simp]
-theorem ULift.d_down (a : ULift.{w'} A) : (d a).down = d a.down := rfl
-
-@[simp]
-theorem ULift.d_up (a : A) : d (ULift.up.{w'} a) = ULift.up (d a) := rfl
-
-end ULift
 
 namespace CatModule
 

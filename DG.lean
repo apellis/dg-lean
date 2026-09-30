@@ -139,6 +139,7 @@ import DG.Homotopy.Localization
 import DG.Homotopy.ModuleCat
 import DG.Homotopy.Pretriangulated
 import DG.Homotopy.Products
+import DG.Homotopy.Regular
 import DG.Homotopy.SemiFree
 import DG.Homotopy.Shift
 import DG.Homotopy.ShiftLinear
@@ -182,6 +183,7 @@ import DG.Module.Sub
 import DG.Module.SubQuotient
 import DG.Module.TensorProduct
 import DG.Module.TensorProductOver
+import DG.Module.ULift
 import DG.Monoidal.Complex
 import DG.Monoidal.ComplexSum
 import DG.Monoidal.ModComparison
