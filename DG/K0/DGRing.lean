@@ -25,7 +25,8 @@ perfect derived category of compact objects of `D(A)` (roadmap 5.5).
   `DG.K0.mk_shift`, `[X⟦n⟧] = (-1)ⁿ [X]`).
 * `DG.DGRing.K0.singleObjEquiv A : K₀(SingleObj A) ≃+ K₀(A)`, sending the representable to `[A]`.
 * `DG.DGRing.K0.map φ : K₀(B) →+ K₀(A)` for a morphism of dg rings `φ : B → A` (derived
-  induction along `SingleObj B ⥤ SingleObj A`), with `DG.DGRing.K0.map_self`: `[B] ↦ [A]`;
+  induction along `SingleObj B ⥤ SingleObj A`), with `DG.DGRing.K0.map_self`: `[B] ↦ [A]`,
+  `DG.DGRing.K0.map_id` and `DG.DGRing.K0.map_comp`;
   `DG.DGRing.K0.mapEquivOfIsQuasiIso`: a quasi-isomorphism induces `K₀(B) ≃+ K₀(A)`.
 
 ## Universes
@@ -211,6 +212,32 @@ theorem mapEquivOfIsQuasiIso_apply (φ : B →ᵈᵍ+* A) (hφ : φ.IsQuasiIso) 
   rfl
 
 end Functoriality
+
+/-- `K₀(id) = id`. -/
+theorem map_id : map (DGRingHom.id : A →ᵈᵍ+* A) = AddMonoidHom.id (K0 A) := by
+  let := CatModule.HasDerivedCategory.small.{u} (SingleObj A)
+  refine AddMonoidHom.ext fun x => ?_
+  change singleObjEquiv A (DGCategory.K0.map (DGRingHom.id : A →ᵈᵍ+* A).singleObjFunctor
+    ((singleObjEquiv A).symm x)) = x
+  have h : DGCategory.K0.map.{u, u} (DGRingHom.id : A →ᵈᵍ+* A).singleObjFunctor =
+      DGCategory.K0.map.{u, u} (𝟭 (SingleObj A)) := rfl
+  rw [h, DGCategory.K0.map_id, AddMonoidHom.id_apply, AddEquiv.apply_symm_apply]
+
+/-- `K₀(ψ ∘ φ) = K₀(ψ) ∘ K₀(φ)`. -/
+theorem map_comp {B : Type u} [Ring B] [DGAddCommGroup B] [DGRing B] [HasDerivedCategory.{w₁, u} B]
+    {A' : Type u} [Ring A'] [DGAddCommGroup A'] [DGRing A'] [HasDerivedCategory.{w₂, u} A']
+    (φ : B →ᵈᵍ+* A) (ψ : A →ᵈᵍ+* A') : map (ψ.comp φ) = (map ψ).comp (map φ) := by
+  let := CatModule.HasDerivedCategory.small.{u} (SingleObj B)
+  let := CatModule.HasDerivedCategory.small.{u} (SingleObj A)
+  let := CatModule.HasDerivedCategory.small.{u} (SingleObj A')
+  refine AddMonoidHom.ext fun x => ?_
+  change singleObjEquiv A' (DGCategory.K0.map (ψ.comp φ).singleObjFunctor
+    ((singleObjEquiv B).symm x)) = singleObjEquiv A' (DGCategory.K0.map ψ.singleObjFunctor
+      ((singleObjEquiv A).symm (singleObjEquiv A (DGCategory.K0.map φ.singleObjFunctor
+        ((singleObjEquiv B).symm x)))))
+  have h : DGCategory.K0.map.{u, u} (ψ.comp φ).singleObjFunctor =
+      DGCategory.K0.map.{u, u} (φ.singleObjFunctor ⋙ ψ.singleObjFunctor) := rfl
+  rw [AddEquiv.symm_apply_apply, h, DGCategory.K0.map_comp, AddMonoidHom.comp_apply]
 
 end K0
 

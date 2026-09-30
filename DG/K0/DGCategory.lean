@@ -1,3 +1,4 @@
+import DG.Category.Derived.InductionComp
 import DG.Category.Derived.Perfect
 
 /-!
@@ -18,7 +19,8 @@ the perfect derived category `D^c(C)` of compact objects of `D(C)` (roadmap D.5)
   of the summand `k × 0` of the representable is not a multiple of `[k × k]`.
 * `DG.DGCategory.K0.map F : K₀(C) →+ K₀(D)` for a dg functor `F : C ⥤ D`, induced by derived
   induction `LF_! : D^c(C) ⥤ D^c(D)`, with `DG.DGCategory.K0.map_representable`:
-  `K₀(F) [C(X, -)] = [D(F X, -)]`.
+  `K₀(F) [C(X, -)] = [D(F X, -)]`, `DG.DGCategory.K0.map_id` and `DG.DGCategory.K0.map_comp`
+  (from `DG.CatModule.DerivedCategory.inductionCompIso`).
 * `DG.DGCategory.K0.mapEquivOfIsQuasiEquivalence`: a quasi-equivalence induces an isomorphism
   `K₀(C) ≃+ K₀(D)` (Keller's theorem, `DG.CatModule.DerivedCategory.kellerEquivalence`).
 
@@ -33,7 +35,7 @@ universe, as for derived induction.
 
 open CategoryTheory Limits Pretriangulated
 
-universe w' w₂ w v v₁ v₂ u u₁ u₂
+universe w' w₂ w₃ w v v₁ v₂ v₃ u u₁ u₂ u₃
 
 set_option backward.isDefEq.respectTransparency false
 
@@ -129,6 +131,35 @@ theorem mapEquivOfIsQuasiEquivalence_apply (hF : IsQuasiEquivalence F)
   rfl
 
 end Functoriality
+
+section MapIdComp
+
+/-- `K₀(𝟭) = 𝟭`. -/
+theorem map_id {C : Type u₁} [Category.{v₁} C] [Preadditive C]
+    [∀ X Y : C, DGAddCommGroup (X ⟶ Y)] [DGCategory C]
+    [CatModule.HasDerivedCategory.{max u₁ v₁ w, max u₁ v₁ w} C] :
+    map.{max u₁ v₁ w, w} (𝟭 C) = AddMonoidHom.id _ := by
+  ext X
+  rw [map_mk, AddMonoidHom.id_apply]
+  exact DG.K0.mk_eq_of_iso_obj ((DerivedCategory.inductionIdIso C).app X.obj)
+
+/-- `K₀(F ⋙ G) = K₀(G) ∘ K₀(F)`. The dg modules over `C`, `D` and `E` take values in the same
+universe, and `D(C)`, `D(D)` have morphisms in that universe. -/
+theorem map_comp {C : Type u₁} [Category.{v₁} C] [Preadditive C]
+    [∀ X Y : C, DGAddCommGroup (X ⟶ Y)] [DGCategory C] {D : Type u₂} [Category.{v₂} D]
+    [Preadditive D] [∀ X Y : D, DGAddCommGroup (X ⟶ Y)] [DGCategory D] {E : Type u₃}
+    [Category.{v₃} E] [Preadditive E] [∀ X Y : E, DGAddCommGroup (X ⟶ Y)] [DGCategory E]
+    (F : C ⥤ D) [F.Additive] [F.IsDGFunctor] (G : D ⥤ E) [G.Additive] [G.IsDGFunctor]
+    [CatModule.HasDerivedCategory.{max u₁ u₂ v₁ v₂ v₃ w, max u₁ u₂ v₁ v₂ v₃ w} C]
+    [CatModule.HasDerivedCategory.{max u₁ u₂ v₁ v₂ v₃ w, max u₁ u₂ v₁ v₂ v₃ w} D]
+    [CatModule.HasDerivedCategory.{w₃, max u₁ u₂ v₁ v₂ v₃ w} E] :
+    map.{w₃, max u₂ v₂ w} (F ⋙ G) =
+      (map.{w₃, max u₁ v₁ w} G).comp (map.{max u₁ u₂ v₁ v₂ v₃ w, max u₂ v₃ w} F) := by
+  ext X
+  rw [map_mk, AddMonoidHom.comp_apply, map_mk, map_mk]
+  exact DG.K0.mk_eq_of_iso_obj ((DerivedCategory.inductionCompIso F G).app X.obj)
+
+end MapIdComp
 
 end K0
 
