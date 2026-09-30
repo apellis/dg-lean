@@ -133,7 +133,7 @@ noncomputable instance : DecidableEq (Cell p) := Classical.decEq _
 
 /-- The free dg module `C(X_c, -)⟦-deg c⟧` (lifted to the universe of `M`) on a cell `c`. -/
 noncomputable abbrev Cell.module (c : Cell p) : CatModule.{max u v w} C :=
-  shift (-c.deg) (ulift.{max u w} (representable c.X))
+  shift (-c.deg) (ulift.{max u v w} (representable c.X))
 
 /-- The free dg module `⨁ c, C(X_c, -)⟦-deg c⟧` on the cells. -/
 noncomputable abbrev cells : CatModule.{max u v w} C :=
@@ -147,7 +147,7 @@ noncomputable def Cell.gen (c : Cell p) : c.module.obj c.X :=
 
 theorem Cell.isCornerGenerator (c : Cell p) :
     IsCornerGenerator c.module (DGCategory.Idempotent.id c.X) (0 - -c.deg) c.gen :=
-  ((isCornerGenerator_representable c.X).ulift.{max u w}).shift (-c.deg)
+  ((isCornerGenerator_representable c.X).ulift.{max u v w}).shift (-c.deg)
 
 omit [DGCategory C] in
 theorem Cell.z_mem' (c : Cell p) : c.z ∈ grading ((0 - -c.deg) + 0) := by

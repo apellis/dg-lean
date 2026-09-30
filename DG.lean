@@ -59,6 +59,7 @@ import DG.Category.Opposite
 import DG.Category.Resolution.Generator
 import DG.Category.Resolution.KProjective
 import DG.Category.Resolution.Resolution
+import DG.Category.Resolution.SemiFree
 import DG.Category.Resolution.SeqColimit
 import DG.Category.SingleObj
 import DG.Category.SubQuotient
