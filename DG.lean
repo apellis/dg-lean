@@ -62,6 +62,7 @@ import DG.Category.Resolution.Lifting
 import DG.Category.Resolution.Resolution
 import DG.Category.Resolution.SemiFree
 import DG.Category.Resolution.SeqColimit
+import DG.Category.Resolution.Uniqueness
 import DG.Category.SingleObj
 import DG.Category.SubQuotient
 import DG.Category.Tensor.Basic
