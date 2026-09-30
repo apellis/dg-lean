@@ -31,7 +31,7 @@ and `DG.CatModule.IsCornerGenerator.isoOfGen`).
 
 open CategoryTheory Limits Pretriangulated
 
-universe w' w'' u
+universe w' w'' v u
 
 set_option backward.isDefEq.respectTransparency false
 
@@ -164,9 +164,10 @@ end DerivedCategory
 
 variable (A) in
 /-- The perfect derived category `D^c(A)` of a dg ring `A`: the full subcategory of compact
-objects of `D(A)` (compactness with respect to coproducts indexed by types in the universe `u`
-of the dg modules). It is a pretriangulated category, closed under direct summands in `D(A)`. -/
-abbrev PerfectDerivedCategory [HasDerivedCategory.{w', u} A] : Type (u + 1) :=
-  (compactSubcategory.{u} (DerivedCategory A)).FullSubcategory
+objects of `D(A)`, for dg modules with values in `Type v` (compactness with respect to
+coproducts indexed by types in `Type v`). It is a pretriangulated category, closed under direct
+summands in `D(A)`. -/
+abbrev PerfectDerivedCategory [HasDerivedCategory.{w', v} A] : Type (max (v + 1) u) :=
+  (compactSubcategory.{v} (DerivedCategory A)).FullSubcategory
 
 end DG

@@ -241,12 +241,17 @@ variable [HasCoproducts.{w} T] [HasCoproducts.{w} T']
 
 namespace K0
 
-/-- An equivalence of pretriangulated categories with coproducts restricts to an equivalence of
-the categories of compact objects, and so induces an isomorphism `K₀(T^c) ≃+ K₀(T'^c)`. -/
-noncomputable def compactMapEquiv (e : T ≌ T') [e.functor.CommShift ℤ] [e.inverse.CommShift ℤ]
-    [e.functor.IsTriangulated] [e.inverse.IsTriangulated] :
+/-- An equivalence of pretriangulated categories with coproducts whose functor is triangulated
+restricts to an equivalence of the categories of compact objects, and so induces an isomorphism
+`K₀(T^c) ≃+ K₀(T'^c)`. (The inverse is given the compatible structure
+`CategoryTheory.Equivalence.commShiftInverse`, for which it is triangulated.) -/
+noncomputable def compactMapEquiv (e : T ≌ T') [e.functor.CommShift ℤ]
+    [e.functor.IsTriangulated] :
     K0 (compactSubcategory.{w} T).FullSubcategory ≃+
       K0 (compactSubcategory.{w} T').FullSubcategory :=
+  letI := e.commShiftInverse ℤ
+  haveI := e.commShift_of_functor ℤ
+  haveI : e.inverse.IsTriangulated := e.toAdjunction.isTriangulated_rightAdjoint
   haveI : e.symm.functor.Additive := inferInstanceAs e.inverse.Additive
   { toFun := mapCompact e.functor fun _ h => h.map_of_equivalence e
     invFun := mapCompact e.inverse fun _ h => h.map_of_equivalence e.symm
@@ -269,8 +274,7 @@ noncomputable def compactMapEquiv (e : T ≌ T') [e.functor.CommShift ℤ] [e.in
     map_add' := map_add _ }
 
 @[simp]
-theorem compactMapEquiv_mk (e : T ≌ T') [e.functor.CommShift ℤ] [e.inverse.CommShift ℤ]
-    [e.functor.IsTriangulated] [e.inverse.IsTriangulated]
+theorem compactMapEquiv_mk (e : T ≌ T') [e.functor.CommShift ℤ] [e.functor.IsTriangulated]
     (X : (compactSubcategory.{w} T).FullSubcategory) :
     compactMapEquiv e (mk X) = mk (⟨e.functor.obj X.obj, X.property.map_of_equivalence e⟩ :
       (compactSubcategory.{w} T').FullSubcategory) :=

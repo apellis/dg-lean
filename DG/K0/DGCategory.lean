@@ -118,12 +118,8 @@ noncomputable def mapEquivOfIsQuasiEquivalence (hF : IsQuasiEquivalence F) :
     K0.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≃+ K0.{w₂, max u₁ v₁ v₂ w} D :=
   letI : (DerivedCategory.kellerEquivalence.{w, w₂} hF).functor.CommShift ℤ :=
     inferInstanceAs ((DerivedCategory.induction.{max u₁ v₁ v₂ w, w₂, w} F).CommShift ℤ)
-  letI : (DerivedCategory.kellerEquivalence.{w, w₂} hF).inverse.CommShift ℤ :=
-    inferInstanceAs ((DerivedCategory.restrict.{max u₁ v₁ v₂ w, w₂, max u₁ v₁ v₂ w} F).CommShift ℤ)
   haveI : (DerivedCategory.kellerEquivalence.{w, w₂} hF).functor.IsTriangulated :=
     inferInstanceAs (DerivedCategory.induction.{max u₁ v₁ v₂ w, w₂, w} F).IsTriangulated
-  haveI : (DerivedCategory.kellerEquivalence.{w, w₂} hF).inverse.IsTriangulated :=
-    inferInstanceAs (DerivedCategory.restrict.{max u₁ v₁ v₂ w, w₂, max u₁ v₁ v₂ w} F).IsTriangulated
   DG.K0.compactMapEquiv (DerivedCategory.kellerEquivalence.{w, w₂} hF)
 
 @[simp]
