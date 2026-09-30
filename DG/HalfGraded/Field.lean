@@ -1,6 +1,7 @@
 import DG.HalfGraded.SuperK0
 import DG.K0.Orthonormal
 import DG.Category.Derived.Compact
+import Mathlib.NumberTheory.Zsqrtd.GaussianInt
 
 /-!
 # Half-graded dg modules over a field
@@ -33,6 +34,11 @@ this gives `C(i, j) = 0` for `i ≠ j` and `C(i, i) = K` in degree `0`.
   `qⁱ [k]`, `0 ≤ i < 2k`, form a `ℤ`-basis (`K0Basis_apply`).
 * `[Π X] = -qᵏ [X]` (`DG.HalfGradedDGRing.Field.mk_parityShiftCompact'`), in particular
   `[Π k] = -qᵏ [k]` (`DG.HalfGradedDGRing.Field.cls_parityShift`).
+* The super Grothendieck group: `DG.HalfGradedDGRing.Field.superK0Equiv :
+  K₀^{super}(D(K)^c) ≃+ ℤ[q, q⁻¹] ⧸ (1 + qᵏ)`, `[k] ↦ 1`, from the comparison theorem
+  `DG.HalfGradedDGRing.superK0cEquiv`; for `k = 2`,
+  `DG.HalfGradedDGRing.GaussianQuot.equivGaussianInt : ℤ[q, q⁻¹] ⧸ (1 + q²) ≃+* ℤ[√-1]` and
+  `DG.HalfGradedDGRing.Field.superK0EquivGaussianInt : K₀^{super}(D(K)^c) ≃+ ℤ[√-1]`.
 
 ## Remarks
 
@@ -860,6 +866,223 @@ theorem K0Basis_apply (i : Fin (2 * k)) :
     Equiv.neg_symm, Equiv.neg_apply]
   change (K0Equiv K k).symm (Pi.single (-i) 1) = _
   rw [AddEquiv.symm_apply_eq, T_smul_cls, zero_sub, ← cls_neg_fin, K0Equiv_obj]
+
+/-! ### The super Grothendieck group over a field -/
+
+variable (k) in
+/-- The ideal `(1 + qᵏ)` of `ℤ[q, q⁻¹]`. -/
+abbrev idealSuper : Ideal (LaurentPolynomial ℤ) := Ideal.span {1 + T (k : ℤ)}
+
+omit [NeZero k] in
+theorem idealPeriod_le_idealSuper : idealPeriod k ≤ idealSuper k := by
+  rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, Ideal.mem_span_singleton]
+  exact ⟨T (k : ℤ) - 1, by rw [show (2 * k : ℤ) = k + k by ring, T_add]; ring⟩
+
+omit [NeZero k] in
+theorem T_neg_add_one_mem : (T (-(k : ℤ)) + 1 : LaurentPolynomial ℤ) ∈ idealSuper k :=
+  Ideal.mem_span_singleton.mpr ⟨T (-(k : ℤ)), by
+    rw [add_mul, one_mul, ← T_add, add_neg_cancel, T_zero, add_comm]⟩
+
+variable (K k) in
+/-- The relations `[Π X] - [X]` in `K₀(D(K)^c)`. -/
+abbrev parityRel : AddSubgroup (K0 (compacts K k).FullSubcategory) :=
+  K0Rel.parityRelations (parityShiftCompact.{u, u} (degreeZero K (k : ℤ)))
+
+omit [NeZero k] in
+theorem smul_mem_parityRel (y : K0 (compacts K k).FullSubcategory) :
+    (T (-(k : ℤ)) + 1 : LaurentPolynomial ℤ) • y ∈ parityRel K k := by
+  induction y using K0.induction_on with
+  | zero => rw [_root_.smul_zero]; exact zero_mem _
+  | mk X =>
+    have : (T (-(k : ℤ)) + 1 : LaurentPolynomial ℤ) • K0.mk X =
+        -(K0.mk (parityShiftCompact.{u, u} (degreeZero K (k : ℤ)) X) - K0.mk X) := by
+      rw [mk_parityShiftCompact, _root_.add_smul, one_smul]; abel
+    rw [this]
+    exact neg_mem (AddSubgroup.subset_closure ⟨X, rfl⟩)
+  | neg x hx => rw [_root_.smul_neg]; exact neg_mem hx
+  | add x y hx hy => rw [_root_.smul_add]; exact add_mem hx hy
+
+variable (K k) in
+/-- The additive map `K₀(D(K)^c) → ℤ[q, q⁻¹] ⧸ (1 + qᵏ)`, `p • [k] ↦ p`. -/
+def toSuperQuot : K0 (compacts K k).FullSubcategory →+ LaurentPolynomial ℤ ⧸ idealSuper k :=
+  (Ideal.Quotient.factor idealPeriod_le_idealSuper).toAddMonoidHom.comp
+    (K0LinearEquiv K k).toAddMonoidHom
+
+theorem toSuperQuot_smul_cls (p : LaurentPolynomial ℤ) :
+    toSuperQuot K k (p • cls K k 0) = Ideal.Quotient.mk (idealSuper k) p := by
+  change Ideal.Quotient.factor idealPeriod_le_idealSuper
+    (K0LinearEquiv K k ((K0LinearEquiv K k).symm (πP k p))) = _
+  rw [LinearEquiv.apply_symm_apply]
+  rfl
+
+theorem exists_eq_smul_cls (x : K0 (compacts K k).FullSubcategory) :
+    ∃ p : LaurentPolynomial ℤ, x = p • cls K k 0 := by
+  obtain ⟨p, hp⟩ := Submodule.Quotient.mk_surjective _ (K0LinearEquiv K k x)
+  exact ⟨p, by rw [← K0LinearEquiv_symm_mk, ← (K0LinearEquiv K k).symm_apply_apply x, ← hp]; rfl⟩
+
+theorem parityRel_le_ker : parityRel K k ≤ (toSuperQuot K k).ker := by
+  refine (AddSubgroup.closure_le _).mpr ?_
+  rintro _ ⟨X, rfl⟩
+  obtain ⟨p, hp⟩ := exists_eq_smul_cls (K0.mk X)
+  have h : K0.mk (parityShiftCompact.{u, u} (degreeZero K (k : ℤ)) X) - K0.mk X =
+      (-((T (-(k : ℤ)) + 1) * p) : LaurentPolynomial ℤ) • cls K k 0 := by
+    rw [mk_parityShiftCompact, hp, _root_.neg_smul, mul_smul, _root_.add_smul, one_smul]; abel
+  rw [SetLike.mem_coe, AddMonoidHom.mem_ker, h, toSuperQuot_smul_cls,
+    Ideal.Quotient.eq_zero_iff_mem]
+  exact neg_mem (Ideal.mul_mem_right _ _ T_neg_add_one_mem)
+
+variable (K k) in
+/-- The additive map `K₀(D(K)^c) ⧸ ([Π X] - [X]) → ℤ[q, q⁻¹] ⧸ (1 + qᵏ)`. -/
+def superToQuot : (K0 (compacts K k).FullSubcategory ⧸ parityRel K k) →+
+    LaurentPolynomial ℤ ⧸ idealSuper k :=
+  QuotientAddGroup.lift _ (toSuperQuot K k) parityRel_le_ker
+
+theorem superToQuot_bijective : Function.Bijective (superToQuot K k) := by
+  constructor
+  · rw [injective_iff_map_eq_zero]
+    intro z hz
+    obtain ⟨x, rfl⟩ := QuotientAddGroup.mk_surjective z
+    obtain ⟨p, rfl⟩ := exists_eq_smul_cls x
+    change toSuperQuot K k (p • cls K k 0) = 0 at hz
+    rw [toSuperQuot_smul_cls, Ideal.Quotient.eq_zero_iff_mem] at hz
+    obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.mp hz
+    rw [QuotientAddGroup.eq_zero_iff]
+    have : c * (1 + T (k : ℤ)) = (T (-(k : ℤ)) + 1) * (c * T (k : ℤ)) := by
+      rw [add_mul, one_mul, mul_comm (T _), mul_assoc, ← T_add, add_neg_cancel, T_zero]; ring
+    rw [this, mul_smul]
+    exact smul_mem_parityRel _
+  · intro q
+    obtain ⟨p, rfl⟩ := Ideal.Quotient.mk_surjective q
+    exact ⟨QuotientAddGroup.mk (p • cls K k 0), toSuperQuot_smul_cls p⟩
+
+variable (K k) in
+/-- **The super Grothendieck group of half-graded dg modules over a field** (roadmap 7.4 (d)):
+`K₀^{super}(D(K)^c) ≅ ℤ[q, q⁻¹] ⧸ (1 + qᵏ)`, with `[k] ↦ 1`. It is obtained from the comparison
+theorem 7.4 (c) (`DG.HalfGradedDGRing.superK0cEquiv`: the super `K₀` is `K₀ ⧸ ([Π X] = [X])`) and
+`K₀(D(K)^c) ≅ ℤ[q, q⁻¹] ⧸ (q²ᵏ - 1)` with `[Π X] = -q^k [X]`. -/
+def superK0Equiv : SuperK0c.{u, u} (degreeZero K (k : ℤ)) ≃+
+    LaurentPolynomial ℤ ⧸ idealSuper k :=
+  (superK0cEquiv.{u, u} (degreeZero K (k : ℤ))).trans
+    (AddEquiv.ofBijective (superToQuot K k) superToQuot_bijective)
+
+theorem superK0Equiv_cls :
+    superK0Equiv K k (K0Rel.mk ⟨obj K k 0, isCompact_obj 0⟩) = 1 := by
+  have := toSuperQuot_smul_cls (K := K) (k := k) 1
+  rw [one_smul, map_one] at this
+  exact this
+
+end Field
+
+/-! ### The Gaussian integers -/
+
+namespace GaussianQuot
+
+open LaurentPolynomial
+
+/-- The unit `i = √-1` of the Gaussian integers. -/
+def unitI : GaussianIntˣ where
+  val := ⟨0, 1⟩
+  inv := ⟨0, -1⟩
+  val_inv := by ext <;> simp
+  inv_val := by ext <;> simp
+
+/-- `ℤ[q, q⁻¹] → ℤ[√-1]`, `q ↦ √-1`. -/
+def evalI : LaurentPolynomial ℤ →+* GaussianInt := eval₂ (Int.castRingHom _) unitI
+
+theorem evalI_C_add (a b : ℤ) : evalI (C a + C b * T 1) = ⟨a, b⟩ := by
+  simp only [evalI, map_add, map_mul, eval₂_T, zpow_one, eq_intCast]
+  ext <;> simp [unitI]
+
+theorem evalI_surjective : Function.Surjective evalI := fun z =>
+  ⟨C z.re + C z.im * T 1, by rw [evalI_C_add]⟩
+
+theorem pow_sub_pow_mem {I : Ideal (LaurentPolynomial ℤ)} {x y : LaurentPolynomial ℤ}
+    (h : x - y ∈ I) (n : ℕ) : x ^ n - y ^ n ∈ I := by
+  obtain ⟨c, hc⟩ := sub_dvd_pow_sub_pow x y n
+  rw [hc]; exact Ideal.mul_mem_right _ _ h
+
+theorem T_two_mul_sub_mem (q : ℤ) :
+    (T (2 * q) - (-1) ^ q.natAbs : LaurentPolynomial ℤ) ∈ Field.idealSuper 2 := by
+  have h₁ : (T 2 - (-1) : LaurentPolynomial ℤ) ∈ Field.idealSuper 2 :=
+    Ideal.subset_span (by rw [sub_neg_eq_add, add_comm]; rfl)
+  have h₂ : (T (-2) - (-1) : LaurentPolynomial ℤ) ∈ Field.idealSuper 2 :=
+    Ideal.mem_span_singleton.mpr ⟨T (-2), by
+      rw [sub_neg_eq_add, add_mul, one_mul, ← T_add]; norm_num [T_zero]⟩
+  obtain ⟨n, rfl | rfl⟩ := Int.eq_nat_or_neg q
+  · have := pow_sub_pow_mem h₁ n
+    rw [T_pow] at this
+    convert this using 2
+    · congr 1; ring
+    · simp
+  · have := pow_sub_pow_mem h₂ n
+    rw [T_pow] at this
+    convert this using 2
+    · congr 1; ring
+    · simp
+
+theorem exists_reduce (p : LaurentPolynomial ℤ) :
+    ∃ a b : ℤ, p - (C a + C b * T 1) ∈ Field.idealSuper 2 := by
+  induction p using LaurentPolynomial.induction_on' with
+  | add p q hp hq =>
+    obtain ⟨a, b, h⟩ := hp
+    obtain ⟨a', b', h'⟩ := hq
+    exact ⟨a + a', b + b', by convert add_mem h h' using 1; simp only [map_add]; ring⟩
+  | C_mul_T n c =>
+    obtain ⟨q, r, hr, rfl⟩ : ∃ q r : ℤ, (r = 0 ∨ r = 1) ∧ n = 2 * q + r :=
+      ⟨n / 2, n % 2, Int.emod_two_eq_zero_or_one n, by
+        rw [add_comm]; exact (Int.emod_add_mul_ediv n 2).symm⟩
+    have hm := Ideal.mul_mem_left (Field.idealSuper 2) (C c * T r) (T_two_mul_sub_mem q)
+    rcases hr with rfl | rfl
+    · refine ⟨c * (-1) ^ q.natAbs, 0, ?_⟩
+      convert hm using 1
+      simp only [add_zero, T_zero, map_zero, zero_mul, mul_one, map_mul, map_pow, map_neg,
+        map_one]
+      ring
+    · refine ⟨0, c * (-1) ^ q.natAbs, ?_⟩
+      convert hm using 1
+      rw [T_add]
+      simp only [map_zero, zero_add, map_mul, map_pow, map_neg, map_one]
+      ring
+
+theorem ker_evalI : RingHom.ker evalI = Field.idealSuper 2 := by
+  apply le_antisymm
+  · intro p hp
+    obtain ⟨a, b, h⟩ := exists_reduce p
+    have hJ : Field.idealSuper 2 ≤ RingHom.ker evalI := by
+      rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, RingHom.mem_ker]
+      simp only [evalI, map_add, map_one, eval₂_T]
+      ext <;> simp [unitI, pow_two]
+    have h' := hJ h
+    rw [RingHom.mem_ker, map_sub, hp, zero_sub, neg_eq_zero, evalI_C_add] at h'
+    have ha : a = 0 := congrArg Zsqrtd.re h'
+    have hb : b = 0 := congrArg Zsqrtd.im h'
+    rw [ha, hb, map_zero, zero_mul, add_zero, sub_zero] at h
+    exact h
+  · rw [Ideal.span_le, Set.singleton_subset_iff, SetLike.mem_coe, RingHom.mem_ker]
+    simp only [evalI, map_add, map_one, eval₂_T]
+    ext <;> simp [unitI, pow_two]
+
+/-- `ℤ[q, q⁻¹] ⧸ (1 + q²) ≅ ℤ[√-1]`, `q ↦ √-1`. -/
+def equivGaussianInt : (LaurentPolynomial ℤ ⧸ Field.idealSuper 2) ≃+* GaussianInt :=
+  (Ideal.quotEquivOfEq ker_evalI.symm).trans
+    (RingHom.quotientKerEquivOfSurjective evalI_surjective)
+
+end GaussianQuot
+
+namespace Field
+
+variable (K : Type u) [Field K] [CatModule.HasDerivedCategory.{u, u} (Cat K 2)]
+
+/-- **For `k = 2`, the super Grothendieck group of half-graded dg modules over a field is the ring
+of Gaussian integers**: `K₀^{super}(D(K)^c) ≅ ℤ[q, q⁻¹] ⧸ (1 + q²) ≅ ℤ[√-1]`, with `[k] ↦ 1`
+and `q ↦ √-1`. -/
+def superK0EquivGaussianInt : SuperK0c.{u, u} (degreeZero K ((2 : ℕ) : ℤ)) ≃+ GaussianInt :=
+  (superK0Equiv K 2).trans GaussianQuot.equivGaussianInt.toAddEquiv
+
+theorem superK0EquivGaussianInt_cls :
+    superK0EquivGaussianInt K (K0Rel.mk ⟨obj K 2 0, isCompact_obj 0⟩) = 1 := by
+  rw [superK0EquivGaussianInt, AddEquiv.trans_apply, superK0Equiv_cls]
+  exact map_one GaussianQuot.equivGaussianInt
 
 end Field
 
