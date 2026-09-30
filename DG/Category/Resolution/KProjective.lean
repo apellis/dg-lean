@@ -1,4 +1,5 @@
 import DG.Category.Coproducts
+import DG.Category.Derived.HomotopyCoproducts
 import DG.Category.Homotopy.Acyclic
 import DG.Category.Homotopy.ConeCochain
 import DG.Category.Resolution.Generator
@@ -21,7 +22,6 @@ category): the free module `A` of rank one is replaced by the representable modu
 * `DG.CatModule.GradedSplitting i p`: a splitting of a sequence `F → G → Q` of dg modules by
   families of additive maps of degree `0` commuting with the action of `C` (not necessarily
   with the differentials).
-* `DG.CatModule.Cochain.directSumDescK`: cochains out of a direct sum.
 * `DG.CatModule.HOM.postcomp P s`: postcomposition with `s : N ⟶ N'` on Hom complexes;
   `DG.CatModule.postcompHomotopy P s`: postcomposition on morphisms up to homotopy.
 
@@ -41,8 +41,9 @@ category): the free module `A` of rank one is replaced by the representable modu
 * `DG.CatModule.GradedSplitting.exists_extension`: null-homotopies extend along a graded-split
   monomorphism whose cokernel admits no non-null-homotopic maps to the target (the inductive
   step for semi-free modules).
-* `DG.CatModule.isQuasiIso_iff_isAcyclic_cone'`: a morphism is a quasi-isomorphism iff its
-  mapping cone is acyclic.
+* `DG.CatModule.IsQuasiIso.isAcyclic_cone`, `DG.CatModule.isQuasiIso_of_isAcyclic_cone`: the
+  two directions of `DG.CatModule.isQuasiIso_iff_isAcyclic_cone`, proved by elementwise
+  computations in the cone.
 * `DG.CatModule.IsKProjective.bijective_cohomology_postcomp`: for K-projective `P`,
   `HOM_C(P, -)` preserves quasi-isomorphisms; `DG.CatModule.IsKProjective.postcompHomotopyEquiv`:
   for a quasi-isomorphism `N ⟶ N'`, `Hom_{H(C)}(P, N) ≃ Hom_{H(C)}(P, N')`.
@@ -284,40 +285,6 @@ variable {J : Type w'} [DecidableEq J] {F : J → CatModule.{max w w'} C}
 
 namespace Cochain
 
-/-- The cochain out of a direct sum with prescribed restrictions `c j` to the summands. -/
-def directSumDescK {n : ℤ} (c : ∀ j, Cochain (F j) N n) : Cochain (directSum F) N n where
-  app X := DirectSum.toAddMonoid fun j => (c j).app X
-  map_mem' {X i x} hx := by
-    classical
-    change DirectSum.toAddMonoid (fun j => (c j).app X) x ∈ _
-    rw [← DirectSum.sum_support_of x, map_sum]
-    refine sum_mem fun j _ => ?_
-    rw [DirectSum.toAddMonoid_of]
-    exact (c j).map_mem (hx j)
-  map_smul' {X Y i f} hf x := by
-    have h : (DirectSum.toAddMonoid fun j => (c j).app Y).comp
-        (DirectSum.map fun j => (F j).act f) =
-        ((koszulSign (n * i) : ℤ) • (N.act f).comp
-          (DirectSum.toAddMonoid fun j => (c j).app X)) :=
-      DirectSum.addHom_ext fun j y => by
-        simp only [AddMonoidHom.comp_apply, DirectSum.map_of, DirectSum.toAddMonoid_of,
-          AddMonoidHom.smul_apply]
-        rw [← Units.smul_def]
-        exact (c j).map_smul hf y
-    rw [Units.smul_def]
-    exact congrArg (fun χ : (⨁ j, (F j).obj X) →+ N.obj Y => χ x) h
-
-@[simp]
-theorem directSumDesc_app_ι {n : ℤ} (c : ∀ j, Cochain (F j) N n) (j : J) {X : C}
-    (x : (F j).obj X) : (directSumDescK c).app X ((directSumι F j).app X x) = (c j).app X x :=
-  show DirectSum.toAddMonoid (fun j => (c j).app X) (DirectSum.of (fun j => (F j).obj X) j x) = _
-    from DirectSum.toAddMonoid_of _ _ _
-
-@[simp]
-theorem directSumDesc_comp_ofHom {n : ℤ} (c : ∀ j, Cochain (F j) N n) (j : J) :
-    (directSumDescK c).comp (ofHom (directSumι F j)) (zero_add n) = c j :=
-  Cochain.ext fun _ x => directSumDesc_app_ι c j x
-
 /-- Two cochains out of a direct sum agreeing on the summands are equal. -/
 theorem directSum_ext {n : ℤ} {c c' : Cochain (directSum F) N n}
     (h : ∀ j X (x : (F j).obj X), c.app X ((directSumι F j).app X x) =
@@ -332,16 +299,9 @@ theorem directSum_ext {n : ℤ} {c c' : Cochain (directSum F) N n}
 end Cochain
 
 /-- A direct sum of K-projective dg modules is K-projective. -/
-theorem IsKProjective.directSum (h : ∀ j, IsKProjective (F j)) : IsKProjective (directSum F) := by
-  intro N hN f
-  choose c hc using fun j => homotopic_zero_iff_exists.mp (h j N hN (directSumι F j ≫ f))
-  refine homotopic_zero_iff_exists.mpr ⟨Cochain.directSumDescK c,
-    Cochain.directSum_ext fun j X x => ?_⟩
-  have h1 := congrArg (fun z : Cochain (F j) N 0 => z.app X x)
-    (δ_ofHom_comp (directSumι F j) (Cochain.directSumDescK c) 0)
-  simp only [Cochain.comp_apply, Cochain.ofHom_apply, Cochain.directSumDesc_comp_ofHom] at h1
-  rw [Cochain.ofHom_apply, ← h1, ← hc j]
-  rfl
+theorem IsKProjective.directSum (h : ∀ j, IsKProjective (F j)) : IsKProjective (directSum F) :=
+  fun N hN _ => Homotopic.of_directSum fun j =>
+    (h j N hN _).trans (Homotopic.of_eq Limits.comp_zero.symm)
 
 end DirectSum
 
@@ -542,11 +502,6 @@ theorem isQuasiIso_of_isAcyclic_cone {s : M ⟶ N} (h : IsAcyclic (cone s)) : Is
       -(cone.snd s).app X q, by simpa using neg_mem ((cone.snd s).map_mem hq), ?_⟩
     rw [d_neg, ← h2]
     abel
-
-/-- A morphism of dg modules over `C` is a quasi-isomorphism iff its mapping cone is
-acyclic. -/
-theorem isQuasiIso_iff_isAcyclic_cone' (s : M ⟶ N) : IsQuasiIso s ↔ IsAcyclic (cone s) :=
-  ⟨fun hs => (IsQuasiIso.isAcyclic_cone hs), isQuasiIso_of_isAcyclic_cone⟩
 
 end QuasiIso
 
