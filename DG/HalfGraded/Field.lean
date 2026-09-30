@@ -23,7 +23,22 @@ this gives `C(i, j) = 0` for `i ≠ j` and `C(i, i) = K` in degree `0`.
 * `DG.HalfGradedDGRing.degreeZero A k`: a ring concentrated in bidegree `(0, 0̄)`.
 * The representable modules `k_r = Q C(r, -)` for `r ∈ Fin (2k)` form an orthonormal generating
   family of the compact objects `D(K)^c` (`DG.HalfGradedDGRing.Field.isOrthonormalGenerating`),
-  hence `K₀(D(K)^c) ≃+ (Fin (2k) → ℤ)`, free on the classes `[k_r]`.
+  hence `K₀(D(K)^c) ≃+ (Fin (2k) → ℤ)`, free on the classes `[k_r]`
+  (`DG.HalfGradedDGRing.Field.K0Equiv`).
+* `K₀(D(K)^c)` is a `ℤ[q, q⁻¹]`-module with `qⁿ • [M] = [M⟨n⟩]` (tier 7.1); here
+  `qˢ • [k_i] = [k_{i - s}]` (`DG.HalfGradedDGRing.Field.T_smul_cls`), `q²ᵏ` acts trivially
+  (`DG.HalfGradedDGRing.Field.T_two_mul_smul`, from `Π Π ≅ 𝟭`), and
+  `DG.HalfGradedDGRing.Field.K0LinearEquiv : K₀(D(K)^c) ≃ₗ[ℤ[q, q⁻¹]] ℤ[q, q⁻¹] ⧸ (q²ᵏ - 1)`,
+  `[k] ↦ 1`, where `k = k_0` is the field itself. `DG.HalfGradedDGRing.Field.K0Basis`: the classes
+  `qⁱ [k]`, `0 ≤ i < 2k`, form a `ℤ`-basis (`K0Basis_apply`).
+* `[Π X] = -qᵏ [X]` (`DG.HalfGradedDGRing.Field.mk_parityShiftCompact'`), in particular
+  `[Π k] = -qᵏ [k]` (`DG.HalfGradedDGRing.Field.cls_parityShift`).
+
+## Remarks
+
+The roadmap states the result for `K₀(D(K))`. The derived category has arbitrary coproducts, so
+its Grothendieck group vanishes (Eilenberg swindle: `X ⊕ ∐ₙ X ≅ ∐ₙ X`); as in item 5.5
+(`K₀(A) := K₀(D^c(A))`), the statement is about the compact objects `D(K)^c`.
 -/
 
 open CategoryTheory Category Limits Pretriangulated DirectSum
@@ -566,6 +581,285 @@ def K0Equiv : K0 (compacts K k).FullSubcategory ≃+ (Fin (2 * k) → ℤ) :=
 theorem K0Equiv_obj (r : Fin (2 * k)) :
     K0Equiv K k (K0.mk ⟨obj K k r, isCompact_obj _⟩) = Pi.single r 1 :=
   (isOrthonormalGenerating K k).K0Equiv_mk_G r
+
+/-! ### The internal shift of the representable modules -/
+
+omit [CatModule.HasDerivedCategory (Cat K k)] [NeZero k] in
+/-- `C(a, b) ≃ C(c, d)` when `b - a = d - c`, the identity on values. -/
+def homTransport {a b c d : ℤ} (h : b - a = d - c) :
+    ((⟨a⟩ : Cat K k) ⟶ ⟨b⟩) ≃+ ((⟨c⟩ : Cat K k) ⟶ ⟨d⟩) where
+  toFun f := ⟨f.1, by rw [show d - c = b - a from h.symm]; exact f.2⟩
+  invFun f := ⟨f.1, by rw [h]; exact f.2⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+  map_add' _ _ := rfl
+
+omit [CatModule.HasDerivedCategory (Cat K k)] [NeZero k] in
+/-- The internal shift of a representable module: `C(i, -)⟨s⟩ ≅ C(i - s, -)`. -/
+def repInternalShiftIso (i s : ℤ) :
+    (internalShiftFunctor (degreeZero K (k : ℤ)) s).obj (rep K k i) ≅ rep K k (i - s) :=
+  isoMk (fun Y =>
+    { toFun := fun x => ULift.up (homTransport (K := K) (k := k)
+        (a := i) (b := Y.as + s) (c := i - s) (d := Y.as) (by ring) x.down)
+      invFun := fun x => ULift.up ((homTransport (K := K) (k := k)
+        (a := i) (b := Y.as + s) (c := i - s) (d := Y.as) (by ring)).symm x.down)
+      left_inv := fun _ => rfl
+      right_inv := fun _ => rfl
+      map_add' := fun _ _ => rfl })
+    Iff.rfl (fun _ => rfl) (fun _ _ => rfl)
+
+variable (K k) in
+/-- `k_i⟨s⟩ ≅ k_{i - s}` in `D(K)`. -/
+def objInternalShiftIso (i s : ℤ) :
+    (CatModule.DerivedCategory.internalShift (degreeZero K (k : ℤ)).Regraded s).obj
+      (obj K k i) ≅ obj K k (i - s) :=
+  (CatModule.DerivedCategory.QCompInternalShiftIso _ s).app (rep K k i) ≪≫
+    Q.mapIso (repInternalShiftIso i s)
+
+omit [NeZero k] in
+/-- In `K₀(D(K)^c)`, `qˢ • [k_i] = [k_{i - s}]`. -/
+theorem T_smul_mk_obj (i s : ℤ) :
+    (LaurentPolynomial.T s : LaurentPolynomial ℤ) •
+        K0.mk (⟨obj K k i, isCompact_obj i⟩ : (compacts K k).FullSubcategory) =
+      K0.mk ⟨obj K k (i - s), isCompact_obj (i - s)⟩ := by
+  rw [CatModule.DerivedCategory.T_smul_mk_compact]
+  exact K0.mk_eq_of_iso ((compacts K k).fullyFaithfulι.preimageIso (objInternalShiftIso K k i s))
+
+/-! ### `K₀(D(K)^c)` as a `ℤ[q, q⁻¹]`-module -/
+
+open LaurentPolynomial
+
+omit [NeZero k] in
+/-- In `K₀(D(K)^c)`, `[Π X] = -q⁻ᵏ • [X]`. -/
+theorem mk_parityShiftCompact (X : (compacts K k).FullSubcategory) :
+    K0.mk (parityShiftCompact.{u, u} (degreeZero K (k : ℤ)) X) =
+      -((T (-(k : ℤ)) : LaurentPolynomial ℤ) • K0.mk X) := by
+  rw [CatModule.DerivedCategory.T_smul_mk_compact, ← K0.mk_shift_one]
+  exact K0.mk_eq_of_iso (shiftObjIso (𝒮 := compacts K k)
+    (((CatModule.DerivedCategory.compactInternalShiftAction _).functor (-(k : ℤ))).obj X) 1)
+
+omit [NeZero k] in
+/-- `q²ᵏ` acts trivially on `K₀(D(K)^c)`: `Π Π ≅ 𝟭` and `[Π X] = -q⁻ᵏ [X]`. -/
+theorem T_two_mul_smul (x : K0 (compacts K k).FullSubcategory) :
+    (T (2 * k : ℤ) : LaurentPolynomial ℤ) • x = x := by
+  have h : ∀ x : K0 (compacts K k).FullSubcategory,
+      (T (-(2 * k : ℤ)) : LaurentPolynomial ℤ) • x = x := by
+    intro x
+    induction x using K0.induction_on with
+    | zero => exact smul_zero _
+    | mk X =>
+      have e := K0.mk_eq_of_iso ((compacts K k).fullyFaithfulι.preimageIso
+        (X := parityShiftCompact.{u, u} (degreeZero K (k : ℤ))
+          (parityShiftCompact.{u, u} (degreeZero K (k : ℤ)) X)) (Y := X)
+        ((parityShiftDIso.{u, u} (degreeZero K (k : ℤ))).app X.obj))
+      rw [mk_parityShiftCompact, mk_parityShiftCompact, _root_.smul_neg, neg_neg, smul_smul,
+        ← T_add] at e
+      rw [show -(2 * k : ℤ) = -(k : ℤ) + -(k : ℤ) by ring, e]
+    | neg x hx => rw [_root_.smul_neg, hx]
+    | add x y hx hy => rw [_root_.smul_add, hx, hy]
+  conv_lhs => rw [← h x, smul_smul, ← T_add, add_neg_cancel, T_zero, one_smul]
+
+omit [NeZero k] in
+theorem T_mul_smul (m : ℤ) (x : K0 (compacts K k).FullSubcategory) :
+    (T (2 * k * m : ℤ) : LaurentPolynomial ℤ) • x = x := by
+  induction m using Int.induction_on generalizing x with
+  | zero => rw [mul_zero, T_zero, one_smul]
+  | succ m ih => rw [mul_add, mul_one, T_add, mul_smul, T_two_mul_smul, ih]
+  | pred m ih =>
+    have := T_two_mul_smul ((T (2 * k * (-(m : ℤ) - 1)) : LaurentPolynomial ℤ) • x)
+    rw [smul_smul, ← T_add, show (2 * k : ℤ) + 2 * k * (-(m : ℤ) - 1) = 2 * k * -(m : ℤ) by ring,
+      ih] at this
+    exact this.symm
+
+variable (K k) in
+/-- The class of `k_i` in `K₀(D(K)^c)`. -/
+abbrev cls (i : ℤ) : K0 (compacts K k).FullSubcategory :=
+  K0.mk (⟨obj K k i, isCompact_obj i⟩ : (compacts K k).FullSubcategory)
+
+omit [NeZero k] in
+theorem T_smul_cls (i s : ℤ) :
+    (T s : LaurentPolynomial ℤ) • cls K k i = cls K k (i - s) :=
+  T_smul_mk_obj i s
+
+omit [NeZero k] in
+/-- `[k_i]` only depends on `i` modulo `2k`. -/
+theorem cls_eq_of_sub_eq {i j m : ℤ} (h : i - j = 2 * k * m) : cls K k i = cls K k j := by
+  rw [← T_mul_smul m (cls K k i), ← h, T_smul_cls, sub_sub_cancel]
+
+omit [NeZero k] in
+/-- The class of the parity shift: `[Π X] = -qᵏ [X]` in `K₀(D(K)^c)`. -/
+theorem mk_parityShiftCompact' (X : (compacts K k).FullSubcategory) :
+    K0.mk (parityShiftCompact.{u, u} (degreeZero K (k : ℤ)) X) =
+      -((T (k : ℤ) : LaurentPolynomial ℤ) • K0.mk X) := by
+  rw [mk_parityShiftCompact]
+  congr 1
+  conv_rhs => rw [← T_mul_smul (-1) (K0.mk X)]
+  rw [smul_smul, ← T_add, show (k : ℤ) + 2 * k * -1 = -k by ring]
+
+omit [NeZero k] in
+/-- `[Π k] = -qᵏ [k]` for the field `k = k_0`. -/
+theorem cls_parityShift :
+    K0.mk (parityShiftCompact.{u, u} (degreeZero K (k : ℤ)) ⟨obj K k 0, isCompact_obj 0⟩) =
+      -((T (k : ℤ) : LaurentPolynomial ℤ) • cls K k 0) :=
+  mk_parityShiftCompact' _
+
+variable (k) in
+/-- The ideal `(q²ᵏ - 1)` of `ℤ[q, q⁻¹]`. -/
+abbrev idealPeriod : Ideal (LaurentPolynomial ℤ) := Ideal.span {T (2 * k : ℤ) - 1}
+
+omit [NeZero k] in
+theorem T_sub_one_dvd (m : ℤ) :
+    (T (2 * k : ℤ) - 1 : LaurentPolynomial ℤ) ∣ T (2 * k * m) - 1 := by
+  have hn : ∀ n : ℕ, (T (2 * k : ℤ) - 1 : LaurentPolynomial ℤ) ∣ T (2 * k * n) - 1 := by
+    intro n
+    have := sub_dvd_pow_sub_pow (T (2 * k : ℤ) : LaurentPolynomial ℤ) 1 n
+    rw [one_pow, T_pow] at this
+    rwa [show (2 * k * n : ℤ) = n * (2 * k) by ring]
+  obtain ⟨n, rfl | rfl⟩ := Int.eq_nat_or_neg m
+  · exact hn n
+  · have h : (T (2 * k * -(n : ℤ)) - 1 : LaurentPolynomial ℤ) =
+        -T (2 * k * -(n : ℤ)) * (T (2 * k * n) - 1) := by
+      rw [mul_sub, neg_mul, ← T_add, show 2 * (k : ℤ) * -(n : ℤ) + 2 * k * n = 0 by ring,
+        T_zero]
+      ring
+    rw [h]
+    exact Dvd.dvd.mul_left (hn n) _
+
+omit [NeZero k] in
+theorem mk_T_eq {a b m : ℤ} (h : a - b = 2 * k * m) :
+    Submodule.Quotient.mk (p := idealPeriod k) (T a : LaurentPolynomial ℤ) =
+      Submodule.Quotient.mk (T b) := by
+  rw [Submodule.Quotient.eq]
+  change _ ∈ Ideal.span _
+  rw [Ideal.mem_span_singleton, show a = b + 2 * k * m by linarith, T_add, ← mul_sub_one]
+  exact Dvd.dvd.mul_left (T_sub_one_dvd m) _
+
+omit [NeZero k] in
+theorem C_smul {M : Type*} [AddCommGroup M] [Module (LaurentPolynomial ℤ) M] (a : ℤ) (x : M) :
+    (C a : LaurentPolynomial ℤ) • x = a • x := by
+  rw [show (C a : LaurentPolynomial ℤ) = a • 1 by
+    rw [zsmul_eq_mul, mul_one]; exact map_intCast C a]
+  rw [smul_assoc, one_smul]
+
+variable (K k) in
+/-- The quotient map `ℤ[q, q⁻¹] → ℤ[q, q⁻¹] ⧸ (q²ᵏ - 1)`. -/
+abbrev πP : LaurentPolynomial ℤ →ₗ[LaurentPolynomial ℤ] LaurentPolynomial ℤ ⧸ idealPeriod k :=
+  (idealPeriod k).mkQ
+
+variable (K k) in
+/-- The additive map `K₀(D(K)^c) → ℤ[q, q⁻¹] ⧸ (q²ᵏ - 1)`, `[k_r] ↦ q⁻ʳ`. -/
+def toQuotAdd : K0 (compacts K k).FullSubcategory →+ LaurentPolynomial ℤ ⧸ idealPeriod k :=
+  AddMonoidHom.mk' (fun x => ∑ r : Fin (2 * k), K0Equiv K k x r • πP k (T (-(r : ℤ))))
+    fun x y => by simp only [map_add, Pi.add_apply, _root_.add_smul, Finset.sum_add_distrib]
+
+theorem toQuotAdd_cls_fin (r : Fin (2 * k)) :
+    toQuotAdd K k (cls K k r) = πP k (T (-(r : ℤ))) := by
+  change ∑ r' : Fin (2 * k), K0Equiv K k (cls K k r) r' • πP k (T (-(r' : ℤ))) = _
+  rw [K0Equiv_obj, Finset.sum_eq_single r (fun b _ hb => by simp [hb]) (by simp)]
+  simp
+
+theorem toQuotAdd_cls (i : ℤ) : toQuotAdd K k (cls K k i) = πP k (T (-i)) := by
+  have hk : (0 : ℤ) < 2 * k := by
+    have := Nat.pos_of_ne_zero (NeZero.ne k); omega
+  let r : Fin (2 * k) := ⟨(i % (2 * k)).toNat, by
+    have := Int.emod_lt_of_pos i hk
+    have := Int.emod_nonneg i hk.ne'
+    omega⟩
+  have hr : ((r : ℕ) : ℤ) = i % (2 * k) := Int.toNat_of_nonneg (Int.emod_nonneg i hk.ne')
+  have hir : i - (r : ℕ) = 2 * k * (i / (2 * k)) := by
+    rw [hr]; have := Int.emod_add_mul_ediv i (2 * k); linarith
+  rw [cls_eq_of_sub_eq hir, toQuotAdd_cls_fin]
+  exact mk_T_eq (m := i / (2 * k)) (by linarith)
+
+theorem toQuotAdd_T_smul (s : ℤ) (x : K0 (compacts K k).FullSubcategory) :
+    toQuotAdd K k ((T s : LaurentPolynomial ℤ) • x) =
+      (T s : LaurentPolynomial ℤ) • toQuotAdd K k x := by
+  obtain ⟨v, rfl⟩ := (K0Equiv K k).symm.surjective x
+  rw [K0Equiv, IsOrthonormalGenerating.K0Equiv_symm_apply, Finset.smul_sum, map_sum, map_sum,
+    Finset.smul_sum]
+  refine Finset.sum_congr rfl fun r _ => ?_
+  rw [smul_comm, map_zsmul, map_zsmul, smul_comm]
+  congr 1
+  change toQuotAdd K k ((T s : LaurentPolynomial ℤ) • cls K k r) = _ • toQuotAdd K k (cls K k r)
+  rw [T_smul_cls, toQuotAdd_cls, toQuotAdd_cls, ← LinearMap.map_smul, smul_eq_mul, ← T_add]
+  congr 2
+  ring
+
+variable (K k) in
+/-- The `ℤ[q, q⁻¹]`-linear map `K₀(D(K)^c) → ℤ[q, q⁻¹] ⧸ (q²ᵏ - 1)`. -/
+def toQuot : K0 (compacts K k).FullSubcategory →ₗ[LaurentPolynomial ℤ]
+    LaurentPolynomial ℤ ⧸ idealPeriod k where
+  toFun := toQuotAdd K k
+  map_add' := map_add _
+  map_smul' p x := by
+    induction p using LaurentPolynomial.induction_on' with
+    | add p q hp hq =>
+      rw [_root_.add_smul, map_add, hp, hq, RingHom.id_apply, RingHom.id_apply,
+        RingHom.id_apply, _root_.add_smul]
+    | C_mul_T n a =>
+      rw [RingHom.id_apply, mul_smul, mul_smul, C_smul, C_smul, map_zsmul, toQuotAdd_T_smul]
+
+variable (K k) in
+/-- The `ℤ[q, q⁻¹]`-linear map `ℤ[q, q⁻¹] ⧸ (q²ᵏ - 1) → K₀(D(K)^c)`, `p ↦ p • [k]`. -/
+def ofQuot : (LaurentPolynomial ℤ ⧸ idealPeriod k) →ₗ[LaurentPolynomial ℤ]
+    K0 (compacts K k).FullSubcategory :=
+  (idealPeriod k).liftQ (LinearMap.toSpanSingleton _ _ (cls K k 0))
+    (Submodule.span_le.mpr (Set.singleton_subset_iff.mpr (LinearMap.mem_ker.mpr (by
+      rw [LinearMap.toSpanSingleton_apply, _root_.sub_smul, one_smul, T_two_mul_smul,
+        sub_self]))))
+
+variable (K k) in
+/-- **`K₀(D(K)^c) ≅ ℤ[q]/(q²ᵏ - 1)`** (roadmap 7.4 (d)) as `ℤ[q, q⁻¹]`-modules, where `q` acts on
+`K₀` by the internal shift `⟨1⟩` (`qⁿ • [M] = [M⟨n⟩]`) and `[k] ↦ 1` for `k = k_0`, the field
+itself. -/
+def K0LinearEquiv : K0 (compacts K k).FullSubcategory ≃ₗ[LaurentPolynomial ℤ]
+    LaurentPolynomial ℤ ⧸ idealPeriod k :=
+  LinearEquiv.ofLinearMap (toQuot K k) (ofQuot K k)
+    (Submodule.linearMap_qext _ (LinearMap.ext_ring (by
+      change toQuotAdd K k ((1 : LaurentPolynomial ℤ) • cls K k 0) = _
+      rw [one_smul, toQuotAdd_cls, neg_zero, T_zero]; rfl)))
+    (by
+      refine LinearMap.ext fun x => ?_
+      obtain ⟨v, rfl⟩ := (K0Equiv K k).symm.surjective x
+      rw [K0Equiv, IsOrthonormalGenerating.K0Equiv_symm_apply, map_sum, map_sum]
+      refine Finset.sum_congr rfl fun r _ => ?_
+      rw [LinearMap.id_apply, map_zsmul]
+      congr 1
+      change ofQuot K k (toQuotAdd K k (cls K k r)) = cls K k r
+      rw [toQuotAdd_cls]
+      change (T (-(r : ℤ)) : LaurentPolynomial ℤ) • cls K k 0 = _
+      rw [T_smul_cls, zero_sub, neg_neg])
+
+theorem K0LinearEquiv_cls (i : ℤ) : K0LinearEquiv K k (cls K k i) = πP k (T (-i)) :=
+  toQuotAdd_cls i
+
+theorem K0LinearEquiv_symm_mk (p : LaurentPolynomial ℤ) :
+    (K0LinearEquiv K k).symm (πP k p) = p • cls K k 0 := rfl
+
+theorem cls_neg_fin (i : Fin (2 * k)) :
+    cls K k (((-i : Fin (2 * k)) : ℕ) : ℤ) = cls K k (-(i : ℤ)) := by
+  have hk : 0 < 2 * k := by have := Nat.pos_of_ne_zero (NeZero.ne k); omega
+  rw [Fin.val_neg']
+  by_cases hi : (i : ℕ) = 0
+  · rw [hi, Nat.sub_zero, Nat.mod_self]
+    simp only [Nat.cast_zero, neg_zero]
+  · rw [Nat.mod_eq_of_lt (by omega)]
+    refine cls_eq_of_sub_eq (m := 1) ?_
+    push_cast [Nat.cast_sub i.2.le]
+    ring
+
+variable (K k) in
+/-- `K₀(D(K)^c)` is free over `ℤ` on the classes `qⁱ [k]`, `0 ≤ i < 2k`. -/
+def K0Basis : Module.Basis (Fin (2 * k)) ℤ (K0 (compacts K k).FullSubcategory) :=
+  ((Pi.basisFun ℤ (Fin (2 * k))).map (K0Equiv K k).symm.toIntLinearEquiv).reindex
+    (Equiv.neg (Fin (2 * k)))
+
+theorem K0Basis_apply (i : Fin (2 * k)) :
+    K0Basis K k i = (T (i : ℤ) : LaurentPolynomial ℤ) • cls K k 0 := by
+  rw [K0Basis, Module.Basis.reindex_apply, Module.Basis.map_apply, Pi.basisFun_apply,
+    Equiv.neg_symm, Equiv.neg_apply]
+  change (K0Equiv K k).symm (Pi.single (-i) 1) = _
+  rw [AddEquiv.symm_apply_eq, T_smul_cls, zero_sub, ← cls_neg_fin, K0Equiv_obj]
 
 end Field
 
