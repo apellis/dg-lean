@@ -152,11 +152,13 @@ import DG.Homotopy.Shift
 import DG.Homotopy.ShiftLinear
 import DG.Homotopy.Triangulated
 import DG.K0.Abelian
+import DG.K0.CellFamily
 import DG.K0.Compact
 import DG.K0.DGCategory
 import DG.K0.DGRing
 import DG.K0.Euler
 import DG.K0.Field
+import DG.K0.Homological
 import DG.K0.LeftCorner
 import DG.K0.PositiveCategory
 import DG.K0.Triangulated
@@ -202,4 +204,5 @@ import DG.Positive.Category
 import DG.Positive.Formality
 import DG.Positive.Idempotent
 import DG.Positive.K0
+import DG.Positive.K0Basis
 import DG.Positive.Schnurer
