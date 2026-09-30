@@ -632,6 +632,16 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
         `j + kε mod 2k`, cycled by `⟨1⟩`); the super `K₀(D(k)) ≅ ℤ[q, q⁻¹]/(1 + qᵏ)`, for `k = 2`
         the Gaussian integers `ℤ[√-1]`; for `k = 2`, `⟨1⟩ ∘ ⟨1⟩` is isomorphic to the translation
         up to an odd natural isomorphism. Also over `ℤ` for complexes of free abelian groups.
+    — (a), (b), (c) done and (d) in part, via the weight dg category of the regraded ring
+    (`DG/HalfGraded/`): `DG.HalfGradedDGRing`, `DG.HalfGradedDGRing.parityShift` and
+    `parityShiftD` (`Π = ⟨-k⟩ ⋙ ⟦1⟧`, `shiftOneIso : ⟦1⟧ ≅ ⟨k⟩ ⋙ Π`, sign conventions of the
+    cone), `internalShiftOneOneOddIso` (`⟨1⟩ ⋙ ⟨1⟩ ≅ ⟦1⟧ ⋙ Π` for `k = 2`); odd morphisms
+    `oddEquiv`, `oddCohomologyEquiv`, `oddDerivedEquiv` (for K-projective sources), `OddIso`;
+    the super Grothendieck group `SuperK0`, `SuperK0c` with the comparison `superK0Equiv`,
+    `superK0cEquiv` (even `K₀` modulo `[Π X] = [X]`, via `DG.K0Rel.equivQuotient`); over a field,
+    `DG.HalfGradedDGRing.Field.K0Equiv : K₀(D(k)^c) ≃+ (Fin (2k) → ℤ)` for all `k > 0`
+    (`DG.IsOrthonormalGenerating.K0Equiv`). Open: the `ℤ[q]/(q^{2k} - 1)`-module identification,
+    `[Π k] = -qᵏ[k]`, super `K₀(D(k)) ≅ ℤ[q, q⁻¹]/(1 + qᵏ)`, the case over `ℤ`.
 
 ## Tier 8 — Filling out (candidates for upstreaming)
 
