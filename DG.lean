@@ -172,3 +172,4 @@ import DG.Monoidal.MonComparison
 import DG.Monoidal.MonObj
 import DG.Positive.Basic
 import DG.Positive.Idempotent
+import DG.Positive.Schnurer
