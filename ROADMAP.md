@@ -258,7 +258,14 @@ D.4 Tier 4 for `C`: acyclic modules, quasi-isomorphisms, the derived category `D
     (`SemiFreeResolution.dgHomotopyEquiv`, `lift`, `homotopic_lift`, `lift_comp`),
     `DG.CatModule.hasLiftingProperty_iff_exists_retract`,
     `DG.CatModule.isKProjective_iff_exists_dgHomotopyEquiv`.
-    Open: derived functors along bimodules.
+    Derived functors along bimodules: `DG.CatBimodule.homFunctor` (`HOM_D(B, -)`),
+    `DG.CatBimodule.tensorHomAdjunction` (`B ⊗_C - ⊣ HOM_D(B, -)` on dg modules),
+    `DG.CatModule.HomotopyCategory.homFunctor` (triangulated), and, for bimodules `B` whose
+    left modules `B(-, Y)` are K-projective, `DG.CatModule.DerivedCategory.derivedTensor`,
+    `DG.CatModule.DerivedCategory.rhom` and `derivedTensorAdjunction` (`⊗^L ⊣ RHOM`, both
+    triangulated, `⊗^L` preserves coproducts), `derivedTensorObjIso`, and
+    `derivedTensorOfFunctorIso` (`D(F-, -) ⊗^L - ≅ LF_!`), `rhomOfFunctorIso`. Open: general
+    bimodules (would need bimodule resolutions, i.e. tensor products of dg categories).
 D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C)`, so the
     compact objects are the thick closure of the representables; `K₀(C)`; positive dg
     categories and Schnürer's theorem; the internal shift of tier 7 as the dg autoequivalence of
@@ -380,6 +387,11 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     isomorphism, triangulated; the derived tensor–Hom adjunction; compatibility with shifts
     and coproducts. Induction `φ^* = A ⊗^L_B -` and restriction `φ_* = RHOM_A(A, -)` (which is
     the underived restriction of scalars) along a `DGAlgHom φ : B → A`, and `φ^* ⊣ φ_*`.
+    — done in the dg-category setting (see D.4) for bimodules `B` with K-projective left
+    modules; for a dg ring map `φ : B → A`: `DG.DGRingHom.derivedInduction`,
+    `DG.DGRingHom.derivedRestriction`, `DG.DGRingHom.derivedInductionAdjunction` (`φ^* ⊣ φ_*`),
+    `DG.DGRingHom.derivedInductionIsoDerivedTensor` (`φ^* ≅ A ⊗^L_B -`). Open: general
+    bimodules; identification of `φ_*` with derived restriction of scalars on `DGModuleCat`.
 4.5 Keller's theorem [Ke, Ex. 6.1], [BL 10.12.5.1]: if `φ : B → A` is a quasi-isomorphism of dg
     algebras, `φ^*` and `φ_*` are mutually inverse triangulated equivalences `D(B) ≃ D(A)`.
     Corollary: for a dg algebra `A`, the following are equivalent: `D(A) ≃ 0`; `H(A) = 0`;
