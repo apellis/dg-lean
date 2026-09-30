@@ -40,7 +40,7 @@ to be an equivalence.
 
 **Remark (the hypothesis).** The condition "the idempotents generate the unit ideal", i.e.
 `𝟙 X = ∑ₖ aₖ ≫ e ≫ bₖ` with arbitrary (not necessarily closed) `aₖ`, `bₖ`, is *not* sufficient;
-see the counterexample in the module docstring of `DG.Derived.Morita`.
+see `DG.Examples.MoritaCounterexample`.
 
 ## Main definitions and results
 

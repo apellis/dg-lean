@@ -100,6 +100,7 @@ import DG.Derived.Resolution
 import DG.Derived.Zero
 import DG.Examples.EndComplex
 import DG.Examples.Koszul
+import DG.Examples.MoritaCounterexample
 import DG.Examples.SemiFree
 import DG.Examples.Truncation
 import DG.Graded.Basic

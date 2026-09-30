@@ -39,8 +39,9 @@ the subcomplex `k x ⊕ k y` along `k z` is a chain map, so `e ∈ Z⁰(A)`, and
 homotopy `h` (`h y = x`) satisfies `d h = e = 1_{eAe}`, so `e A e` is acyclic and `D(e A e) = 0`
 (`DG.DerivedCategory.tfae_isZero`). On the other hand `H⁰(A)` is the ring of endomorphisms of `V`
 up to homotopy, which is `k` (`V ≃ k z`); in particular `d a = 1` has no solution in `A` (apply
-`1 = d a = d_V a + a d_V` to `z`: `z = d_V (a z)` is not a coboundary), so `D(A) ≠ 0`. (This
-counterexample is not formalized.)
+`1 = d a = d_V a + a d_V` to `z`: `z = d_V (a z)` is not a coboundary), so `D(A) ≠ 0`. This is
+formalized, over any nontrivial commutative ring, in `DG.Examples.MoritaCounterexample`
+(`DG.MoritaCounterexample.isEmpty_derivedEquivalence`, `DG.MoritaCounterexample.not_isFullH0`).
 
 *Repair.* The decomposition `1 = ∑ₖ aₖ e bₖ` must be possible with cocycles `aₖ, bₖ ∈ Z⁰(A)` up to
 a coboundary (`DG.DGIdempotent.IsFullH0`); this is the statement proved here. More generally, for
