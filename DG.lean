@@ -22,6 +22,7 @@ import DG.Bigraded.ModuleCat
 import DG.Bigraded.Morita
 import DG.Bigraded.Positive
 import DG.Bigraded.Schnurer
+import DG.Bigraded.SchnurerK0
 import DG.Bigraded.TriangulatedAction
 import DG.Category.Abelian
 import DG.Category.Basic
@@ -157,6 +158,7 @@ import DG.K0.DGRing
 import DG.K0.Euler
 import DG.K0.Field
 import DG.K0.LeftCorner
+import DG.K0.PositiveCategory
 import DG.K0.Triangulated
 import DG.Lie.Basic
 import DG.Lie.ChevalleyEilenberg
