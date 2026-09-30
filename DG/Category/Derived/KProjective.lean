@@ -10,7 +10,8 @@ homotopy category `H(C)` which are left orthogonal to the acyclic modules. By a 
 of Verdier localizations (Mathlib's
 `ObjectProperty.leftOrthogonal.map_bijective_of_isTriangulated`), morphisms out of a K-projective
 module in `H(C)` and in `D(C)` therefore agree. Together with the existence of K-projective
-resolutions (`DG.CatModule.exists_kProjective_resolution`), this shows that the full subcategory of K-projective objects of `H(C)` is equivalent to `D(C)`
+resolutions (`DG.CatModule.exists_kProjective_resolution`), this shows that the full subcategory
+of K-projective objects of `H(C)` is equivalent to `D(C)`
 [Keller, *Deriving DG categories*, §3.1, Cor. 3.1], [Stacks 09KV].
 
 ## Main definitions and results

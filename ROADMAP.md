@@ -243,7 +243,13 @@ D.4 Tier 4 for `C`: acyclic modules, quasi-isomorphisms, the derived category `D
     `DG.CatModule.IsKProjective.of_adjunction`, `DG.CatModule.DerivedCategory.induction`,
     `DG.CatModule.DerivedCategory.inductionAdjunction` (`LF_! ⊣ F^*`),
     `DG.CatModule.DerivedCategory.inductionObjIso` (`LF_! (Q P) ≅ Q (F_! P)` for K-projective `P`).
-    Open: the semi-free filtration of the resolution, Keller's theorem.
+    Keller's theorem: `DG.IsQuasiEquivalence`, `DG.CatModule.DerivedCategory.kellerEquivalence`
+    (`LF_! : D(C) ≌ D(D)` with quasi-inverse `F^*`, both triangulated;
+    `DG.CatModule.DerivedCategory.induction_isTriangulated`), via
+    `DG.CatModule.DerivedCategory.isIso_unit_app` (localizing argument with
+    `compactlyGenerates`) and `DG.CatModule.DerivedCategory.isIso_counit_app`;
+    `DG.CatModule.HasDerivedCategory.small` (a model of `D(C)` with small Hom sets).
+    Open: the semi-free filtration of the resolution, derived functors along bimodules.
 D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C)`, so the
     compact objects are the thick closure of the representables; `K₀(C)`; positive dg
     categories and Schnürer's theorem; the internal shift of tier 7 as the dg autoequivalence of
@@ -366,6 +372,11 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     Corollary: for a dg algebra `A`, the following are equivalent: `D(A) ≃ 0`; `H(A) = 0`;
     there is `x ∈ A` with `d x = 1`. (`H(A) = 0 ⟹ D(A) ≃ 0` by Keller applied to `0 → A`;
     `d x = 1 ⟹ H(A) = 0` by `d(x y) = y - x d y`.)
+    — done: `DG.DGRingHom.derivedEquivalence` (`D(B) ≌ D(A)` for a quasi-isomorphism `B → A`,
+    obtained from Keller's theorem for `SingleObj B ⥤ SingleObj A`,
+    `DG.DGRingHom.isQuasiEquivalence_singleObjFunctor`, and `D(SingleObj A) ≌ D(A)`);
+    `DG.DerivedCategory.tfae_isZero` (the corollary; `d x = 1` makes every dg module acyclic,
+    `DG.IsAcyclic.of_exists_d_eq_one`, so Keller's theorem is not needed there).
 4.6 Comparison with Mathlib **(Mathlib)**: for `A = R` concentrated in degree `0`, `D(A)` is
     equivalent to Mathlib's `DerivedCategory (ModuleCat R)` as triangulated categories.
     More generally `D(A)` for a graded ring with zero differential vs. the derived category of

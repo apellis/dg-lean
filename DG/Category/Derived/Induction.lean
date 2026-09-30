@@ -2,6 +2,7 @@ import DG.Category.Derived.KProjective
 import DG.Category.Derived.Restriction
 import DG.Category.Homotopy.Path
 import DG.Category.Tensor.Induction
+import Mathlib.CategoryTheory.Triangulated.Adjunction
 
 /-!
 # Derived induction along a dg functor
@@ -218,6 +219,19 @@ noncomputable def induction :
 noncomputable def inductionAdjunction : induction F ⊣ restrict F :=
   Adjunction.adjunctionOfEquivLeft _ _
 
+/-- Derived induction commutes with the shifts: the structure induced by the adjunction with
+restriction (Mathlib's `Adjunction.leftAdjointCommShift`). -/
+noncomputable instance induction_commShift : (induction.{w₁, w₂} F).CommShift ℤ :=
+  (inductionAdjunction F).leftAdjointCommShift ℤ
+
+instance inductionAdjunction_commShift : (inductionAdjunction.{w₁, w₂} F).CommShift ℤ :=
+  (inductionAdjunction F).commShift_of_rightAdjoint ℤ
+
+/-- Derived induction is a triangulated functor, as the left adjoint of the triangulated
+restriction functor. -/
+instance induction_isTriangulated : (induction.{w₁, w₂} F).IsTriangulated :=
+  (inductionAdjunction F).isTriangulated_leftAdjoint
+
 /-- The bijection `(Q (F_! P) ⟶ Y) ≃ (Q P ⟶ F^* Y)` given by the universal arrow `unitMap F P`,
 for a K-projective `P`. -/
 noncomputable def unitMapEquiv {P : CatModule.{max u₁ v₁ v₂ w} C} (hP : IsKProjective P)
@@ -226,23 +240,58 @@ noncomputable def unitMapEquiv {P : CatModule.{max u₁ v₁ v₂ w} C} (hP : Is
       ((Q.obj P : DerivedCategory.{w₁, max u₁ v₁ v₂ w} C) ⟶ (restrict F).obj Y) :=
   Equiv.ofBijective _ (bijective_unitMap_comp F P hP Y)
 
-/-- Derived induction of a K-projective module is computed by induction:
-`LF_! (Q P) ≅ Q (F_! P)`. -/
-noncomputable def inductionObjIso {P : CatModule.{max u₁ v₁ v₂ w} C} (hP : IsKProjective P) :
-    Q.obj ((CatModule.induction.{max v₁ w} F).obj P) ≅
+section ObjIso
+
+variable {P : CatModule.{max u₁ v₁ v₂ w} C} (hP : IsKProjective P)
+
+/-- The morphism `Q (F_! P) ⟶ LF_! (Q P)` corresponding to the unit at `Q P`. -/
+noncomputable def inductionObjIsoHom :
+    Q.obj ((CatModule.induction.{max v₁ w} F).obj P) ⟶
       (induction.{w₁, w₂} F).obj (Q.obj P : DerivedCategory.{w₁, max u₁ v₁ v₂ w} C) :=
-  Coyoneda.ext _ _
-    (fun f => ((inductionAdjunction F).homEquiv _ _).symm (unitMapEquiv F hP _ f))
-    (fun f => (unitMapEquiv F hP _).symm ((inductionAdjunction F).homEquiv _ _ f))
-    (fun f => by rw [Equiv.apply_symm_apply, Equiv.symm_apply_apply])
-    (fun f => by rw [Equiv.apply_symm_apply, Equiv.symm_apply_apply]) (fun f g => by
-      have hn : ∀ x,
-          unitMapEquiv F hP _ (x ≫ g) = unitMapEquiv F hP _ x ≫ (restrict F).map g :=
-        fun x => by
-          change unitMap F P ≫ (restrict F).map (x ≫ g) =
-            (unitMap F P ≫ (restrict F).map x) ≫ (restrict F).map g
-          rw [Functor.map_comp, Category.assoc]
-      rw [Equiv.symm_apply_eq, Adjunction.homEquiv_naturality_right, hn, Equiv.apply_symm_apply])
+  (unitMapEquiv F hP _).symm ((inductionAdjunction F).unit.app _)
+
+variable (P) in
+/-- The morphism `LF_! (Q P) ⟶ Q (F_! P)` adjoint to `unitMap F P`. -/
+noncomputable def inductionObjIsoInv :
+    (induction.{w₁, w₂} F).obj (Q.obj P : DerivedCategory.{w₁, max u₁ v₁ v₂ w} C) ⟶
+      Q.obj ((CatModule.induction.{max v₁ w} F).obj P) :=
+  ((inductionAdjunction F).homEquiv _ _).symm (unitMap F P)
+
+theorem unitMap_comp_inductionObjIsoHom :
+    unitMap F P ≫ (restrict F).map (inductionObjIsoHom F hP) =
+      (inductionAdjunction F).unit.app (Q.obj P : DerivedCategory.{w₁, max u₁ v₁ v₂ w} C) :=
+  (unitMapEquiv F hP _).apply_symm_apply _
+
+omit hP in
+theorem unit_comp_inductionObjIsoInv :
+    (inductionAdjunction F).unit.app (Q.obj P : DerivedCategory.{w₁, max u₁ v₁ v₂ w} C) ≫
+      (restrict F).map (inductionObjIsoInv F P) = unitMap F P := by
+  have h := ((inductionAdjunction F).homEquiv _ _).apply_symm_apply (unitMap F P)
+  rwa [Adjunction.homEquiv_unit] at h
+
+/-- Derived induction of a K-projective module is computed by induction:
+`Q (F_! P) ≅ LF_! (Q P)`, compatibly with the units (`unitMap_comp_inductionObjIsoHom`). -/
+noncomputable def inductionObjIso :
+    Q.obj ((CatModule.induction.{max v₁ w} F).obj P) ≅
+      (induction.{w₁, w₂} F).obj (Q.obj P : DerivedCategory.{w₁, max u₁ v₁ v₂ w} C) where
+  hom := inductionObjIsoHom F hP
+  inv := inductionObjIsoInv F P
+  hom_inv_id := by
+    apply (unitMapEquiv F hP _).injective
+    change unitMap F P ≫ (restrict F).map (_ ≫ _) = unitMap F P ≫ (restrict F).map (𝟙 _)
+    rw [Functor.map_comp, ← Category.assoc, unitMap_comp_inductionObjIsoHom,
+      unit_comp_inductionObjIsoInv, CategoryTheory.Functor.map_id, Category.comp_id]
+  inv_hom_id := by
+    apply ((inductionAdjunction F).homEquiv _ _).injective
+    rw [Adjunction.homEquiv_unit, Adjunction.homEquiv_unit, Functor.map_comp, ← Category.assoc,
+      unit_comp_inductionObjIsoInv, unitMap_comp_inductionObjIsoHom,
+      CategoryTheory.Functor.map_id]
+    exact (Category.comp_id _).symm
+
+@[simp]
+theorem inductionObjIso_hom : (inductionObjIso F hP).hom = inductionObjIsoHom F hP := rfl
+
+end ObjIso
 
 end DerivedCategory
 
