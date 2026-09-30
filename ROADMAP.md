@@ -249,7 +249,16 @@ D.4 Tier 4 for `C`: acyclic modules, quasi-isomorphisms, the derived category `D
     `DG.CatModule.DerivedCategory.isIso_unit_app` (localizing argument with
     `compactlyGenerates`) and `DG.CatModule.DerivedCategory.isIso_counit_app`;
     `DG.CatModule.HasDerivedCategory.small` (a model of `D(C)` with small Hom sets).
-    Open: the semi-free filtration of the resolution, derived functors along bimodules.
+    Semi-free modules: `DG.CatModule.SemiFreeFiltration` (cells shifted lifted representables),
+    `DG.CatModule.FiniteCellFiltration` (cells shifted corners `e · C(X, -)`), both K-projective
+    and with the lifting property (`DG.CatModule.hasLiftingProperty_iff`: lifting property ⟺
+    K-projective ∧ graded-projective, the corrected form of 3.5); `Resolution.semiFreeFiltration`,
+    `DG.CatModule.exists_semiFreeResolution`, the bundle `DG.CatModule.SemiFreeResolution` with
+    uniqueness up to homotopy equivalence over `M` and functoriality up to homotopy
+    (`SemiFreeResolution.dgHomotopyEquiv`, `lift`, `homotopic_lift`, `lift_comp`),
+    `DG.CatModule.hasLiftingProperty_iff_exists_retract`,
+    `DG.CatModule.isKProjective_iff_exists_dgHomotopyEquiv`.
+    Open: derived functors along bimodules.
 D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C)`, so the
     compact objects are the thick closure of the representables; `K₀(C)`; positive dg
     categories and Schnürer's theorem; the internal shift of tier 7 as the dg autoequivalence of
