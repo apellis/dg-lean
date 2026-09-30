@@ -1,6 +1,7 @@
 import DG.Algebra.Cohomology
 import DG.Category.Derived.Keller
 import DG.Derived.KProjective
+import DG.Positive.Basic
 
 /-!
 # Formal dg rings
@@ -23,6 +24,10 @@ differential, `DG.Cohomology A`) by a zigzag of quasi-isomorphisms of dg rings (
   `DG.DGRingHom.IsCohomologySection.isQuasiIso`: such an `s` is a quasi-isomorphism, and
   `DG.isFormal_of_isCohomologySection`: then `A` is formal (the formality criterion of
   Roadmap 6.4).
+* `DG.IsPositive.cohomology`: positivity passes to the cohomology ring: if `A` is positive, so
+  is `H(A)`, with `H⁰(A) ≅ A⁰` as rings (`DG.IsPositive.toCohomologyZero`). (Positivity is not
+  invariant under quasi-isomorphisms in general: it is a condition on the dg ring, not on its
+  quasi-isomorphism class.)
 
 ## Universes
 
@@ -195,5 +200,69 @@ theorem isFormal_of_isCohomologySection (s : Cohomology A →ᵈᵍ+* A)
   .symm _ _ (.rel _ _ ⟨s, hs.isQuasiIso⟩)
 
 end Criterion
+
+/-! ### Positivity of the cohomology ring -/
+
+namespace IsPositive
+
+variable {A : Type u} [Ring A] [DGAddCommGroup A] [DGRing A] (hA : IsPositive A)
+include hA
+
+/-- The class `[a] ∈ H⁰(A)` of an element `a ∈ A⁰` of a positive dg ring (a cocycle). -/
+def cocycleZero (a : degreeZeroSubring A) : cocycles A 0 :=
+  ⟨a, mem_cocycles.mpr ⟨a.2, hA.d_eq_zero a.2⟩⟩
+
+/-- For a positive dg ring, `A⁰ → H(A)⁰`, `a ↦ [a]`, as a ring homomorphism. -/
+def toCohomologyZero : degreeZeroSubring A →+* degreeZeroSubring (Cohomology A) where
+  toFun a := ⟨DirectSum.of (fun n => cohomology A n) 0 (cohomology.mk A 0 (hA.cocycleZero a)),
+    Cohomology.of_mem_grading 0 _⟩
+  map_one' := rfl
+  map_mul' a b := Subtype.ext (by
+    change DirectSum.of (fun n => cohomology A n) 0 (cohomology.mk A 0 (hA.cocycleZero (a * b))) =
+      DirectSum.of (fun n => cohomology A n) 0 (cohomology.mk A 0 (hA.cocycleZero a)) *
+        DirectSum.of (fun n => cohomology A n) 0 (cohomology.mk A 0 (hA.cocycleZero b))
+    rw [Cohomology.of_mul_of, cohomology.smulHom_mk_mk]
+    rfl)
+  map_zero' := Subtype.ext (by
+    change DirectSum.of (fun n => cohomology A n) 0 (cohomology.mk A 0 (hA.cocycleZero 0)) = 0
+    rw [show hA.cocycleZero 0 = 0 from rfl, map_zero, map_zero])
+  map_add' a b := Subtype.ext (by
+    change DirectSum.of (fun n => cohomology A n) 0 (cohomology.mk A 0 (hA.cocycleZero (a + b))) =
+      DirectSum.of (fun n => cohomology A n) 0 (cohomology.mk A 0 (hA.cocycleZero a)) +
+        DirectSum.of (fun n => cohomology A n) 0 (cohomology.mk A 0 (hA.cocycleZero b))
+    rw [show hA.cocycleZero (a + b) = hA.cocycleZero a + hA.cocycleZero b from rfl, map_add,
+      map_add])
+
+theorem toCohomologyZero_bijective : Function.Bijective hA.toCohomologyZero := by
+  constructor
+  · intro a b hab
+    have h : cohomology.mk A 0 (hA.cocycleZero a) = cohomology.mk A 0 (hA.cocycleZero b) :=
+      DirectSum.of_injective (β := fun n => cohomology A n) 0 (congrArg Subtype.val hab)
+    have h' := congrArg (fun x => (hA.cohomologyZeroEquiv x : A)) h
+    simp only [coe_cohomologyZeroEquiv_mk] at h'
+    exact Subtype.ext h'
+  · rintro ⟨x, hx⟩
+    obtain ⟨y, rfl⟩ := Cohomology.mem_grading_iff.mp hx
+    refine ⟨⟨hA.cohomologyZeroEquiv y, (hA.cohomologyZeroEquiv y).2⟩, Subtype.ext ?_⟩
+    change DirectSum.of (fun n => cohomology A n) 0 _ = DirectSum.of (fun n => cohomology A n) 0 y
+    congr 1
+    conv_rhs => rw [← hA.cohomologyZeroEquiv.symm_apply_apply y]
+    rfl
+
+/-- The cohomology ring `H(A)` (with zero differential) of a positive dg ring is positive:
+`Hⁿ(A) = 0` for `n < 0`, and `H⁰(A) ≅ A⁰` is semisimple. -/
+theorem cohomology : IsPositive (Cohomology A) where
+  grading_eq_bot n hn := by
+    have := hA.subsingleton_cohomology_of_neg hn
+    rw [eq_bot_iff]
+    rintro _ ⟨y, rfl⟩
+    rw [Subsingleton.elim y 0, map_zero]
+    exact zero_mem _
+  isSemisimple :=
+    haveI := hA.isSemisimple
+    (RingEquiv.ofBijective _ hA.toCohomologyZero_bijective).isSemisimpleRing
+  d_eq_zero_of_mem_zero _ _ := rfl
+
+end IsPositive
 
 end DG
