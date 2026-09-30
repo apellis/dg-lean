@@ -26,14 +26,28 @@ The hypothesis holds when `A e A = A` and `A` is non-negatively graded with `d (
 instance a positive dg ring in the sense of Schnürer), since the degree-`0` projection `A → A⁰` is
 then multiplicative (`DG.DGIdempotent.isFullH0_of_one_mem_span`).
 
-## The literal statement with `A e A = A` is false
+## Roadmap 7.3: the literal statement is false; counterexample and repair
 
-The condition `A e A = A` on the underlying ring alone does *not* suffice: for
-`V = k x ⊕ k y ⊕ k z` over a field with `|x| = |z| = 0`, `|y| = 1`, `d x = y`, the dg algebra
-`A = END_k(V)` is `M₃(k)` as a ring, so the projection `e` onto the subcomplex `k x ⊕ k y`
-satisfies `A e A = A`; but `e A e = END(k x ⊕ k y)` is acyclic, so `D(e A e) = 0`, while
-`H⁰(A) = k`, so `D(A) ≠ 0` (`DG.Examples.MoritaCounterexample`). The writing
-`1 = ∑ₖ aₖ e bₖ` must be possible with cocycles `aₖ`, `bₖ` up to a coboundary.
+*Literal statement.* For a dg algebra `A` and a degree-`0` idempotent `e` with `d e = 0` such that
+`A e A = A`, the functors `A e ⊗_{eAe} -` and `e A ⊗_A -` induce `D(e A e) ≃ D(A)`.
+
+*Counterexample.* Over a field `k`, let `V = k x ⊕ k y ⊕ k z` with `|x| = |z| = 0`, `|y| = 1`,
+`d x = y`, `d y = d z = 0`, and `A = END_k(V)`, which is `M₃(k)` as a ring. The projection `e` onto
+the subcomplex `k x ⊕ k y` along `k z` is a chain map, so `e ∈ Z⁰(A)`, and `A e A = A` since
+`M₃(k)` is simple (explicitly `E_{zz} = E_{zx} e E_{xz}`; here `E_{xz}` is not a cocycle). But
+`e A e = END(k x ⊕ k y)` is the endomorphism dg algebra of a contractible complex: the contracting
+homotopy `h` (`h y = x`) satisfies `d h = e = 1_{eAe}`, so `e A e` is acyclic and `D(e A e) = 0`
+(`DG.DerivedCategory.tfae_isZero`). On the other hand `H⁰(A)` is the ring of endomorphisms of `V`
+up to homotopy, which is `k` (`V ≃ k z`); in particular `d a = 1` has no solution in `A` (apply
+`1 = d a = d_V a + a d_V` to `z`: `z = d_V (a z)` is not a coboundary), so `D(A) ≠ 0`. (This
+counterexample is not formalized.)
+
+*Repair.* The decomposition `1 = ∑ₖ aₖ e bₖ` must be possible with cocycles `aₖ, bₖ ∈ Z⁰(A)` up to
+a coboundary (`DG.DGIdempotent.IsFullH0`); this is the statement proved here. More generally, for
+a family `P` of idempotents in a dg category, `D(P.Corner) ≌ D(C)` holds as soon as restriction
+along the embedding `P.inr` of the corner category reflects acyclicity
+(`DG.IdempotentFamily.moritaEquivalenceOfReflects`), and this condition is equivalent to `P.inr^*`
+being an equivalence (`DG.CatModule.DerivedCategory.restrict_isEquivalence_iff`).
 
 ## Main definitions and results
 
