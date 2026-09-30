@@ -26,9 +26,14 @@ an equivalence of triangulated categories, with quasi-inverse the restriction `F
   every `Y`, since `Y ≅ F X` in `H⁰(D)` makes `N(Y)` and `N(F X)` homotopy equivalent. By the
   triangle identity `F^*` of the counit is an isomorphism, hence so is the counit.
 
+The first step only uses that `F` is quasi-fully faithful (`DG.IsQuasiFullyFaithful F`), and the
+second only that restriction along `F` reflects acyclicity; under these two hypotheses `LF_!` is
+still an equivalence (`DG.CatModule.DerivedCategory.inductionEquivalence`). This is used for
+Morita theory (`DG.Category.Derived.Morita`).
+
 ## Main definitions and results
 
-* `DG.IsQuasiEquivalence F`.
+* `DG.IsQuasiFullyFaithful F`, `DG.IsQuasiEquivalence F`.
 * `DG.CatModule.isAcyclic_of_isAcyclic_precomp`: restriction along a functor which is
   essentially surjective on `H⁰` reflects acyclicity.
 * `DG.CatTensorProduct.ridULift`, `DG.CatModule.inductionULiftRepresentableIso`: the co-Yoneda
@@ -38,6 +43,8 @@ an equivalence of triangulated categories, with quasi-inverse the restriction `F
 * `DG.CatModule.DerivedCategory.restrict_preservesCoproducts`,
   `DG.CatModule.DerivedCategory.isLocalizing_unitIsIso`,
   `DG.CatModule.DerivedCategory.isIso_unit_app`, `DG.CatModule.DerivedCategory.isIso_counit_app`.
+* `DG.CatModule.DerivedCategory.inductionEquivalence : D(C) ≌ D(D)` for `F` quasi-fully faithful
+  with restriction reflecting acyclicity.
 * `DG.CatModule.DerivedCategory.kellerEquivalence : D(C) ≌ D(D)` (functor `LF_!`, inverse `F^*`),
   `DG.CatModule.DerivedCategory.induction_isEquivalence`,
   `DG.CatModule.DerivedCategory.restrict_isEquivalence`.
@@ -66,14 +73,18 @@ variable {C : Type u₁} [Category.{v₁} C] [Preadditive C] [∀ X Y : C, DGAdd
   [DGCategory C] {D : Type u₂} [Category.{v₂} D] [Preadditive D]
   [∀ X Y : D, DGAddCommGroup (X ⟶ Y)] [DGCategory D] (F : C ⥤ D) [F.Additive] [F.IsDGFunctor]
 
+/-- A dg functor `F : C ⥤ D` is *quasi-fully faithful* if the maps of Hom complexes
+`C(X, X') → D(F X, F X')` are quasi-isomorphisms. -/
+structure IsQuasiFullyFaithful : Prop where
+  bijective_cohomology (X X' : C) (n : ℤ) :
+    Function.Bijective (cohomology.mapAddMonoidHom (F.mapAddHom (X := X) (Y := X'))
+      (fun h => F.map_mem_grading h) (fun f => F.map_d f) n)
+
 /-- A dg functor `F : C ⥤ D` is a *quasi-equivalence* if the maps of Hom complexes
 `C(X, X') → D(F X, F X')` are quasi-isomorphisms, and every object `Y` of `D` is isomorphic in
 `H⁰(D)` to an object `F X`: there are cocycles `a : F X ⟶ Y`, `b : Y ⟶ F X` of degree `0` with
 `a ≫ b - 𝟙` and `b ≫ a - 𝟙` coboundaries. -/
-structure IsQuasiEquivalence : Prop where
-  bijective_cohomology (X X' : C) (n : ℤ) :
-    Function.Bijective (cohomology.mapAddMonoidHom (F.mapAddHom (X := X) (Y := X'))
-      (fun h => F.map_mem_grading h) (fun f => F.map_d f) n)
+structure IsQuasiEquivalence : Prop extends IsQuasiFullyFaithful F where
   exists_iso (Y : D) : ∃ (X : C) (a : F.obj X ⟶ Y) (b : Y ⟶ F.obj X),
     a ∈ cocycles (F.obj X ⟶ Y) 0 ∧ b ∈ cocycles (Y ⟶ F.obj X) 0 ∧
       a ≫ b - 𝟙 (F.obj X) ∈ coboundaries (F.obj X ⟶ F.obj X) 0 ∧
@@ -240,7 +251,7 @@ noncomputable def representableMapULift (X : C) :
   map_smul' f h := ULift.ext _ _ (F.map_comp h.down f)
 
 /-- For a quasi-fully faithful dg functor, `C(X, -) ⟶ F^* D(F X, -)` is a quasi-isomorphism. -/
-theorem isQuasiIso_representableMapULift (hF : IsQuasiEquivalence F) (X : C) :
+theorem isQuasiIso_representableMapULift (hF : IsQuasiFullyFaithful F) (X : C) :
     IsQuasiIso (representableMapULift.{w} F X) := by
   intro X' n
   have hb := hF.bijective_cohomology X X' n
@@ -269,9 +280,9 @@ theorem unit_app_representable_comp (X : C) :
         (ULift.up (𝟙 X)))).down = F.map (𝟙 X)
   rw [inductionULiftRepresentableIso_hom_app_tmul, F.map_id, Category.id_comp]
 
-/-- For a quasi-equivalence, the unit of `F_! ⊣ F^*` is a quasi-isomorphism on the (lifted)
-representable modules. -/
-theorem isQuasiIso_unit_app_representable (hF : IsQuasiEquivalence F) (X : C) :
+/-- For a quasi-fully faithful dg functor, the unit of `F_! ⊣ F^*` is a quasi-isomorphism on the
+(lifted) representable modules. -/
+theorem isQuasiIso_unit_app_representable (hF : IsQuasiFullyFaithful F) (X : C) :
     IsQuasiIso ((inductionAdjunction.{max v₁ w} F).unit.app
       (ulift.{max u₁ v₂ w} (representable X))) := by
   have h := isQuasiIso_representableMapULift.{w} hF X
@@ -396,8 +407,9 @@ theorem isLocalizing_unitIsIso : IsLocalizing.{max u₁ v₁ v₂ w}
     rw [← key]
     infer_instance
 
-/-- For a quasi-equivalence, the unit is an isomorphism at the representable modules. -/
-theorem isIso_unit_app_representable (hF : IsQuasiEquivalence F) (X : C) :
+/-- For a quasi-fully faithful dg functor, the unit is an isomorphism at the representable
+modules. -/
+theorem isIso_unit_app_representable (hF : IsQuasiFullyFaithful F) (X : C) :
     IsIso ((inductionAdjunction.{max u₁ v₁ v₂ w, w₂, w, v₁, v₂, u₁, u₂} F).unit.app
       (Q.obj (representableW.{max v₂ w} C X))) := by
   have hR := (isCornerGenerator_representableW.{max v₂ w} X).isKProjective
@@ -410,50 +422,101 @@ theorem isIso_unit_app_representable (hF : IsQuasiEquivalence F) (X : C) :
   dsimp only [unitMap]
   infer_instance
 
-/-- For a quasi-equivalence `F`, the unit `X ⟶ F^* LF_! X` is an isomorphism. -/
-theorem isIso_unit_app (hF : IsQuasiEquivalence F)
+/-- For a quasi-fully faithful dg functor `F`, the unit `X ⟶ F^* LF_! X` is an isomorphism. -/
+theorem isIso_unit_app_of_isQuasiFullyFaithful (hF : IsQuasiFullyFaithful F)
     (X : DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C) :
     IsIso ((inductionAdjunction.{max u₁ v₁ v₂ w, w₂, w, v₁, v₂, u₁, u₂} F).unit.app X) :=
   (compactlyGenerates.{max v₂ w} (C := C)).forall_of_isLocalizing (isLocalizing_unitIsIso F)
     (isIso_unit_app_representable hF) X
 
-/-- Restriction along a quasi-equivalence reflects zero objects. -/
-theorem isZero_of_isZero_restrict (hF : IsQuasiEquivalence F)
+/-- For a quasi-equivalence `F`, the unit `X ⟶ F^* LF_! X` is an isomorphism. -/
+theorem isIso_unit_app (hF : IsQuasiEquivalence F)
+    (X : DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C) :
+    IsIso ((inductionAdjunction.{max u₁ v₁ v₂ w, w₂, w, v₁, v₂, u₁, u₂} F).unit.app X) :=
+  isIso_unit_app_of_isQuasiFullyFaithful hF.toIsQuasiFullyFaithful X
+
+/-- If restriction of dg modules along `F` reflects acyclicity, then restriction on derived
+categories reflects zero objects. -/
+theorem isZero_of_isZero_restrict_of_reflects
+    (hR : ∀ N : CatModule.{max u₁ v₁ v₂ w} D, IsAcyclic ((precomp F).obj N) → IsAcyclic N)
     {Z : DerivedCategory.{w₂, max u₁ v₁ v₂ w} D}
     (h : IsZero ((restrict F).obj Z : DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C)) :
     IsZero Z := by
   obtain ⟨N, ⟨e⟩⟩ := exists_iso_Q_obj Z
   refine IsZero.of_iso ?_ e
   rw [isZero_Q_obj_iff]
-  refine isAcyclic_of_isAcyclic_precomp hF ?_
+  refine hR N ?_
   rw [← isZero_Q_obj_iff (C := C)]
   exact IsZero.of_iso h (((QCompRestrictIso F).app N).symm ≪≫ (restrict F).mapIso e.symm)
 
-/-- For a quasi-equivalence `F`, the counit `LF_! F^* Y ⟶ Y` is an isomorphism. -/
-theorem isIso_counit_app (hF : IsQuasiEquivalence F) (Y : DerivedCategory.{w₂, max u₁ v₁ v₂ w} D) :
+/-- Restriction along a quasi-equivalence reflects zero objects. -/
+theorem isZero_of_isZero_restrict (hF : IsQuasiEquivalence F)
+    {Z : DerivedCategory.{w₂, max u₁ v₁ v₂ w} D}
+    (h : IsZero ((restrict F).obj Z : DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C)) :
+    IsZero Z :=
+  isZero_of_isZero_restrict_of_reflects (fun _ => isAcyclic_of_isAcyclic_precomp hF) h
+
+/-- For a quasi-fully faithful dg functor `F` such that restriction along `F` reflects
+acyclicity, the counit `LF_! F^* Y ⟶ Y` is an isomorphism. -/
+theorem isIso_counit_app_of_reflects (hF : IsQuasiFullyFaithful F)
+    (hR : ∀ N : CatModule.{max u₁ v₁ v₂ w} D, IsAcyclic ((precomp F).obj N) → IsAcyclic N)
+    (Y : DerivedCategory.{w₂, max u₁ v₁ v₂ w} D) :
     IsIso ((inductionAdjunction.{max u₁ v₁ v₂ w, w₂, w, v₁, v₂, u₁, u₂} F).counit.app Y) := by
   let adj := inductionAdjunction.{max u₁ v₁ v₂ w, w₂, w, v₁, v₂, u₁, u₂} F
-  have : IsIso (adj.unit.app ((restrict F).obj Y)) := isIso_unit_app hF _
+  have : IsIso (adj.unit.app ((restrict F).obj Y)) :=
+    isIso_unit_app_of_isQuasiFullyFaithful hF _
   have h1 : IsIso ((restrict F).map (adj.counit.app Y)) := by
     rw [IsIso.eq_inv_of_hom_inv_id (adj.right_triangle_components Y)]
     infer_instance
   obtain ⟨Z, g, h, hT⟩ := distinguished_cocone_triangle (adj.counit.app Y)
   have hRT := (restrict F).map_distinguished _ hT
   have hZ : IsZero Z :=
-    isZero_of_isZero_restrict hF ((Triangle.isZero₃_iff_isIso₁ _ hRT).mpr h1)
+    isZero_of_isZero_restrict_of_reflects hR ((Triangle.isZero₃_iff_isIso₁ _ hRT).mpr h1)
   exact (Triangle.isZero₃_iff_isIso₁ _ hT).mp hZ
+
+/-- For a quasi-equivalence `F`, the counit `LF_! F^* Y ⟶ Y` is an isomorphism. -/
+theorem isIso_counit_app (hF : IsQuasiEquivalence F) (Y : DerivedCategory.{w₂, max u₁ v₁ v₂ w} D) :
+    IsIso ((inductionAdjunction.{max u₁ v₁ v₂ w, w₂, w, v₁, v₂, u₁, u₂} F).counit.app Y) :=
+  isIso_counit_app_of_reflects hF.toIsQuasiFullyFaithful
+    (fun _ => isAcyclic_of_isAcyclic_precomp hF) Y
+
+/-- A quasi-fully faithful dg functor `F : C ⥤ D` such that restriction of dg modules along `F`
+reflects acyclicity induces an equivalence of derived categories `LF_! : D(C) ≌ D(D)`, with
+quasi-inverse the restriction `F^*`. Both functors are triangulated. -/
+noncomputable def inductionEquivalence (hF : IsQuasiFullyFaithful F)
+    (hR : ∀ N : CatModule.{max u₁ v₁ v₂ w} D, IsAcyclic ((precomp F).obj N) → IsAcyclic N) :
+    DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≌ DerivedCategory.{w₂, max u₁ v₁ v₂ w} D :=
+  have : ∀ X, IsIso ((inductionAdjunction.{max u₁ v₁ v₂ w, w₂, w, v₁, v₂, u₁, u₂} F).unit.app X) :=
+    isIso_unit_app_of_isQuasiFullyFaithful hF
+  have : ∀ Y,
+      IsIso ((inductionAdjunction.{max u₁ v₁ v₂ w, w₂, w, v₁, v₂, u₁, u₂} F).counit.app Y) :=
+    isIso_counit_app_of_reflects hF hR
+  (inductionAdjunction.{max u₁ v₁ v₂ w, w₂, w, v₁, v₂, u₁, u₂} F).toEquivalence
+
+@[simp]
+theorem inductionEquivalence_functor (hF : IsQuasiFullyFaithful F)
+    (hR : ∀ N : CatModule.{max u₁ v₁ v₂ w} D, IsAcyclic ((precomp F).obj N) → IsAcyclic N) :
+    (inductionEquivalence hF hR :
+      DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≌
+        DerivedCategory.{w₂, max u₁ v₁ v₂ w} D).functor =
+      induction F :=
+  rfl
+
+@[simp]
+theorem inductionEquivalence_inverse (hF : IsQuasiFullyFaithful F)
+    (hR : ∀ N : CatModule.{max u₁ v₁ v₂ w} D, IsAcyclic ((precomp F).obj N) → IsAcyclic N) :
+    (inductionEquivalence hF hR :
+      DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≌
+        DerivedCategory.{w₂, max u₁ v₁ v₂ w} D).inverse =
+      restrict F :=
+  rfl
 
 /-- **Keller's theorem** [Keller, *Deriving DG categories*, §9.1]: a quasi-equivalence of dg
 categories `F : C ⥤ D` induces an equivalence of derived categories `LF_! : D(C) ≌ D(D)`, with
 quasi-inverse the restriction `F^*`. Both functors are triangulated. -/
 noncomputable def kellerEquivalence (hF : IsQuasiEquivalence F) :
     DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≌ DerivedCategory.{w₂, max u₁ v₁ v₂ w} D :=
-  have : ∀ X, IsIso ((inductionAdjunction.{max u₁ v₁ v₂ w, w₂, w, v₁, v₂, u₁, u₂} F).unit.app X) :=
-    isIso_unit_app hF
-  have : ∀ Y,
-      IsIso ((inductionAdjunction.{max u₁ v₁ v₂ w, w₂, w, v₁, v₂, u₁, u₂} F).counit.app Y) :=
-    isIso_counit_app hF
-  (inductionAdjunction.{max u₁ v₁ v₂ w, w₂, w, v₁, v₂, u₁, u₂} F).toEquivalence
+  inductionEquivalence hF.toIsQuasiFullyFaithful (fun _ => isAcyclic_of_isAcyclic_precomp hF)
 
 @[simp]
 theorem kellerEquivalence_functor (hF : IsQuasiEquivalence F) :

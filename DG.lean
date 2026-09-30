@@ -24,6 +24,7 @@ import DG.Category.Abelian
 import DG.Category.Basic
 import DG.Category.Comparison
 import DG.Category.Coproducts
+import DG.Category.Corner
 import DG.Category.Derived.Basic
 import DG.Category.Derived.Compact
 import DG.Category.Derived.Comparison
@@ -33,6 +34,7 @@ import DG.Category.Derived.Induction
 import DG.Category.Derived.KProjective
 import DG.Category.Derived.Keller
 import DG.Category.Derived.Localization
+import DG.Category.Derived.Morita
 import DG.Category.Derived.Perfect
 import DG.Category.Derived.QuasiIso
 import DG.Category.Derived.Restriction
@@ -90,6 +92,7 @@ import DG.Derived.FiniteCell
 import DG.Derived.GradedSplitting
 import DG.Derived.KProjective
 import DG.Derived.LocalizationCoproducts
+import DG.Derived.Morita
 import DG.Derived.Perfect
 import DG.Derived.QuasiIso
 import DG.Derived.Resolution
