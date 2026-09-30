@@ -171,5 +171,6 @@ import DG.Monoidal.ModComparison
 import DG.Monoidal.MonComparison
 import DG.Monoidal.MonObj
 import DG.Positive.Basic
+import DG.Positive.Formality
 import DG.Positive.Idempotent
 import DG.Positive.Schnurer
