@@ -542,6 +542,24 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
 7.3 Graded Morita theory: for a bigraded dg algebra `A` and a degree-`(0,0)` idempotent `e`
     with `d e = 0` such that `A e A = A`, the functors `Ae ⊗_{eAe} -` and `eA ⊗_A -` induce an
     equivalence `D(eAe) ≃ D(A)` compatible with shifts; `K₀(eAe) ≅ K₀(A)`.
+    — Erratum: as printed, 7.3 is false. Counterexample
+    (`DG/Examples/MoritaCounterexample.lean`): for a nontrivial commutative ring `R` in degree
+    `0`, `K = cone(id_R)`, `V = K ⊕ R`, `A = END_R(V)` and `e` the projection onto `K`, one has
+    `A e A = A` but `e A e` is acyclic while `d x = 1` has no solution in `A`, so `D(e A e) = 0`
+    and `D(A) ≠ 0` (`DG.MoritaCounterexample.isEmpty_derivedEquivalence`). The relation
+    `1 = Σ aᵢ e bᵢ` may need non-closed `aᵢ, bᵢ`. Repaired statement, done:
+    `DG.DGIdempotent.moritaEquivalence : D(e A e) ≌ D(A)` (triangulated) under
+    `DG.DGIdempotent.IsFullH0` (`1 ∈ Z⁰(A) e Z⁰(A) + B⁰(A)`, i.e. `[e]` generates `H⁰(A)` as a
+    two-sided ideal), which follows from `A e A = A` when `A` is non-negatively graded with
+    `d(A⁰) = 0` (`DG.DGIdempotent.isFullH0_of_one_mem_span`, e.g. positive `A`); general form
+    `DG.DGIdempotent.moritaEquivalenceOfReflects` (`M ↦ e M` reflects acyclicity); dg-category
+    form `DG.IdempotentFamily.moritaEquivalence`, `DG.CatModule.DerivedCategory.inductionEquivalence`
+    (quasi-fully faithful `F` whose restriction reflects acyclicity),
+    `DG.CatModule.DerivedCategory.restrict_isEquivalence_iff`; bigraded form
+    `DG.DGIdempotent.gradedMoritaEquivalence : D(C_{eAe}) ≌ D(C_A)` for `e` of weight `0`,
+    compatible with `⟨s⟩` (`gradedMoritaEquivalenceInternalShiftIso`). Open: the `K₀`
+    corollary (from `DG.K0.compactMapEquiv` once available), identification of the functors
+    with `A e ⊗^L_{eAe} -`, `e A ⊗^L_A -`.
 7.4 Half-graded dg modules and the super Grothendieck group. Setting: `ℤ × ℤ/2`-graded dg
     algebras and modules (internal degree, parity) whose differential has bidegree `(k, 1̄)`,
     i.e. is odd and of internal degree `k` (main case `k = 2`); relate to the regradings of 1.4.
