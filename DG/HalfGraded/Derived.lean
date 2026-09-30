@@ -117,7 +117,7 @@ end KProjective
 
 section Derived
 
-variable [HasDerivedCategory.{w', w} (WeightCategory H.Regraded)]
+variable [CatModule.HasDerivedCategory.{w', w} (WeightCategory H.Regraded)]
 
 /-- The parity shift `Π = ⟨-k⟩ ⋙ ⟦1⟧` on the derived category `D(C_H)` of half-graded dg
 modules. -/
@@ -205,7 +205,7 @@ end Derived
 
 section OddIso
 
-variable [HasDerivedCategory.{w', max u w} (WeightCategory H.Regraded)]
+variable [CatModule.HasDerivedCategory.{w', max u w} (WeightCategory H.Regraded)]
 
 open CatModule.DerivedCategory
 
