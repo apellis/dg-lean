@@ -103,6 +103,7 @@ import DG.Compact.Triangulated
 import DG.Derived.Bar
 import DG.Derived.Basic
 import DG.Derived.Comparison
+import DG.Derived.ConnectiveResolution
 import DG.Derived.Coproducts
 import DG.Derived.FiniteCell
 import DG.Derived.GradedSplitting
@@ -112,6 +113,7 @@ import DG.Derived.Morita
 import DG.Derived.Perfect
 import DG.Derived.QuasiIso
 import DG.Derived.Resolution
+import DG.Derived.TStructure
 import DG.Derived.Zero
 import DG.Examples.EndComplex
 import DG.Examples.Koszul
@@ -139,6 +141,7 @@ import DG.Homotopy.CohomologySequence
 import DG.Homotopy.Comparison
 import DG.Homotopy.ConeCochain
 import DG.Homotopy.ConeComp
+import DG.Homotopy.ConeQuotient
 import DG.Homotopy.Coproducts
 import DG.Homotopy.Forget
 import DG.Homotopy.ForgetTriangulated
