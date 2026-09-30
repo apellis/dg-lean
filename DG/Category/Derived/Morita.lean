@@ -1,5 +1,6 @@
 import DG.Category.Corner
 import DG.Category.Derived.Keller
+import DG.Category.Derived.RestrictionIso
 
 /-!
 # Morita theory for idempotents in dg categories
@@ -168,6 +169,17 @@ end CatModule.DerivedCategory
 
 end General
 
+/-- Transport of a commutation isomorphism along an equivalence: if `G ⋙ E.inverse ≅ E.inverse ⋙ F`
+then `E.functor ⋙ G ≅ F ⋙ E.functor`. -/
+noncomputable def _root_.CategoryTheory.Equivalence.functorCompIsoOfInverseCompIso
+    {𝒳 : Type*} {𝒴 : Type*} [Category 𝒳] [Category 𝒴] (E : 𝒳 ≌ 𝒴) {F : 𝒳 ⥤ 𝒳}
+    {G : 𝒴 ⥤ 𝒴} (i : G ⋙ E.inverse ≅ E.inverse ⋙ F) : E.functor ⋙ G ≅ F ⋙ E.functor :=
+  let i₁ : F ≅ E.symm.inverse ⋙ (G ⋙ E.inverse) :=
+    Iso.isoInverseComp (i.symm : E.symm.functor ⋙ F ≅ G ⋙ E.inverse)
+  let i₂ : F ≅ (E.functor ⋙ G) ⋙ E.symm.functor := i₁
+  let i₃ : F ⋙ E.symm.inverse ≅ E.functor ⋙ G := Iso.compInverseIso i₂
+  i₃.symm
+
 /-! ### Idempotents -/
 
 namespace IdempotentFamily
@@ -319,6 +331,62 @@ theorem moritaEquivalence_inverse_isTriangulated :
         CatModule.DerivedCategory.{w₂, max u v w t} P.augment.Corner) ⋙
       CatModule.DerivedCategory.restrict P.inr).IsTriangulated :=
   inferInstance
+
+/-! #### Compatibility with dg endofunctors preserving the family -/
+
+section Map
+
+variable (σ : C ⥤ C) [σ.Additive] [σ.IsDGFunctor] (τ : ι → ι)
+  (hobj : ∀ i, σ.obj (P.obj i) = P.obj (τ i))
+  (hidem : ∀ i, eqToHom (hobj i).symm ≫ σ.map (P.idem i) ≫ eqToHom (hobj i) = P.idem (τ i))
+
+/-- Restriction along `P.inl` commutes with restriction along `σ`. -/
+noncomputable def restrictInlCommIso :
+    CatModule.DerivedCategory.restrict (P.mapAugment σ τ hobj hidem) ⋙
+        (CatModule.DerivedCategory.restrict P.inl :
+          CatModule.DerivedCategory.{w₂, max u v w t} P.augment.Corner ⥤
+            CatModule.DerivedCategory.{max u v w t, max u v w t} C) ≅
+      CatModule.DerivedCategory.restrict P.inl ⋙ CatModule.DerivedCategory.restrict σ :=
+  (CatModule.DerivedCategory.restrictCompIso P.inl _).symm ≪≫
+    CatModule.DerivedCategory.restrictNatIso (P.inlCompMapAugmentIso σ τ hobj hidem)
+      (fun _ => id_mem_grading _) (fun _ => d_id _) (fun _ => id_mem_grading _)
+      (fun _ => d_id _) ≪≫
+    CatModule.DerivedCategory.restrictCompIso σ P.inl
+
+/-- Restriction along `P.inr` commutes with restriction along the induced endofunctors. -/
+noncomputable def restrictInrCommIso :
+    CatModule.DerivedCategory.restrict (P.mapAugment σ τ hobj hidem) ⋙
+        (CatModule.DerivedCategory.restrict P.inr :
+          CatModule.DerivedCategory.{w₂, max u v w t} P.augment.Corner ⥤
+            CatModule.DerivedCategory.{max u v w t, max u v w t} P.Corner) ≅
+      CatModule.DerivedCategory.restrict P.inr ⋙
+        CatModule.DerivedCategory.restrict (P.mapCorner σ τ hobj hidem) :=
+  (CatModule.DerivedCategory.restrictCompIso P.inr _).symm ≪≫
+    CatModule.DerivedCategory.restrictNatIso (P.inrCompMapAugmentIso σ τ hobj hidem)
+      (fun _ => id_mem_grading _) (fun _ => d_id _) (fun _ => id_mem_grading _)
+      (fun _ => d_id _) ≪≫
+    CatModule.DerivedCategory.restrictCompIso (P.mapCorner σ τ hobj hidem) P.inr
+
+/-- **The Morita equivalence commutes with dg endofunctors preserving the family.** For a dg
+endofunctor `σ` of `C` carrying `P` to itself, the Morita equivalence
+`D(P.Corner) ≌ D(C)` intertwines restriction along `σ` and restriction along the induced dg
+endofunctor `P.mapCorner σ τ` of `P.Corner`. (For the weight dg category of a bigraded dg ring
+and `σ` the shift of weights, this is the compatibility with the internal shift.) -/
+noncomputable def moritaEquivalenceFunctorCompRestrictIso (hP : P.IsFullH0) :
+    (moritaEquivalence.{t, w₂} hP).functor ⋙ CatModule.DerivedCategory.restrict σ ≅
+      CatModule.DerivedCategory.restrict (P.mapCorner σ τ hobj hidem) ⋙
+        (moritaEquivalence.{t, w₂} hP).functor :=
+  let E := CatModule.DerivedCategory.inductionEquivalence.{max u t, w₂} P.isQuasiFullyFaithful_inr
+    fun _ => isAcyclic_of_isAcyclic_precomp_inr hP
+  let j : E.functor ⋙ CatModule.DerivedCategory.restrict (P.mapAugment σ τ hobj hidem) ≅
+      CatModule.DerivedCategory.restrict (P.mapCorner σ τ hobj hidem) ⋙ E.functor :=
+    E.functorCompIsoOfInverseCompIso (P.restrictInrCommIso.{t, w₂} σ τ hobj hidem)
+  Functor.isoWhiskerLeft E.functor (P.restrictInlCommIso.{t, w₂} σ τ hobj hidem).symm ≪≫
+    (Functor.associator _ _ _).symm ≪≫
+    Functor.isoWhiskerRight j (CatModule.DerivedCategory.restrict P.inl) ≪≫
+    Functor.associator _ _ _
+
+end Map
 
 end Equivalence
 

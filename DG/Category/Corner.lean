@@ -29,6 +29,10 @@ idempotents (`DG.Category.Derived.Morita`).
 * `DG.IdempotentFamily.augment` (the family `P` together with all identities `𝟙 X`), and the dg
   functors `DG.IdempotentFamily.inl : C ⥤ P.augment.Corner`,
   `DG.IdempotentFamily.inr : P.Corner ⥤ P.augment.Corner`.
+* `DG.IdempotentFamily.mapCorner`, `DG.IdempotentFamily.mapAugment`: the dg endofunctors of
+  `P.Corner` and `P.augment.Corner` induced by a dg endofunctor of `C` preserving the family, and
+  their compatibility with `P.inl` and `P.inr` (`DG.IdempotentFamily.inlCompMapAugmentIso`,
+  `DG.IdempotentFamily.inrCompMapAugmentIso`).
 -/
 
 open CategoryTheory DirectSum
@@ -235,6 +239,108 @@ instance : P.inr.IsDGFunctor where
   map_d' _ := rfl
 
 end Augment
+
+/-! ### Dg endofunctors preserving the family -/
+
+section Map
+
+variable {X Y Z : C}
+
+theorem eqToHom_mem_cocycles (h : X = Y) : eqToHom h ∈ cocycles (X ⟶ Y) 0 := by
+  subst h
+  exact id_mem_cocycles X
+
+omit [DGCategory C] in
+theorem eqToHom_comp_comp_eqToHom_mem {X' Y' : C} (h : X' = X) (h' : Y = Y') {n : ℤ}
+    {f : X ⟶ Y} (hf : f ∈ grading n) : eqToHom h ≫ f ≫ eqToHom h' ∈ grading n := by
+  subst h h'
+  simpa using hf
+
+omit [DGCategory C] in
+theorem d_eqToHom_comp_comp_eqToHom {X' Y' : C} (h : X' = X) (h' : Y = Y') (f : X ⟶ Y) :
+    d (eqToHom h ≫ f ≫ eqToHom h') = eqToHom h ≫ d f ≫ eqToHom h' := by
+  subst h h'
+  simp
+
+variable (P) (σ : C ⥤ C) [σ.Additive] [σ.IsDGFunctor] (τ : ι → ι)
+  (hobj : ∀ i, σ.obj (P.obj i) = P.obj (τ i))
+  (hidem : ∀ i, eqToHom (hobj i).symm ≫ σ.map (P.idem i) ≫ eqToHom (hobj i) = P.idem (τ i))
+
+/-- A dg endofunctor `σ` of `C` carrying the family `P` to itself along `τ : ι → ι`
+(`σ Xᵢ = X_{τ i}` and `σ eᵢ = e_{τ i}`) induces the dg endofunctor `i ↦ τ i` of `P.Corner`,
+`f ↦ σ f`. -/
+@[simps obj]
+def mapCorner : P.Corner ⥤ P.Corner where
+  obj i := ⟨τ i.as⟩
+  map {i j} f := ⟨eqToHom (hobj i.as).symm ≫ σ.map f.1 ≫ eqToHom (hobj j.as), by
+    rw [← hidem]
+    simp only [Category.assoc, eqToHom_trans_assoc, eqToHom_refl, Category.id_comp,
+      ← Functor.map_comp_assoc, idem_comp_val], by
+    rw [← hidem]
+    simp only [Category.assoc, eqToHom_trans_assoc, eqToHom_refl, Category.id_comp,
+      ← Functor.map_comp_assoc, val_comp_idem]⟩
+  map_id i := hom_ext (hidem i.as)
+  map_comp f g := hom_ext (by simp)
+
+omit [DGCategory C] [σ.Additive] [σ.IsDGFunctor] in
+@[simp]
+theorem mapCorner_map_val {i j : P.Corner} (f : i ⟶ j) :
+    ((P.mapCorner σ τ hobj hidem).map f).1 =
+      eqToHom (hobj i.as).symm ≫ σ.map f.1 ≫ eqToHom (hobj j.as) :=
+  rfl
+
+instance : (P.mapCorner σ τ hobj hidem).Additive where
+  map_add {_ _ f g} := hom_ext (by
+    rw [mapCorner_map_val, add_val, σ.map_add, Preadditive.add_comp, Preadditive.comp_add]
+    rfl)
+
+instance : (P.mapCorner σ τ hobj hidem).IsDGFunctor where
+  map_mem' hf := eqToHom_comp_comp_eqToHom_mem _ _ (σ.map_mem_grading hf)
+  map_d' f := hom_ext (by
+    change eqToHom _ ≫ σ.map (d f.1) ≫ eqToHom _ = d (eqToHom _ ≫ σ.map f.1 ≫ eqToHom _)
+    rw [d_eqToHom_comp_comp_eqToHom, σ.map_d])
+
+omit [σ.Additive] [σ.IsDGFunctor] in
+include hobj in
+theorem augment_hobj : ∀ x, σ.obj (P.augment.obj x) = P.augment.obj (Sum.map σ.obj τ x)
+  | .inl _ => rfl
+  | .inr i => hobj i
+
+omit [σ.Additive] [σ.IsDGFunctor] in
+include hidem in
+theorem augment_hidem : ∀ x, eqToHom (P.augment_hobj σ τ hobj x).symm ≫
+    σ.map (P.augment.idem x) ≫ eqToHom (P.augment_hobj σ τ hobj x) =
+      P.augment.idem (Sum.map σ.obj τ x)
+  | .inl X => by
+    change eqToHom _ ≫ σ.map (𝟙 X) ≫ eqToHom _ = 𝟙 (σ.obj X)
+    erw [eqToHom_refl]
+    simp
+  | .inr i => hidem i
+
+/-- The dg endofunctor of `P.augment.Corner` induced by `σ`: `(X, 𝟙) ↦ (σ X, 𝟙)` and
+`(Xᵢ, eᵢ) ↦ (X_{τ i}, e_{τ i})`. -/
+abbrev mapAugment : P.augment.Corner ⥤ P.augment.Corner :=
+  P.augment.mapCorner σ (Sum.map σ.obj τ) (P.augment_hobj σ τ hobj)
+    (P.augment_hidem σ τ hobj hidem)
+
+/-- `P.inl` commutes with `σ`. -/
+def inlCompMapAugmentIso : P.inl ⋙ P.mapAugment σ τ hobj hidem ≅ σ ⋙ P.inl :=
+  NatIso.ofComponents (fun _ => Iso.refl _) fun {X Y} f => hom_ext (by
+    change (eqToHom _ ≫ σ.map f ≫ eqToHom _) ≫ 𝟙 (σ.obj Y) = 𝟙 (σ.obj X) ≫ σ.map f
+    erw [eqToHom_refl, eqToHom_refl]
+    simp)
+
+/-- `P.inr` commutes with `σ`. -/
+def inrCompMapAugmentIso :
+    P.inr ⋙ P.mapAugment σ τ hobj hidem ≅ P.mapCorner σ τ hobj hidem ⋙ P.inr :=
+  NatIso.ofComponents (fun _ => Iso.refl _) fun {i j} f => hom_ext (by
+    change (eqToHom (hobj i.as).symm ≫ σ.map f.1 ≫ eqToHom (hobj j.as)) ≫ P.idem (τ j.as) =
+      P.idem (τ i.as) ≫ (eqToHom (hobj i.as).symm ≫ σ.map f.1 ≫ eqToHom (hobj j.as))
+    rw [← hidem, ← hidem]
+    simp only [Category.assoc, eqToHom_trans_assoc, eqToHom_refl, Category.id_comp,
+      ← Functor.map_comp_assoc, idem_comp_val, val_comp_idem])
+
+end Map
 
 end IdempotentFamily
 
