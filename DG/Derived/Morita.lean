@@ -44,7 +44,9 @@ formalized, over any nontrivial commutative ring, in `DG.Examples.MoritaCountere
 (`DG.MoritaCounterexample.isEmpty_derivedEquivalence`, `DG.MoritaCounterexample.not_isFullH0`).
 
 *Repair.* The decomposition `1 = ∑ₖ aₖ e bₖ` must be possible with cocycles `aₖ, bₖ ∈ Z⁰(A)` up to
-a coboundary (`DG.DGIdempotent.IsFullH0`); this is the statement proved here. More generally, for
+a coboundary (`DG.DGIdempotent.IsFullH0`); this is the statement proved here. More generally,
+`D(e A e) ≌ D(A)` as soon as `M ↦ e M` reflects acyclicity of dg `A`-modules, i.e. `A e` generates
+`D(A)` (`DG.DGIdempotent.ReflectsAcyclic`, `DG.DGIdempotent.moritaEquivalenceOfReflects`); for
 a family `P` of idempotents in a dg category, `D(P.Corner) ≌ D(C)` holds as soon as restriction
 along the embedding `P.inr` of the corner category reflects acyclicity
 (`DG.IdempotentFamily.moritaEquivalenceOfReflects`), and this condition is equivalent to `P.inr^*`
@@ -55,6 +57,8 @@ being an equivalence (`DG.CatModule.DerivedCategory.restrict_isEquivalence_iff`)
 * `DG.DGIdempotent.family`, `DG.DGIdempotent.IsFullH0`, `DG.DGIdempotent.isFullH0_family`,
   `DG.DGIdempotent.isFullH0_of_one_mem_span`.
 * `DG.DGIdempotent.cornerFunctor`, `DG.DGIdempotent.isQuasiEquivalence_cornerFunctor`.
+* `DG.DGIdempotent.ReflectsAcyclic`, `DG.DGIdempotent.moritaEquivalenceOfReflects`: the general
+  form, for `e` such that `M ↦ e M` reflects acyclicity.
 * `DG.DGIdempotent.moritaEquivalence : D(e A e) ≌ D(A)`, with triangulated functor
   (`DG.DGIdempotent.moritaEquivalence_functor_isTriangulated`), so that it induces an
   isomorphism of the Grothendieck groups of the compact objects, `K₀(e A e) ≅ K₀(A)`.
@@ -62,7 +66,7 @@ being an equivalence (`DG.CatModule.DerivedCategory.restrict_isEquivalence_iff`)
 
 open CategoryTheory
 
-universe t w₁ w₂ u
+universe t w w₁ w₂ u
 
 set_option backward.isDefEq.respectTransparency false
 
@@ -192,6 +196,57 @@ theorem isQuasiEquivalence_cornerFunctor : IsQuasiEquivalence e.cornerFunctor wh
     · rw [Category.id_comp, sub_self]
       exact zero_mem _
 
+/-! ### Reflection of acyclicity by `M ↦ e M` -/
+
+/-- The functor `M ↦ e M` reflects acyclicity of dg modules over `SingleObj A` (i.e. of dg
+`A`-modules) with values in `Type w`: if every cocycle `m = e m` of `M` is the differential of
+some `m' = e m'`, then `M` is acyclic. Equivalently, `A e` generates `D(A)`. -/
+def ReflectsAcyclic : Prop :=
+  ∀ M : CatModule.{w} (SingleObj A),
+    (∀ (n : ℤ) (m : M.obj (SingleObj.star A)), m ∈ grading n → d m = 0 →
+      (show SingleObj.star A ⟶ SingleObj.star A from e.val) • m = m →
+        ∃ m' ∈ grading (n - 1), (show SingleObj.star A ⟶ SingleObj.star A from e.val) • m' = m' ∧
+          d m' = m) → CatModule.IsAcyclic M
+
+/-- If `M ↦ e M` reflects acyclicity, then so does restriction along the embedding
+`P.inr : P.Corner ⥤ P.augment.Corner` of the corner of `P = e.family`. -/
+theorem isAcyclic_of_isAcyclic_precomp_inr_of_reflectsAcyclic (h : e.ReflectsAcyclic.{w})
+    {N : CatModule.{w} e.family.augment.Corner}
+    (hN : CatModule.IsAcyclic ((CatModule.precomp e.family.inr).obj N)) :
+    CatModule.IsAcyclic N := by
+  unfold ReflectsAcyclic at h
+  rintro ⟨X | i⟩
+  · -- the object `(A, 1)`: the `e`-part of `N(A, 1)` is a retract of `N(A, e)`
+    let S : e.family.augment.Corner := ⟨.inl (SingleObj.star A)⟩
+    let a : S ⟶ ⟨.inr ()⟩ := ⟨(e.val : A), Category.id_comp _, e.mul_self⟩
+    let b : (⟨.inr ()⟩ : e.family.augment.Corner) ⟶ S :=
+      ⟨(e.val : A), e.mul_self, Category.comp_id _⟩
+    let ee : S ⟶ S := e.family.inl.map (show SingleObj.star A ⟶ SingleObj.star A from e.val)
+    have hab : a ≫ b = ee := IdempotentFamily.hom_ext e.mul_self
+    have hbe : b ≫ ee = b := IdempotentFamily.hom_ext e.mul_self
+    have ha0 : a ∈ grading 0 := e.mem_zero
+    have hb0 : b ∈ grading 0 := e.mem_zero
+    have hda : d a = 0 := IdempotentFamily.hom_ext e.d_eq_zero
+    have hdb : d b = 0 := IdempotentFamily.hom_ext e.d_eq_zero
+    refine h ((CatModule.precomp e.family.inl).obj N) (fun n m hm hdm hem => ?_) X
+    let m₀ : N.obj S := m
+    have hm₀ : m₀ ∈ grading n := hm
+    have hdm₀ : d m₀ = 0 := hdm
+    have hdam : d (a • m₀) = 0 := by
+      rw [CatModule.d_smul ha0, hda, hdm₀]
+      simp
+    obtain ⟨z, hz, hdz⟩ : ∃ z : N.obj ⟨.inr ()⟩, z ∈ grading (n - 1) ∧ d z = a • m₀ :=
+      DG.isAcyclic_iff.mp (hN ⟨()⟩) n (a • m₀)
+        (by simpa using CatModule.smul_mem_grading ha0 hm₀) hdam
+    refine ⟨b • z, by simpa using CatModule.smul_mem_grading hb0 hz, ?_, ?_⟩
+    · change ee • (b • z) = b • z
+      rw [← CatModule.comp_smul, hbe]
+    · change d (b • z) = m₀
+      rw [CatModule.d_smul hb0, hdb, CatModule.zero_smul, zero_add, koszulSign_zero, one_smul,
+        hdz, ← CatModule.comp_smul, hab]
+      exact hem
+  · exact hN ⟨i⟩
+
 /-! ### The Morita equivalence -/
 
 section
@@ -228,6 +283,20 @@ noncomputable def moritaEquivalence (he : e.IsFullH0) :
   (CatModule.DerivedCategory.singleObjEquivalence e.Corner).symm.trans
     ((CatModule.DerivedCategory.kellerEquivalence.{t} e.isQuasiEquivalence_cornerFunctor).trans
       ((e.family.moritaEquivalence.{t} (e.isFullH0_family he)).trans
+        (CatModule.DerivedCategory.singleObjEquivalence A)))
+
+/-- **Morita theory for an idempotent of a dg ring** (general form). If `M ↦ e M` reflects
+acyclicity of dg `A`-modules (i.e. `A e` generates `D(A)`), then `D(e A e) ≌ D(A)`. -/
+noncomputable def moritaEquivalenceOfReflects (h : e.ReflectsAcyclic.{max u t}) :
+    DG.DerivedCategory e.Corner ≌ DG.DerivedCategory A :=
+  letI := CatModule.HasDerivedCategory.small.{max u t} (SingleObj e.Corner)
+  letI := CatModule.HasDerivedCategory.small.{t} e.family.Corner
+  letI := CatModule.HasDerivedCategory.small.{t} (SingleObj A)
+  letI := CatModule.HasDerivedCategory.small.{t} e.family.augment.Corner
+  (CatModule.DerivedCategory.singleObjEquivalence e.Corner).symm.trans
+    ((CatModule.DerivedCategory.kellerEquivalence.{t} e.isQuasiEquivalence_cornerFunctor).trans
+      ((e.family.moritaEquivalenceOfReflects.{t}
+          fun _ => e.isAcyclic_of_isAcyclic_precomp_inr_of_reflectsAcyclic h).trans
         (CatModule.DerivedCategory.singleObjEquivalence A)))
 
 /-- The functor of the Morita equivalence `D(e A e) ≌ D(A)` commutes with the shifts. -/
