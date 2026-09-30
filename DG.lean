@@ -212,6 +212,7 @@ import DG.Positive.Basic
 import DG.Positive.Category
 import DG.Positive.CellSum
 import DG.Positive.Formality
+import DG.Positive.FreeFormality
 import DG.Positive.Idempotent
 import DG.Positive.K0
 import DG.Positive.K0Basis
