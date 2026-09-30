@@ -33,6 +33,7 @@ import DG.Category.Derived.Keller
 import DG.Category.Derived.Localization
 import DG.Category.Derived.QuasiIso
 import DG.Category.Derived.Restriction
+import DG.Category.Derived.RestrictionIso
 import DG.Category.Derived.Small
 import DG.Category.Functor
 import DG.Category.Homotopy.Acyclic
