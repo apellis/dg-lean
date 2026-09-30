@@ -42,6 +42,8 @@ import DG.Category.Derived.QuasiIso
 import DG.Category.Derived.Restriction
 import DG.Category.Derived.RestrictionIso
 import DG.Category.Derived.Small
+import DG.Category.Derived.Tensor
+import DG.Category.Derived.TensorInduction
 import DG.Category.Functor
 import DG.Category.Homotopy.Acyclic
 import DG.Category.Homotopy.Comparison
@@ -50,6 +52,9 @@ import DG.Category.Homotopy.ConeCochain
 import DG.Category.Homotopy.ConeComp
 import DG.Category.Homotopy.Evaluation
 import DG.Category.Homotopy.Hom
+import DG.Category.Homotopy.HomBimodule
+import DG.Category.Homotopy.HomBimoduleTriangulated
+import DG.Category.Homotopy.HomComp
 import DG.Category.Homotopy.HomShift
 import DG.Category.Homotopy.Homotopy
 import DG.Category.Homotopy.HomotopyCategory
@@ -72,6 +77,7 @@ import DG.Category.SingleObj
 import DG.Category.SubQuotient
 import DG.Category.Tensor.Basic
 import DG.Category.Tensor.Bimodule
+import DG.Category.Tensor.Hom
 import DG.Category.Tensor.Induction
 import DG.Category.Tensor.RightModule
 import DG.Category.Tensor.SingleObj
