@@ -58,6 +58,7 @@ import DG.Category.Module
 import DG.Category.Opposite
 import DG.Category.Resolution.Generator
 import DG.Category.Resolution.KProjective
+import DG.Category.Resolution.Lifting
 import DG.Category.Resolution.Resolution
 import DG.Category.Resolution.SemiFree
 import DG.Category.Resolution.SeqColimit
