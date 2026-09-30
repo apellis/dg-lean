@@ -26,6 +26,8 @@ import DG.Category.Derived.Basic
 import DG.Category.Derived.Comparison
 import DG.Category.Derived.Coproducts
 import DG.Category.Derived.HomotopyCoproducts
+import DG.Category.Derived.Induction
+import DG.Category.Derived.KProjective
 import DG.Category.Derived.Localization
 import DG.Category.Derived.QuasiIso
 import DG.Category.Derived.Restriction
@@ -41,6 +43,7 @@ import DG.Category.Homotopy.HomShift
 import DG.Category.Homotopy.Homotopy
 import DG.Category.Homotopy.HomotopyCategory
 import DG.Category.Homotopy.HomotopyShift
+import DG.Category.Homotopy.Path
 import DG.Category.Homotopy.Precomp
 import DG.Category.Homotopy.Pretriangulated
 import DG.Category.Homotopy.Shift
@@ -49,6 +52,8 @@ import DG.Category.Module
 import DG.Category.Opposite
 import DG.Category.Resolution.Generator
 import DG.Category.Resolution.KProjective
+import DG.Category.Resolution.Resolution
+import DG.Category.Resolution.SeqColimit
 import DG.Category.SingleObj
 import DG.Category.SubQuotient
 import DG.Category.Tensor.Basic

@@ -231,7 +231,19 @@ D.4 Tier 4 for `C`: acyclic modules, quasi-isomorphisms, the derived category `D
     `DG.CatModule.IsKProjective`, `DG.CatModule.isKProjective_iff_isAcyclic_hom`,
     `DG.CatModule.isKProjective_representable`, `DG.CatModule.isKProjective_corner` (summands
     `e · C(X, -)` for degree-`0` cocycle idempotents), closure under retracts and homotopy
-    equivalences. Open: semi-free modules and resolutions, derived induction, Keller's theorem.
+    equivalences. Resolutions: `DG.CatModule.exists_kProjective_resolution` (every `M` has an
+    objectwise surjective quasi-isomorphism `P ⟶ M` from a K-projective `P`, built from shifted
+    representables by iterated cones and a sequential colimit, `DG.CatModule.Resolution.colim`;
+    `DG.CatModule.seqColimit`, `DG.CatModule.SeqColimit.isKProjective`);
+    `DG.CatModule.DerivedCategory.Qh_map_bijective_of_isKProjective`,
+    `DG.CatModule.DerivedCategory.homAddEquivOfIsKProjective` (`Hom_{D(C)}(P, N) ≅ H⁰ HOM(P, N)`),
+    `DG.CatModule.isIso_quotient_map_of_isQuasiIso`,
+    `DG.CatModule.DerivedCategory.kProjectiveEquivalence` (K-projectives of `H(C)` ≌ `D(C)`).
+    Derived induction: `DG.CatModule.pathObj`, `DG.CatModule.homotopic_iff_homEquiv`,
+    `DG.CatModule.IsKProjective.of_adjunction`, `DG.CatModule.DerivedCategory.induction`,
+    `DG.CatModule.DerivedCategory.inductionAdjunction` (`LF_! ⊣ F^*`),
+    `DG.CatModule.DerivedCategory.inductionObjIso` (`LF_! (Q P) ≅ Q (F_! P)` for K-projective `P`).
+    Open: the semi-free filtration of the resolution, Keller's theorem.
 D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C)`, so the
     compact objects are the thick closure of the representables; `K₀(C)`; positive dg
     categories and Schnürer's theorem; the internal shift of tier 7 as the dg autoequivalence of
