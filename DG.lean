@@ -176,4 +176,5 @@ import DG.Monoidal.MonObj
 import DG.Positive.Basic
 import DG.Positive.Formality
 import DG.Positive.Idempotent
+import DG.Positive.K0
 import DG.Positive.Schnurer
