@@ -134,6 +134,7 @@ import DG.Homotopy.Triangulated
 import DG.K0.Abelian
 import DG.K0.Compact
 import DG.K0.DGCategory
+import DG.K0.DGRing
 import DG.K0.Euler
 import DG.K0.Triangulated
 import DG.Lie.Basic
