@@ -30,6 +30,8 @@ import DG.Category.Derived.Basic
 import DG.Category.Derived.Compact
 import DG.Category.Derived.Comparison
 import DG.Category.Derived.Coproducts
+import DG.Category.Derived.FiniteCell
+import DG.Category.Derived.GradedSplitting
 import DG.Category.Derived.HomotopyCoproducts
 import DG.Category.Derived.Induction
 import DG.Category.Derived.InductionComp
