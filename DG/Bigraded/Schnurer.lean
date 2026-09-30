@@ -43,6 +43,10 @@ its shift `⟨d⟩` (e.g. over a graded division ring with a unit of weight `d`)
   graded positive, since a semisimple ring is graded semisimple for every grading
   (`DG.isGradedSemisimpleRing_of_isSemisimpleRing`).
 * `DG.IsPositive.isCompact_iff_weight`: Schnürer's theorem for `D(C_A)` under this hypothesis.
+* `DG.isGradedPositive_iff_isPositive`: for `A⁰` finite-dimensional over a field the two
+  hypotheses coincide (more generally when the weight grading of `A⁰` is bounded below,
+  `DG.isGradedPositive_iff_isPositive_of_bddBelow`): a graded simple idempotent then generates a
+  simple left ideal (`DG.isSimpleModule_of_isGradedSimpleIdempotent`).
 -/
 
 open CategoryTheory Limits Pretriangulated DirectSum
@@ -77,6 +81,25 @@ theorem IsPositive.isGradedPositive (hA : IsPositive A) : IsGradedPositive A whe
     have := hA.isSemisimple
     exact isGradedSemisimpleRing_of_isSemisimpleRing _
   d_eq_zero_of_mem_zero := hA.d_eq_zero_of_mem_zero
+
+/-- If the weight grading of `A⁰` is bounded below, graded positivity and positivity coincide
+(Roadmap 7.2: the two hypotheses of (a) and (b) agree in this case). -/
+theorem isGradedPositive_iff_isPositive_of_bddBelow
+    (hbdd : ∃ N : ℤ, ∀ k < N, ∀ x ∈ degreeZeroWGrading A k, x = 0) :
+    IsGradedPositive A ↔ IsPositive A :=
+  ⟨fun h => ⟨h.grading_eq_bot, isSemisimpleRing_of_isGradedSemisimpleRing h.isGradedSemisimple hbdd,
+    h.d_eq_zero_of_mem_zero⟩, fun h => h.isGradedPositive⟩
+
+/-- **The finite-dimensional coincidence** (Roadmap 7.2): if `A⁰` is finite-dimensional over a
+field `K` (with weight components stable under `K`), then `A` is graded positive (`A⁰` graded
+semisimple) iff it is positive (`A⁰` semisimple). -/
+theorem isGradedPositive_iff_isPositive (K : Type*) [Field K] [Algebra K (degreeZeroSubring A)]
+    [FiniteDimensional K (degreeZeroSubring A)]
+    (hK : ∀ k (c : K) {x : degreeZeroSubring A}, x ∈ degreeZeroWGrading A k →
+      c • x ∈ degreeZeroWGrading A k) :
+    IsGradedPositive A ↔ IsPositive A :=
+  isGradedPositive_iff_isPositive_of_bddBelow
+    (exists_forall_lt_eq_zero_of_finiteDimensional K hK)
 
 namespace WeightCategory
 

@@ -1,3 +1,4 @@
+import Mathlib.LinearAlgebra.FiniteDimensional.Defs
 import Mathlib.Order.CompactlyGenerated.Basic
 import Mathlib.RingTheory.GradedAlgebra.Homogeneous.Ideal
 import Mathlib.RingTheory.SimpleModule.Basic
@@ -30,6 +31,12 @@ left ideal `R e` is a graded simple module.
   every grading. The projection of `R` onto a homogeneous left ideal `I` along a complement is
   right multiplication by an idempotent `e`; its degree-`0` component `e₀` is again an idempotent
   generating `I`, and `R (1 - e₀)` is a homogeneous complement of `I`.
+* `DG.isSemisimpleRing_of_isGradedSemisimpleRing`: conversely, a graded semisimple ring whose
+  grading is bounded below is semisimple: a graded simple idempotent `e` of degree `0` generates a
+  simple left ideal (`DG.isSimpleModule_of_isGradedSimpleIdempotent`; elements of negative degrees
+  are nilpotent). In particular (`DG.isGradedSemisimpleRing_iff_isSemisimpleRing`) for a
+  finite-dimensional graded algebra over a field the two notions coincide
+  (`DG.exists_forall_lt_eq_zero_of_finiteDimensional`).
 -/
 
 open DirectSum
@@ -389,5 +396,172 @@ theorem exists_isCompl_homogeneousIdeal [ComplementedLattice (Ideal R)]
 theorem isGradedSemisimpleRing_of_isSemisimpleRing [IsSemisimpleRing R] :
     IsGradedSemisimpleRing 𝒜 :=
   ⟨fun I => exists_isCompl_homogeneousIdeal I⟩
+
+/-! ### Graded semisimple rings with a grading bounded below are semisimple -/
+
+section Bounded
+
+variable {𝒜}
+
+/-- If the homogeneous components of `x` vanish above `a` and those of `y` above `b`, those of
+`x y` vanish above `a + b`. -/
+theorem decompose_mul_eq_zero {a b : ℤ} {x y : R}
+    (hx : ∀ i, a < i → (decompose 𝒜 x i : R) = 0) (hy : ∀ j, b < j → (decompose 𝒜 y j : R) = 0)
+    {n : ℤ} (hn : a + b < n) : (decompose 𝒜 (x * y) n : R) = 0 := by
+  classical
+  rw [decompose_mul, coe_mul_apply]
+  refine Finset.sum_eq_zero fun ij hij => ?_
+  rw [Finset.mem_filter] at hij
+  by_cases hi : a < ij.1
+  · rw [hx _ hi, zero_mul]
+  · rw [hy _ (by omega), mul_zero]
+
+theorem decompose_pow_eq_zero {x : R} (hx : ∀ i, -1 < i → (decompose 𝒜 x i : R) = 0) (j : ℕ) :
+    ∀ n : ℤ, -(j : ℤ) < n → (decompose 𝒜 (x ^ j) n : R) = 0 := by
+  induction j with
+  | zero =>
+    intro n hn
+    rw [pow_zero, decompose_of_mem_ne 𝒜 (SetLike.GradedOne.one_mem (A := 𝒜) : (1 : R) ∈ 𝒜 0)
+      (by omega)]
+  | succ j ih =>
+    intro n hn
+    rw [pow_succ]
+    exact decompose_mul_eq_zero ih hx (by omega)
+
+theorem eq_zero_of_decompose_eq_zero {x : R} (h : ∀ i, (decompose 𝒜 x i : R) = 0) : x = 0 := by
+  classical
+  rw [← DirectSum.sum_support_decompose 𝒜 x]
+  exact Finset.sum_eq_zero fun i _ => h i
+
+/-- If the grading is bounded below, every element whose homogeneous components of non-negative
+degree vanish is nilpotent. -/
+theorem isNilpotent_of_decompose_eq_zero (hbdd : ∃ N : ℤ, ∀ k < N, ∀ x ∈ 𝒜 k, x = 0) {x : R}
+    (hx : ∀ i, -1 < i → (decompose 𝒜 x i : R) = 0) : IsNilpotent x := by
+  obtain ⟨N, hN⟩ := hbdd
+  refine ⟨N.natAbs + 1, eq_zero_of_decompose_eq_zero (𝒜 := 𝒜) fun i => ?_⟩
+  by_cases hi : -((N.natAbs + 1 : ℕ) : ℤ) < i
+  · exact decompose_pow_eq_zero hx _ i hi
+  · exact hN i (by omega) _ (SetLike.coe_mem _)
+
+/-- A graded simple idempotent of degree `0` of a ring whose grading is bounded below generates a
+simple left ideal: for a nonzero `s ∈ N ⊆ R e`, if `sₘ` is the top homogeneous component of `s`
+and `g sₘ = e`, then `e g s = e + n'` with `n'` of negative degrees, hence nilpotent, and `e` is a
+left multiple of `e g s ∈ N`. -/
+theorem isSimpleModule_of_isGradedSimpleIdempotent
+    (hbdd : ∃ N : ℤ, ∀ k < N, ∀ x ∈ 𝒜 k, x = 0) {e : R} (he0 : e ∈ 𝒜 0)
+    (heI : IsIdempotentElem e) (hs : IsGradedSimpleIdempotent 𝒜 e) :
+    IsSimpleModule R (Ideal.span {e}) := by
+  classical
+  rw [isSimpleModule_iff_isAtom]
+  refine ⟨fun h => hs.1 (by
+    have : e ∈ Ideal.span {e} := Ideal.subset_span rfl
+    rw [h] at this
+    exact this), fun N hN => ?_⟩
+  by_contra hN0
+  obtain ⟨s, hsN, hs0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hN0
+  have hse : s * e = s := (mem_span_singleton_iff_mul_eq heI).mp (hN.le hsN)
+  -- The top homogeneous component `sₘ` of `s`.
+  have hsupp : (decompose 𝒜 s).support.Nonempty := by
+    by_contra h
+    rw [Finset.not_nonempty_iff_eq_empty] at h
+    exact hs0 (eq_zero_of_decompose_eq_zero fun i => by
+      have : i ∉ (decompose 𝒜 s).support := by rw [h]; exact Finset.notMem_empty i
+      rw [DFinsupp.notMem_support_iff] at this
+      rw [this, ZeroMemClass.coe_zero])
+  set m := (decompose 𝒜 s).support.max' hsupp
+  have htop : ∀ k, m < k → (decompose 𝒜 s k : R) = 0 := fun k hk => by
+    have : k ∉ (decompose 𝒜 s).support := fun hk' =>
+      absurd ((decompose 𝒜 s).support.le_max' k hk') (not_le.mpr hk)
+    rw [DFinsupp.notMem_support_iff] at this
+    rw [this, ZeroMemClass.coe_zero]
+  have hsm0 : (decompose 𝒜 s m : R) ≠ 0 := by
+    have := (decompose 𝒜 s).support.max'_mem hsupp
+    rw [DFinsupp.mem_support_iff] at this
+    exact fun h => this (Subtype.ext h)
+  have hsme : (decompose 𝒜 s m : R) * e = decompose 𝒜 s m := by
+    have := coe_decompose_mul_add_of_right_mem 𝒜 (a := s) (i := m) he0
+    rw [add_zero, hse] at this
+    exact this.symm
+  obtain ⟨g, hg, hgs⟩ := hs.2 (SetLike.coe_mem _) hsme hsm0
+  -- `u = g s = e + n` with `n` of negative degrees.
+  set u := g * s
+  have huN : u ∈ N := N.smul_mem g hsN
+  have hue : u * e = u := by rw [mul_assoc, hse]
+  have hu : ∀ k, -1 < k → (decompose 𝒜 (u - e) k : R) = 0 := by
+    intro k hk
+    have h1 := coe_decompose_mul_add_of_left_mem 𝒜 (b := s) (j := k + m) hg
+    rw [show -m + (k + m) = k by ring] at h1
+    rw [decompose_sub, DFinsupp.sub_apply, AddSubgroupClass.coe_sub, h1]
+    rcases (show k = 0 ∨ 0 < k by omega) with rfl | hk0
+    · rw [zero_add, hgs, decompose_of_mem_same 𝒜 he0, sub_self]
+    · rw [htop _ (by omega), mul_zero, decompose_of_mem_ne 𝒜 he0 (by omega), sub_zero]
+  set n' := e * (u - e)
+  have hn' : ∀ k, -1 < k → (decompose 𝒜 n' k : R) = 0 := by
+    intro k hk
+    have := coe_decompose_mul_add_of_left_mem 𝒜 (b := u - e) (j := k) he0
+    rw [zero_add] at this
+    rw [this, hu k hk, mul_zero]
+  have hnil : IsNilpotent n' := isNilpotent_of_decompose_eq_zero hbdd hn'
+  have hn'e : n' * e = n' := by
+    rw [mul_assoc, sub_mul, hue, heI.eq]
+  have heu : e * u = e + n' := by
+    change e * u = e + e * (u - e)
+    rw [mul_sub, heI.eq, add_sub_cancel]
+  obtain ⟨U, hU⟩ := hnil.isUnit_one_add
+  have hmem : e ∈ N := by
+    have : e = (↑U⁻¹ : R) * (e * u) := by
+      rw [heu, ← hn'e, ← one_add_mul, ← hU, ← mul_assoc, Units.inv_mul, one_mul]
+    rw [this]
+    exact N.smul_mem _ (N.smul_mem e huN)
+  exact hN.2 ((Ideal.span_singleton_le_iff_mem _).mpr hmem)
+
+/-- A graded semisimple ring whose grading is bounded below is semisimple. -/
+theorem isSemisimpleRing_of_isGradedSemisimpleRing (h : IsGradedSemisimpleRing 𝒜)
+    (hbdd : ∃ N : ℤ, ∀ k < N, ∀ x ∈ 𝒜 k, x = 0) : IsSemisimpleRing R := by
+  obtain ⟨l, hl, -, hsum⟩ := h.exists_list_sum_eq_one
+  refine isSemisimpleModule_of_isSemisimpleModule_submodule (s := {x | x ∈ l})
+    (p := fun x => Ideal.span {x}) ?_ ?_
+  · intro x hx
+    obtain ⟨hx0, hxI, hxs⟩ := hl x hx
+    have := isSimpleModule_of_isGradedSimpleIdempotent hbdd hx0 hxI hxs
+    infer_instance
+  · rw [eq_top_iff, ← Ideal.span_singleton_one, Ideal.span, Submodule.span_singleton_le_iff_mem,
+      ← hsum]
+    refine list_sum_mem fun x hx => ?_
+    exact Submodule.mem_iSup_of_mem x (Submodule.mem_iSup_of_mem hx (Ideal.subset_span rfl))
+
+/-- The grading of a finite-dimensional graded algebra over a field is bounded below. -/
+theorem exists_forall_lt_eq_zero_of_finiteDimensional (K : Type*) [Field K] [Algebra K R]
+    [FiniteDimensional K R] (h𝒜 : ∀ k (c : K) {x : R}, x ∈ 𝒜 k → c • x ∈ 𝒜 k) :
+    ∃ N : ℤ, ∀ k < N, ∀ x ∈ 𝒜 k, x = 0 := by
+  classical
+  let S : Set ℤ := {k | ∃ x ∈ 𝒜 k, x ≠ 0}
+  choose v hv hv0 using fun k : S => k.2
+  have hli : LinearIndependent K v := by
+    rw [linearIndependent_iff']
+    intro t c hc i hi
+    have := congrArg (GradedRing.proj 𝒜 i.1) hc
+    rw [map_sum, map_zero, Finset.sum_eq_single i (fun j _ hji => by
+        rw [GradedRing.proj_apply, decompose_of_mem_ne 𝒜 (h𝒜 j.1 (c j) (hv j))
+          (fun h => hji (Subtype.ext h))])
+      (fun hi' => absurd hi hi'), GradedRing.proj_apply,
+      decompose_of_mem_same 𝒜 (h𝒜 i.1 (c i) (hv i))] at this
+    exact (smul_eq_zero.mp this).resolve_right (hv0 i)
+  have hfin : S.Finite := Set.finite_coe_iff.mp hli.finite_of_isNoetherian
+  obtain ⟨b, hb⟩ := hfin.bddBelow
+  refine ⟨b, fun k hk x hx => ?_⟩
+  by_contra hx0
+  exact absurd (hb ⟨x, hx, hx0⟩) (not_le.mpr hk)
+
+/-- For a finite-dimensional graded algebra over a field, graded semisimplicity and
+semisimplicity coincide. -/
+theorem isGradedSemisimpleRing_iff_isSemisimpleRing (K : Type*) [Field K] [Algebra K R]
+    [FiniteDimensional K R] (h𝒜 : ∀ k (c : K) {x : R}, x ∈ 𝒜 k → c • x ∈ 𝒜 k) :
+    IsGradedSemisimpleRing 𝒜 ↔ IsSemisimpleRing R :=
+  ⟨fun h => isSemisimpleRing_of_isGradedSemisimpleRing h
+    (exists_forall_lt_eq_zero_of_finiteDimensional K h𝒜),
+    fun _ => isGradedSemisimpleRing_of_isSemisimpleRing 𝒜⟩
+
+end Bounded
 
 end DG
