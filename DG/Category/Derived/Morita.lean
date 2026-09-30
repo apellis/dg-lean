@@ -316,21 +316,29 @@ theorem moritaEquivalence_inverse (hP : P.IsFullH0) :
         CatModule.DerivedCategory.restrict P.inr :=
   rfl
 
+/-- The functor `LP.inr_! ⋙ P.inl^*` of the Morita equivalence commutes with the shifts. -/
+noncomputable instance moritaEquivalence_functor_commShift (hP : P.IsFullH0) :
+    (moritaEquivalence.{t, w₂} hP).functor.CommShift ℤ :=
+  inferInstanceAs ((CatModule.DerivedCategory.induction.{max u v w t, w₂, max u t} P.inr ⋙
+    CatModule.DerivedCategory.restrict P.inl).CommShift ℤ)
+
 /-- The functor `LP.inr_! ⋙ P.inl^*` of the Morita equivalence is triangulated. -/
-theorem moritaEquivalence_functor_isTriangulated :
-    ((CatModule.DerivedCategory.induction.{max u v w t, w₂, max u t} P.inr :
-      CatModule.DerivedCategory.{max u v w t, max u v w t} P.Corner ⥤
-        CatModule.DerivedCategory.{w₂, max u v w t} P.augment.Corner) ⋙
-      CatModule.DerivedCategory.restrict P.inl).IsTriangulated :=
-  inferInstance
+instance moritaEquivalence_functor_isTriangulated (hP : P.IsFullH0) :
+    (moritaEquivalence.{t, w₂} hP).functor.IsTriangulated :=
+  inferInstanceAs (CatModule.DerivedCategory.induction.{max u v w t, w₂, max u t} P.inr ⋙
+    CatModule.DerivedCategory.restrict P.inl).IsTriangulated
+
+/-- The inverse `LP.inl_! ⋙ P.inr^*` of the Morita equivalence commutes with the shifts. -/
+noncomputable instance moritaEquivalence_inverse_commShift (hP : P.IsFullH0) :
+    (moritaEquivalence.{t, w₂} hP).inverse.CommShift ℤ :=
+  inferInstanceAs ((CatModule.DerivedCategory.induction.{max u v w t, w₂, max w t} P.inl ⋙
+    CatModule.DerivedCategory.restrict P.inr).CommShift ℤ)
 
 /-- The inverse `LP.inl_! ⋙ P.inr^*` of the Morita equivalence is triangulated. -/
-theorem moritaEquivalence_inverse_isTriangulated :
-    ((CatModule.DerivedCategory.induction.{max u v w t, w₂, max w t} P.inl :
-      CatModule.DerivedCategory.{max u v w t, max u v w t} C ⥤
-        CatModule.DerivedCategory.{w₂, max u v w t} P.augment.Corner) ⋙
-      CatModule.DerivedCategory.restrict P.inr).IsTriangulated :=
-  inferInstance
+instance moritaEquivalence_inverse_isTriangulated (hP : P.IsFullH0) :
+    (moritaEquivalence.{t, w₂} hP).inverse.IsTriangulated :=
+  inferInstanceAs (CatModule.DerivedCategory.induction.{max u v w t, w₂, max w t} P.inl ⋙
+    CatModule.DerivedCategory.restrict P.inr).IsTriangulated
 
 /-! #### Compatibility with dg endofunctors preserving the family -/
 

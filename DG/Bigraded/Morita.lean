@@ -178,6 +178,16 @@ noncomputable def weightMoritaEquivalence (h : e.IsFullH0) :
       CatModule.DerivedCategory.{max u t, max u t} (WeightCategory A) :=
   IdempotentFamily.moritaEquivalence.{t, w₂} (e.isFullH0_weightFamily he h)
 
+noncomputable instance weightMoritaEquivalence_functor_commShift (h : e.IsFullH0) :
+    (weightMoritaEquivalence.{t, w₂} he h).functor.CommShift ℤ :=
+  inferInstanceAs ((IdempotentFamily.moritaEquivalence.{t, w₂}
+    (e.isFullH0_weightFamily he h)).functor.CommShift ℤ)
+
+instance weightMoritaEquivalence_functor_isTriangulated (h : e.IsFullH0) :
+    (weightMoritaEquivalence.{t, w₂} he h).functor.IsTriangulated :=
+  inferInstanceAs (IdempotentFamily.moritaEquivalence.{t, w₂}
+    (e.isFullH0_weightFamily he h)).functor.IsTriangulated
+
 /-- The graded Morita equivalence commutes with the internal shifts:
 `F(M)⟨s⟩ ≅ F(M⟨s⟩)`. -/
 noncomputable def weightMoritaEquivalenceInternalShiftIso (h : e.IsFullH0) (s : ℤ) :

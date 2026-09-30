@@ -40,7 +40,9 @@ satisfies `A e A = A`; but `e A e = END(k x ⊕ k y)` is acyclic, so `D(e A e) =
 * `DG.DGIdempotent.family`, `DG.DGIdempotent.IsFullH0`, `DG.DGIdempotent.isFullH0_family`,
   `DG.DGIdempotent.isFullH0_of_one_mem_span`.
 * `DG.DGIdempotent.cornerFunctor`, `DG.DGIdempotent.isQuasiEquivalence_cornerFunctor`.
-* `DG.DGIdempotent.moritaEquivalence : D(e A e) ≌ D(A)`.
+* `DG.DGIdempotent.moritaEquivalence : D(e A e) ≌ D(A)`, with triangulated functor
+  (`DG.DGIdempotent.moritaEquivalence_functor_isTriangulated`), so that it induces an
+  isomorphism of the Grothendieck groups of the compact objects, `K₀(e A e) ≅ K₀(A)`.
 -/
 
 open CategoryTheory
@@ -116,6 +118,23 @@ theorem isFullH0_of_one_mem_span (hneg : ∀ n < 0, grading (M := A) n = ⊥)
   rw [← hπsum, ← hab, hπ1, sub_self]
   exact zero_mem _
 
+/-! ### The one-object comparison is triangulated -/
+
+section SingleObj
+
+variable (B : Type*) [Ring B] [DGAddCommGroup B] [DGRing B]
+  [CatModule.HasDerivedCategory.{w₁, t} (SingleObj B)] [DG.HasDerivedCategory.{w₂, t} B]
+
+noncomputable instance _root_.DG.CatModule.DerivedCategory.singleObjEquivalence_functor_commShift :
+    (CatModule.DerivedCategory.singleObjEquivalence B).functor.CommShift ℤ :=
+  inferInstanceAs ((CatModule.DerivedCategory.toDGDerivedCategory B).CommShift ℤ)
+
+instance _root_.DG.CatModule.DerivedCategory.singleObjEquivalence_functor_isTriangulated :
+    (CatModule.DerivedCategory.singleObjEquivalence B).functor.IsTriangulated :=
+  inferInstanceAs (CatModule.DerivedCategory.toDGDerivedCategory B).IsTriangulated
+
+end SingleObj
+
 /-! ### The corner dg category of `e` and the one-object dg category of `e A e` -/
 
 /-- The dg functor `SingleObj (e A e) ⥤ P.Corner` (for `P = e.family`), `x ↦ x`; it is an
@@ -160,6 +179,24 @@ theorem isQuasiEquivalence_cornerFunctor : IsQuasiEquivalence e.cornerFunctor wh
 
 /-! ### The Morita equivalence -/
 
+section
+
+omit [DGRing A]
+
+open Limits Pretriangulated in
+/-- The composite of two equivalences with triangulated functors has a triangulated functor. -/
+theorem _root_.DG.isTriangulated_trans_functor {C : Type*} {D : Type*} {E : Type*}
+    [Category C] [Category D] [Category E] [HasZeroObject C] [HasZeroObject D] [HasZeroObject E]
+    [Preadditive C] [Preadditive D] [Preadditive E] [HasShift C ℤ] [HasShift D ℤ] [HasShift E ℤ]
+    [∀ n : ℤ, (shiftFunctor C n).Additive] [∀ n : ℤ, (shiftFunctor D n).Additive]
+    [∀ n : ℤ, (shiftFunctor E n).Additive] [Pretriangulated C] [Pretriangulated D]
+    [Pretriangulated E] (F : C ≌ D) (G : D ≌ E) [F.functor.CommShift ℤ] [G.functor.CommShift ℤ]
+    (hF : F.functor.IsTriangulated) (hG : G.functor.IsTriangulated) :
+    (F.trans G).functor.IsTriangulated :=
+  inferInstanceAs (F.functor ⋙ G.functor).IsTriangulated
+
+end
+
 variable [DG.HasDerivedCategory.{w₁, max u t} e.Corner] [DG.HasDerivedCategory.{w₂, max u t} A]
 
 /-- **Morita theory for an idempotent of a dg ring.** For a degree-`0` idempotent cocycle `e` of a
@@ -177,6 +214,29 @@ noncomputable def moritaEquivalence (he : e.IsFullH0) :
     ((CatModule.DerivedCategory.kellerEquivalence.{t} e.isQuasiEquivalence_cornerFunctor).trans
       ((e.family.moritaEquivalence.{t} (e.isFullH0_family he)).trans
         (CatModule.DerivedCategory.singleObjEquivalence A)))
+
+/-- The functor of the Morita equivalence `D(e A e) ≌ D(A)` commutes with the shifts. -/
+noncomputable instance moritaEquivalence_functor_commShift (he : e.IsFullH0) :
+    (e.moritaEquivalence.{t} he).functor.CommShift ℤ := by
+  letI := CatModule.HasDerivedCategory.small.{max u t} (SingleObj e.Corner)
+  letI := (CatModule.DerivedCategory.singleObjEquivalence e.Corner).commShiftInverse ℤ
+  unfold moritaEquivalence
+  infer_instance
+
+/-- The functor of the Morita equivalence `D(e A e) ≌ D(A)` is triangulated. -/
+instance moritaEquivalence_functor_isTriangulated (he : e.IsFullH0) :
+    (e.moritaEquivalence.{t} he).functor.IsTriangulated := by
+  let := CatModule.HasDerivedCategory.small.{max u t} (SingleObj e.Corner)
+  let := (CatModule.DerivedCategory.singleObjEquivalence e.Corner).commShiftInverse ℤ
+  have := (CatModule.DerivedCategory.singleObjEquivalence e.Corner).commShift_of_functor ℤ
+  have : (CatModule.DerivedCategory.singleObjEquivalence e.Corner).IsTriangulated :=
+    Equivalence.IsTriangulated.mk' _ inferInstance
+  unfold moritaEquivalence
+  exact isTriangulated_trans_functor _ _
+    (inferInstanceAs
+      (CatModule.DerivedCategory.singleObjEquivalence e.Corner).inverse.IsTriangulated)
+    (isTriangulated_trans_functor _ _ inferInstance
+      (isTriangulated_trans_functor _ _ inferInstance inferInstance))
 
 end DGIdempotent
 

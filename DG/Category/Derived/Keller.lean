@@ -511,6 +511,34 @@ theorem inductionEquivalence_inverse (hF : IsQuasiFullyFaithful F)
       restrict F :=
   rfl
 
+noncomputable instance inductionEquivalence_functor_commShift (hF : IsQuasiFullyFaithful F)
+    (hR : ∀ N : CatModule.{max u₁ v₁ v₂ w} D, IsAcyclic ((precomp F).obj N) → IsAcyclic N) :
+    (inductionEquivalence hF hR :
+      DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≌
+        DerivedCategory.{w₂, max u₁ v₁ v₂ w} D).functor.CommShift ℤ :=
+  inferInstanceAs ((induction F).CommShift ℤ)
+
+instance inductionEquivalence_functor_isTriangulated (hF : IsQuasiFullyFaithful F)
+    (hR : ∀ N : CatModule.{max u₁ v₁ v₂ w} D, IsAcyclic ((precomp F).obj N) → IsAcyclic N) :
+    (inductionEquivalence hF hR :
+      DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≌
+        DerivedCategory.{w₂, max u₁ v₁ v₂ w} D).functor.IsTriangulated :=
+  inferInstanceAs (induction F).IsTriangulated
+
+noncomputable instance inductionEquivalence_inverse_commShift (hF : IsQuasiFullyFaithful F)
+    (hR : ∀ N : CatModule.{max u₁ v₁ v₂ w} D, IsAcyclic ((precomp F).obj N) → IsAcyclic N) :
+    (inductionEquivalence hF hR :
+      DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≌
+        DerivedCategory.{w₂, max u₁ v₁ v₂ w} D).inverse.CommShift ℤ :=
+  inferInstanceAs ((restrict F).CommShift ℤ)
+
+instance inductionEquivalence_inverse_isTriangulated (hF : IsQuasiFullyFaithful F)
+    (hR : ∀ N : CatModule.{max u₁ v₁ v₂ w} D, IsAcyclic ((precomp F).obj N) → IsAcyclic N) :
+    (inductionEquivalence hF hR :
+      DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≌
+        DerivedCategory.{w₂, max u₁ v₁ v₂ w} D).inverse.IsTriangulated :=
+  inferInstanceAs (restrict F).IsTriangulated
+
 /-- **Keller's theorem** [Keller, *Deriving DG categories*, §9.1]: a quasi-equivalence of dg
 categories `F : C ⥤ D` induces an equivalence of derived categories `LF_! : D(C) ≌ D(D)`, with
 quasi-inverse the restriction `F^*`. Both functors are triangulated. -/
@@ -533,6 +561,30 @@ theorem kellerEquivalence_inverse (hF : IsQuasiEquivalence F) :
         DerivedCategory.{w₂, max u₁ v₁ v₂ w} D).inverse =
       restrict F :=
   rfl
+
+noncomputable instance kellerEquivalence_functor_commShift (hF : IsQuasiEquivalence F) :
+    (kellerEquivalence hF :
+      DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≌
+        DerivedCategory.{w₂, max u₁ v₁ v₂ w} D).functor.CommShift ℤ :=
+  inferInstanceAs ((induction F).CommShift ℤ)
+
+instance kellerEquivalence_functor_isTriangulated (hF : IsQuasiEquivalence F) :
+    (kellerEquivalence hF :
+      DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≌
+        DerivedCategory.{w₂, max u₁ v₁ v₂ w} D).functor.IsTriangulated :=
+  inferInstanceAs (induction F).IsTriangulated
+
+noncomputable instance kellerEquivalence_inverse_commShift (hF : IsQuasiEquivalence F) :
+    (kellerEquivalence hF :
+      DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≌
+        DerivedCategory.{w₂, max u₁ v₁ v₂ w} D).inverse.CommShift ℤ :=
+  inferInstanceAs ((restrict F).CommShift ℤ)
+
+instance kellerEquivalence_inverse_isTriangulated (hF : IsQuasiEquivalence F) :
+    (kellerEquivalence hF :
+      DerivedCategory.{max u₁ v₁ v₂ w, max u₁ v₁ v₂ w} C ≌
+        DerivedCategory.{w₂, max u₁ v₁ v₂ w} D).inverse.IsTriangulated :=
+  inferInstanceAs (restrict F).IsTriangulated
 
 /-- For a quasi-equivalence, derived induction is an equivalence. -/
 theorem induction_isEquivalence (hF : IsQuasiEquivalence F) :
