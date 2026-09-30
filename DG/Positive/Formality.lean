@@ -1,6 +1,7 @@
 import DG.Algebra.Cohomology
 import DG.Category.Derived.Keller
 import DG.Derived.KProjective
+import DG.K0.DGRing
 import DG.Positive.Basic
 
 /-!
@@ -19,6 +20,9 @@ differential, `DG.Cohomology A`) by a zigzag of quasi-isomorphisms of dg rings (
   derived categories, by Keller's theorem (`DG.DGRingHom.derivedEquivalence`) along each step
   of the zigzag; in particular `D(A) ≌ D(H(A))` for `A` formal
   (`DG.IsFormal.nonempty_derivedEquivalence`).
+* `DG.QuasiIsomorphic.nonempty_K0_addEquiv`, `DG.IsFormal.nonempty_K0_addEquiv`:
+  `K₀(A) ≅ K₀(B)` for quasi-isomorphic dg rings (from `DG.DGRing.K0.mapEquivOfIsQuasiIso`), in
+  particular `K₀(A) ≅ K₀(H(A))` for `A` formal.
 * `DG.DGRingHom.IsCohomologySection`: a morphism of dg rings `s : H(A) → A` (that is, a graded
   ring map sending classes to cocycles) which sends every class to a cocycle representing it;
   `DG.DGRingHom.IsCohomologySection.isQuasiIso`: such an `s` is a quasi-isomorphism, and
@@ -138,6 +142,47 @@ theorem IsFormal.nonempty_derivedEquivalence {A : Type u} [Ring A] [DGAddCommGro
     [HasDerivedCategory.{w₂, max u w} (Cohomology A)] :
     Nonempty (DerivedCategory A ≌ DerivedCategory (Cohomology A)) :=
   QuasiIsomorphic.nonempty_derivedEquivalence.{w} h
+
+/-! ### Grothendieck groups -/
+
+/-- Two instances of the derived category (in the universe of the dg ring) give isomorphic `K₀`
+(the identity is a quasi-isomorphism). -/
+noncomputable def DGRing.K0.instanceEquiv (A : Type u) [Ring A] [DGAddCommGroup A] [DGRing A]
+    (I : HasDerivedCategory.{w₁, u} A) (J : HasDerivedCategory.{w₂, u} A) :
+    @DGRing.K0 A _ _ _ I ≃+ @DGRing.K0 A _ _ _ J :=
+  @DGRing.K0.mapEquivOfIsQuasiIso A _ _ _ J A _ _ _ I DGRingHom.id (DGRingHom.isQuasiIso_id A)
+
+theorem nonempty_K0_addEquiv_small {X Y : BundledDGRing.{u}}
+    (h : Relation.EqvGen BundledDGRing.QuasiIsoRel X Y) :
+    ∀ (I : HasDerivedCategory.{u, u} X) (J : HasDerivedCategory.{u, u} Y),
+      Nonempty (@DGRing.K0 X _ _ _ I ≃+ @DGRing.K0 Y _ _ _ J) := by
+  induction h with
+  | rel X Y hXY =>
+    intro I J
+    obtain ⟨f, hf⟩ := hXY
+    exact ⟨(@DGRing.K0.mapEquivOfIsQuasiIso Y _ _ _ J X _ _ _ I f hf)⟩
+  | refl X => exact fun I J => ⟨DGRing.K0.instanceEquiv X I J⟩
+  | symm X Y _ ih => exact fun I J => ⟨(ih J I).some.symm⟩
+  | trans X Y Z _ _ ih₁ ih₂ =>
+    intro I J
+    let K := HasDerivedCategory.small.{u, u} Y
+    exact ⟨(ih₁ I K).some.trans (ih₂ K J).some⟩
+
+/-- Quasi-isomorphic dg rings have isomorphic Grothendieck groups `K₀ = K₀(D^c)`. -/
+theorem QuasiIsomorphic.nonempty_K0_addEquiv {A B : Type u} [Ring A] [DGAddCommGroup A]
+    [DGRing A] [Ring B] [DGAddCommGroup B] [DGRing B] (h : QuasiIsomorphic A B)
+    [I : HasDerivedCategory.{w₁, u} A] [J : HasDerivedCategory.{w₂, u} B] :
+    Nonempty (DGRing.K0 A ≃+ DGRing.K0 B) := by
+  obtain ⟨E⟩ := nonempty_K0_addEquiv_small h (HasDerivedCategory.small.{u, u} A)
+    (HasDerivedCategory.small.{u, u} B)
+  exact ⟨(DGRing.K0.instanceEquiv A I _).trans (E.trans (DGRing.K0.instanceEquiv B _ J))⟩
+
+/-- For a formal dg ring `A`, `K₀(A) ≅ K₀(H(A))` (Roadmap 6.4). -/
+theorem IsFormal.nonempty_K0_addEquiv {A : Type u} [Ring A] [DGAddCommGroup A] [DGRing A]
+    (h : IsFormal A) [HasDerivedCategory.{w₁, u} A]
+    [HasDerivedCategory.{w₂, u} (Cohomology A)] :
+    Nonempty (DGRing.K0 A ≃+ DGRing.K0 (Cohomology A)) :=
+  QuasiIsomorphic.nonempty_K0_addEquiv h
 
 /-! ### The formality criterion -/
 
