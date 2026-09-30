@@ -63,6 +63,7 @@ import DG.Category.Homotopy.HomBimodule
 import DG.Category.Homotopy.HomBimoduleTriangulated
 import DG.Category.Homotopy.HomComp
 import DG.Category.Homotopy.HomShift
+import DG.Category.Homotopy.HomShiftIso
 import DG.Category.Homotopy.Homotopy
 import DG.Category.Homotopy.HomotopyCategory
 import DG.Category.Homotopy.HomotopyShift
