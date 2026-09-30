@@ -1,6 +1,7 @@
 import DG.Compact.CellTower
 import DG.Derived.FiniteCell
 import DG.Derived.Perfect
+import DG.Positive.Schnurer
 import DG.K0.DGCategory
 
 /-!
@@ -15,8 +16,9 @@ perfect derived category of compact objects of `D(A)` (roadmap 5.5).
   (`DG.CellTower`) is compact, and its class in `K₀` of the compact objects is the sum of the
   classes of its cells.
 * `DG.DerivedCategory.isCompact_Q_leftCorner`: `A e` is compact (a direct summand of `A`), for a
-  degree-`0` idempotent cocycle `e`; `DG.DerivedCategory.isCompact_cell`: so are its shifts;
-  `DG.FiniteCellFiltration.isCompact_Q`: finite-cell dg modules are compact (roadmap 5.2).
+  degree-`0` idempotent cocycle `e`. (Its shifts, the cells, and the finite-cell dg modules are
+  compact by `DG.DerivedCategory.isCompact_cell` and `DG.FiniteCellFiltration.isCompact_Q_obj`,
+  roadmap 5.2.)
 * `DG.DGRing.K0 A`, `DG.DGRing.K0.self A = [A]`, `DG.DGRing.K0.leftCorner e = [A e]`.
 * `DG.DGRing.K0.mk_finiteCell`: for a finite-cell module with subquotients `(A eᵢ)⟦nᵢ⟧`,
   `[M] = ∑ᵢ (-1)^{nᵢ} [A eᵢ]`, where `(-1)^{nᵢ}` is `Int.negOnePow nᵢ : ℤˣ` (from
@@ -97,19 +99,7 @@ theorem isCompact_Q_leftCorner (e : DGIdempotent A) :
         congr 1
         exact DGModuleCat.hom_ext_apply fun x => Subtype.ext x.2 } isCompact_Q_self
 
-/-- The cells `(A e)⟦n⟧` are compact in `D(A)`. -/
-theorem isCompact_cell (e : DGIdempotent A) (n : ℤ) : IsCompact.{u} (cell A e n) :=
-  ((isCompact_Q_leftCorner e).shift n).of_iso
-    ((Q.commShiftIso n).app (DGModuleCat.of A e.LeftCorner))
-
 end DerivedCategory
-
-/-- A finite-cell dg module is compact in `D(A)` (roadmap 5.2). -/
-theorem FiniteCellFiltration.isCompact_Q {A : Type u} [Ring A] [DGAddCommGroup A] [DGRing A]
-    [HasDerivedCategory.{w', u} A] {P : Type u} [AddCommGroup P] [DGAddCommGroup P]
-    [Module A P] [DGModule A P] (C : FiniteCellFiltration A P) :
-    IsCompact.{u} (DerivedCategory.Q.obj (DGModuleCat.of A P)) :=
-  C.cellTower.isCompact fun _ _ => DerivedCategory.isCompact_cell _ _
 
 /-! ### The Grothendieck group of a dg ring -/
 
@@ -151,7 +141,7 @@ theorem mk_cell (e : DGIdempotent A) (n : ℤ) :
 with subquotients `(A eᵢ)⟦nᵢ⟧`, then `[P] = ∑ᵢ (-1)^{nᵢ} [A eᵢ]` in `K₀(A)`. -/
 theorem mk_finiteCell {P : Type u} [AddCommGroup P] [DGAddCommGroup P] [Module A P]
     [DGModule A P] (C : FiniteCellFiltration A P) :
-    DG.K0.mk (⟨DerivedCategory.Q.obj (DGModuleCat.of A P), C.isCompact_Q⟩ :
+    DG.K0.mk (⟨DerivedCategory.Q.obj (DGModuleCat.of A P), C.isCompact_Q_obj⟩ :
       PerfectDerivedCategory A) = ∑ i, (C.shift i).negOnePow • leftCorner (C.e i) := by
   rw [C.cellTower.mk_eq_sum fun _ _ => DerivedCategory.isCompact_cell _ _,
     FiniteCellFiltration.cells, List.map_ofFn, List.sum_ofFn]
