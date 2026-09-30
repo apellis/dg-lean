@@ -33,6 +33,7 @@ import DG.Category.Derived.Induction
 import DG.Category.Derived.KProjective
 import DG.Category.Derived.Keller
 import DG.Category.Derived.Localization
+import DG.Category.Derived.Perfect
 import DG.Category.Derived.QuasiIso
 import DG.Category.Derived.Restriction
 import DG.Category.Derived.RestrictionIso
@@ -132,6 +133,7 @@ import DG.Homotopy.ShiftLinear
 import DG.Homotopy.Triangulated
 import DG.K0.Abelian
 import DG.K0.Compact
+import DG.K0.DGCategory
 import DG.K0.Euler
 import DG.K0.Triangulated
 import DG.Lie.Basic
