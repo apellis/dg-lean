@@ -306,8 +306,14 @@ theorem IsPositive.exists_equiv_tmul (hsA : IsSplitSemisimple k A₀) (hsB : IsS
   have := hB.isSemisimple
   have : IsSemisimpleRing A₀ := ζA.isSemisimpleRing
   have : IsSemisimpleRing B₀ := ζB.isSemisimpleRing
-  obtain ⟨l₁, hl₁, hs₁⟩ := exists_list_sum_eq_of_isSemisimpleRing (R := A₀) IsIdempotentElem.one
-  obtain ⟨l₂, hl₂, hs₂⟩ := exists_list_sum_eq_of_isSemisimpleRing (R := B₀) IsIdempotentElem.one
+  obtain ⟨l₁, hl₁', -, hs₁⟩ := exists_list_sum_eq_of_isSemisimpleRing (R := A₀)
+    IsIdempotentElem.one
+  have hl₁ : ∀ s ∈ l₁, IsIdempotentElem s ∧ IsSimpleModule A₀ (Submodule.span A₀ {s}) :=
+    fun s hs => ⟨(hl₁' s hs).1, (hl₁' s hs).2.1⟩
+  obtain ⟨l₂, hl₂', -, hs₂⟩ := exists_list_sum_eq_of_isSemisimpleRing (R := B₀)
+    IsIdempotentElem.one
+  have hl₂ : ∀ s ∈ l₂, IsIdempotentElem s ∧ IsSimpleModule B₀ (Submodule.span B₀ {s}) :=
+    fun s hs => ⟨(hl₂' s hs).1, (hl₂' s hs).2.1⟩
   have hg : IsIdempotentElem (Ψ.symm g.1.toZero) := by
     change Ψ.symm _ * Ψ.symm _ = Ψ.symm _
     rw [← map_mul, g.1.isIdempotentElem_toZero.eq]

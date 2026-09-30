@@ -1,3 +1,4 @@
+import DG.Positive.Category
 import DG.Positive.K0Basis
 import Mathlib.LinearAlgebra.TensorProduct.Basis
 import Mathlib.RingTheory.TensorProduct.Maps
@@ -57,29 +58,6 @@ theorem mul_mul_eq_zero_of_not_idemEquiv {e f : R} (he : IsIdempotentElem e)
     (b := e * a * f) (by rw [← mul_assoc, ← mul_assoc, he.eq]) (by rw [mul_assoc, hf.eq]) hb
   exact h ⟨e * a * f, c, by rw [← mul_assoc, ← mul_assoc, he.eq], by rw [mul_assoc, hf.eq],
     h3, h4, h5, h6⟩
-
-/-- In a semisimple ring, every idempotent is a finite sum of simple idempotents. -/
-theorem exists_list_sum_eq_of_isSemisimpleRing [IsSemisimpleRing R] {g : R}
-    (hg : IsIdempotentElem g) :
-    ∃ l : List R, (∀ s ∈ l, IsIdempotentElem s ∧ IsSimpleModule R (Submodule.span R {s})) ∧
-      l.sum = g := by
-  have : IsArtinianRing R := inferInstance
-  suffices H : ∀ N : Submodule R R, ∀ g : R, IsIdempotentElem g → Submodule.span R {g} = N →
-      ∃ l : List R, (∀ s ∈ l, IsIdempotentElem s ∧ IsSimpleModule R (Submodule.span R {s})) ∧
-        l.sum = g from H _ g hg rfl
-  intro N
-  induction N using WellFoundedLT.induction with
-  | _ N ih =>
-  intro g hg hN
-  by_cases h0 : Submodule.span R {g} = ⊥
-  · exact ⟨[], by simp, by simpa using (Submodule.span_singleton_eq_bot.mp h0).symm⟩
-  obtain ⟨s, t, hs, ht, -, -, hsum, hsimple, hlt⟩ :=
-    exists_isSimpleModule_add_of_isSemisimpleRing hg h0
-  obtain ⟨l, hl, hlsum⟩ := ih _ (hN ▸ hlt) t ht rfl
-  refine ⟨s :: l, fun x hx => ?_, by rw [List.sum_cons, hlsum, hsum]⟩
-  rcases List.mem_cons.mp hx with rfl | hx
-  · exact ⟨hs, hsimple⟩
-  · exact hl x hx
 
 end Ring
 
@@ -329,8 +307,14 @@ variable (k) in
 theorem isSemisimpleRing_tensorProduct [IsSemisimpleRing R₁] [IsSemisimpleRing R₂]
     (h₁ : IsSplitSemisimple k R₁) (h₂ : IsSplitSemisimple k R₂) :
     IsSemisimpleRing (R₁ ⊗[k] R₂) := by
-  obtain ⟨l₁, hl₁, hs₁⟩ := exists_list_sum_eq_of_isSemisimpleRing (R := R₁) IsIdempotentElem.one
-  obtain ⟨l₂, hl₂, hs₂⟩ := exists_list_sum_eq_of_isSemisimpleRing (R := R₂) IsIdempotentElem.one
+  obtain ⟨l₁, hl₁', -, hs₁⟩ := exists_list_sum_eq_of_isSemisimpleRing (R := R₁)
+    IsIdempotentElem.one
+  have hl₁ : ∀ s ∈ l₁, IsIdempotentElem s ∧ IsSimpleModule R₁ (Submodule.span R₁ {s}) :=
+    fun s hs => ⟨(hl₁' s hs).1, (hl₁' s hs).2.1⟩
+  obtain ⟨l₂, hl₂', -, hs₂⟩ := exists_list_sum_eq_of_isSemisimpleRing (R := R₂)
+    IsIdempotentElem.one
+  have hl₂ : ∀ s ∈ l₂, IsIdempotentElem s ∧ IsSimpleModule R₂ (Submodule.span R₂ {s}) :=
+    fun s hs => ⟨(hl₂' s hs).1, (hl₂' s hs).2.1⟩
   refine IsSemisimpleModule.of_sSup_simples_eq_top (eq_top_iff.mpr fun x _ => ?_)
   set M := sSup {m : Submodule (R₁ ⊗[k] R₂) (R₁ ⊗[k] R₂) | IsSimpleModule (R₁ ⊗[k] R₂) m}
   have h1 : (1 : R₁ ⊗[k] R₂) ∈ M := by
