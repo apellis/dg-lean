@@ -85,6 +85,7 @@ import DG.Derived.Basic
 import DG.Derived.Comparison
 import DG.Derived.Coproducts
 import DG.Derived.LocalizationCoproducts
+import DG.Derived.Perfect
 import DG.Derived.QuasiIso
 import DG.Derived.Resolution
 import DG.Derived.Zero
@@ -126,6 +127,7 @@ import DG.Homotopy.Shift
 import DG.Homotopy.ShiftLinear
 import DG.Homotopy.Triangulated
 import DG.K0.Abelian
+import DG.K0.Compact
 import DG.K0.Euler
 import DG.K0.Triangulated
 import DG.Lie.Basic
