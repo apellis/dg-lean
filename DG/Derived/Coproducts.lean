@@ -72,6 +72,7 @@ namespace HomotopyCategory
 
 variable (A : Type u) [Ring A] [DGAddCommGroup A] [DGRing A]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The quasi-isomorphisms of the homotopy category are stable under coproducts. -/
 theorem quasiIso_isStableUnderCoproductsOfShape (J : Type w) :
     (quasiIso.{max v w} A).IsStableUnderCoproductsOfShape J := by
@@ -94,8 +95,7 @@ theorem quasiIso_isStableUnderCoproductsOfShape (J : Type w) :
   have h₂ : Sigma.ι X₂ j ≫ e₂.hom = (coproductCofan X₂).inj j :=
     IsColimit.comp_coconePointUniqueUpToIso_hom _ _ (⟨j⟩ : Discrete J)
   dsimp
-  rw [reassoc_of% h₁, ι_colimMap_assoc, Discrete.natTrans_app,
-    show colimit.ι (Discrete.functor X₂) ⟨j⟩ ≫ e₂.hom = _ from h₂, coproductCofan_inj,
+  rw [reassoc_of% h₁, Sigma.ι_map_assoc, h₂, coproductCofan_inj,
     coproductCofan_inj, ← Functor.map_comp, ← DGModuleCat.ofHom_comp,
     DGModuleHom.toModule_comp_lof, DGModuleCat.ofHom_comp, DGModuleCat.ofHom_hom,
     Functor.map_comp, quotient_map_out]

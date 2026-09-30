@@ -42,6 +42,7 @@ def Decomposition.mapAux : (⨁ i, ℳ i) →+ ⨁ i, (ℳ i).map f :=
     (DirectSum.of (fun i => (ℳ i).map f) i).comp
       (((f.comp (ℳ i).subtype).codRestrict ((ℳ i).map f)) fun x => ⟨x, x.2, rfl⟩)
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem Decomposition.mapAux_of (i : ι) (x : ℳ i) :
     Decomposition.mapAux ℳ f (DirectSum.of _ i x) =
@@ -89,6 +90,7 @@ theorem Decomposition.mapAux_decompose_eq (hker : SetLike.IsHomogeneous ℳ f.ke
 
 /-- The image of a graded abelian group under a surjective additive map with homogeneous kernel
 is graded by the images of the graded pieces. -/
+@[instance_reducible]
 noncomputable def Decomposition.map (hf : Function.Surjective f)
     (hker : SetLike.IsHomogeneous ℳ f.ker) : Decomposition fun i => (ℳ i).map f where
   decompose' y := Decomposition.mapAux ℳ f (decompose ℳ (Function.surjInv hf y))
@@ -115,6 +117,7 @@ variable {M : Type*} [AddCommGroup M]
 
 /-- A graded abelian group as a dg abelian group with `d = 0`. Not an instance, since `M` may
 already carry a differential. -/
+@[instance_reducible]
 def DGAddCommGroup.ofGraded (ℳ : ℤ → AddSubgroup M) [Decomposition ℳ] : DGAddCommGroup M where
   grading := ℳ
   d := 0
@@ -151,9 +154,9 @@ variable (R : Type*) [AddCommGroup R]
 def degreeZeroGrading : ℤ → AddSubgroup R := fun n => if n = 0 then ⊤ else ⊥
 
 @[simp]
-theorem degreeZeroGrading_zero : degreeZeroGrading R 0 = ⊤ := if_pos rfl
+theorem degreeZeroGrading_zero : degreeZeroGrading R 0 = ⊤ := ite_eq_left rfl
 
-theorem degreeZeroGrading_of_ne {n : ℤ} (hn : n ≠ 0) : degreeZeroGrading R n = ⊥ := if_neg hn
+theorem degreeZeroGrading_of_ne {n : ℤ} (hn : n ≠ 0) : degreeZeroGrading R n = ⊥ := ite_eq_right hn
 
 theorem mem_degreeZeroGrading_zero (r : R) : r ∈ degreeZeroGrading R 0 := by simp
 
@@ -187,6 +190,7 @@ instance degreeZeroGrading.decomposition : Decomposition (degreeZeroGrading R) w
 
 /-- `R` concentrated in degree `0`, as a dg abelian group with `d = 0`. Not an instance, since
 `R` may already carry a grading. -/
+@[instance_reducible]
 def DGAddCommGroup.degreeZero : DGAddCommGroup R :=
   DGAddCommGroup.ofGraded (degreeZeroGrading R)
 
@@ -246,11 +250,13 @@ def toIdeal (I : DGIdeal A) : Ideal A := I.toSubmodule
 
 instance : SetLike (DGIdeal A) A where
   coe I := I.toIdeal
-  coe_injective' I J h := by
+  coe_injective I J h := by
     cases I
     cases J
     congr
     exact SetLike.coe_injective h
+
+instance : PartialOrder (DGIdeal A) := .ofSetLike (DGIdeal A) A
 
 @[simp]
 theorem mem_toIdeal {I : DGIdeal A} {a : A} : a ∈ I.toIdeal ↔ a ∈ I := Iff.rfl
@@ -450,11 +456,13 @@ variable {A : Type*} [Ring A] [DGAddCommGroup A] [DGRing A]
 
 instance : SetLike (DGSubring A) A where
   coe S := S.toSubring
-  coe_injective' S T h := by
+  coe_injective S T h := by
     cases S
     cases T
     congr
     exact SetLike.coe_injective h
+
+instance : PartialOrder (DGSubring A) := .ofSetLike (DGSubring A) A
 
 instance : SubringClass (DGSubring A) A where
   zero_mem S := S.toSubring.zero_mem

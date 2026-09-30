@@ -81,14 +81,14 @@ theorem op_of_smul {n : ℤ} (f : Cochain A M M n) {i : ℤ} {x : M} (hx : x ∈
 theorem decompose_op_smul (F : END A M) (n : ℤ) {i : ℤ} {x : M} (hx : x ∈ grading i) :
     (decompose (grading (M := M)) (op F • x) (i + n) : M) = koszulSign (n * i) • F n x := by
   induction F using DirectSum.induction_on with
-  | zero => simp [op_smul_eq_signedEval, Cochain.zero_apply]
+  | zero => simp [Cochain.zero_apply]
   | of k f =>
     have hf := units_smul_mem_grading (koszulSign (k * i)) (f.map_mem hx)
     rw [op_of_smul f hx]
     by_cases hk : k = n
     · subst hk
       rw [DirectSum.of_eq_same, decompose_of_mem_same _ hf]
-    · rw [DirectSum.of_eq_of_ne _ _ _ hk, decompose_of_mem_ne _ hf (by omega),
+    · rw [DirectSum.of_eq_of_ne _ _ _ (Ne.symm hk), decompose_of_mem_ne _ hf (by omega),
         Cochain.zero_apply, smul_zero]
   | add F G hF hG =>
     rw [op_add, add_smul, decompose_add, DirectSum.add_apply, AddMemClass.coe_add, hF, hG,
@@ -211,7 +211,7 @@ variable {B : Type*} (M : Type*) [Ring B] [AddCommGroup M] [DGAddCommGroup M] [M
 def signedRightMul (n : ℤ) (b : B) : M →+ M :=
   liftHomogeneous (grading (M := M)) fun j =>
     koszulSign (n * j) •
-      (DistribMulAction.toAddMonoidHom M (op b)).comp (AddSubgroup.subtype (grading j))
+      (DistribSMul.toAddMonoidHom M (op b)).comp (AddSubgroup.subtype (grading j))
 
 variable {M}
 

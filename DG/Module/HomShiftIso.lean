@@ -40,6 +40,7 @@ namespace DGAddEquiv
 
 variable {M N : Type*} [AddCommGroup M] [DGAddCommGroup M] [AddCommGroup N] [DGAddCommGroup N]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- An isomorphism of dg abelian groups induces isomorphisms on cohomology. -/
 def cohomologyAddEquiv (e : DGAddEquiv M N) (n : ℤ) : cohomology M n ≃+ cohomology N n where
   toFun := cohomology.mapAddMonoidHom e.toAddEquiv.toAddMonoidHom e.map_mem' e.map_d' n

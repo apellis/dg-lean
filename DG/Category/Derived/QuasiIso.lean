@@ -49,7 +49,9 @@ complexes of `ℤ`-modules; `DG.HomotopyCategory.mem_quasiIso_iff_forgetToAddCom
 them with the quasi-isomorphisms of the underlying complexes of abelian groups.
 -/
 
-open CategoryTheory Limits Pretriangulated
+set_option backward.isDefEq.respectTransparency false
+
+open CategoryTheory Limits Pretriangulated ZeroObject
 
 universe w v u
 
@@ -63,16 +65,17 @@ variable {T T' : Type*} [Category T] [Category T'] [HasZeroObject T] [HasZeroObj
   [Pretriangulated T] [Pretriangulated T'] (G : T ⥤ T') [G.CommShift ℤ] [G.IsTriangulated]
 
 /-- Let `G` be a triangulated functor and `S`, `S'` triangulated subcategories (closed under
-isomorphisms) such that `f` is in `S.W` iff `G.map f` is in `S'.W`. Then an object is in `S` iff
+isomorphisms) such that `f` is in `S.trW` iff `G.map f` is in `S'.trW`. Then an object is in `S` iff
 its image is in `S'`. -/
-theorem Triangulated.Subcategory.prop_iff_of_W_iff (S : Triangulated.Subcategory T)
-    (S' : Triangulated.Subcategory T') [S.P.IsClosedUnderIsomorphisms]
-    [S'.P.IsClosedUnderIsomorphisms]
-    (hW : ∀ ⦃X Y : T⦄ (f : X ⟶ Y), S.W f ↔ S'.W (G.map f)) (X : T) :
-    S.P X ↔ S'.P (G.obj X) :=
-  ((S.mem_W_iff_of_distinguished _ (contractible_distinguished₁ X)).symm.trans
+theorem Triangulated.Subcategory.prop_iff_of_W_iff (S : ObjectProperty T)
+    [S.IsTriangulated]
+    (S' : ObjectProperty T') [S'.IsTriangulated] [S.IsClosedUnderIsomorphisms]
+    [S'.IsClosedUnderIsomorphisms]
+    (hW : ∀ ⦃X Y : T⦄ (f : X ⟶ Y), S.trW f ↔ S'.trW (G.map f)) (X : T) :
+    S X ↔ S' (G.obj X) :=
+  ((S.trW_iff_of_distinguished _ (contractible_distinguished₁ X)).symm.trans
     (hW _)).trans
-    (S'.mem_W_iff_of_distinguished _ (G.map_distinguished _ (contractible_distinguished₁ X)))
+    (S'.trW_iff_of_distinguished _ (G.map_distinguished _ (contractible_distinguished₁ X)))
 
 end Aux
 
@@ -84,8 +87,8 @@ namespace HomotopyCategory
 its underlying morphism of complexes of abelian groups is. -/
 theorem quasiIso_map_forget₂_iff
     {K L : _root_.HomotopyCategory (ModuleCat.{w} ℤ) (ComplexShape.up ℤ)} (g : K ⟶ L) :
-    _root_.HomotopyCategory.quasiIso AddCommGrp.{w} (ComplexShape.up ℤ)
-      (((forget₂ (ModuleCat.{w} ℤ) AddCommGrp.{w}).mapHomotopyCategory _).map g) ↔
+    _root_.HomotopyCategory.quasiIso AddCommGrpCat.{w} (ComplexShape.up ℤ)
+      (((forget₂ (ModuleCat.{w} ℤ) AddCommGrpCat.{w}).mapHomotopyCategory _).map g) ↔
     _root_.HomotopyCategory.quasiIso (ModuleCat.{w} ℤ) (ComplexShape.up ℤ) g := by
   obtain ⟨K⟩ := K
   obtain ⟨L⟩ := L
@@ -100,7 +103,7 @@ variable {A : Type u} [Ring A] [DGAddCommGroup A] [DGRing A]
 /-- The quasi-isomorphisms of `H(A)` are the morphisms whose underlying morphism of complexes of
 abelian groups is a quasi-isomorphism. -/
 theorem mem_quasiIso_iff_forgetToAddCommGrp {X Y : HomotopyCategory.{w} A} (f : X ⟶ Y) :
-    quasiIso A f ↔ _root_.HomotopyCategory.quasiIso AddCommGrp.{w} (ComplexShape.up ℤ)
+    quasiIso A f ↔ _root_.HomotopyCategory.quasiIso AddCommGrpCat.{w} (ComplexShape.up ℤ)
       ((forgetToAddCommGrp A).map f) :=
   (quasiIso_map_forget₂_iff _).symm
 
@@ -108,12 +111,12 @@ variable (A) in
 /-- The acyclic objects of `H(A)` are the objects whose underlying complex of abelian groups is
 acyclic. -/
 theorem mem_subcategoryAcyclic_iff_forgetToAddCommGrp (X : HomotopyCategory.{w} A) :
-    (subcategoryAcyclic A).P X ↔
-      (_root_.HomotopyCategory.subcategoryAcyclic AddCommGrp.{w}).P
+    (subcategoryAcyclic A) X ↔
+      (_root_.HomotopyCategory.subcategoryAcyclic AddCommGrpCat.{w})
         ((forgetToAddCommGrp A).obj X) :=
   Triangulated.Subcategory.prop_iff_of_W_iff (forgetToAddCommGrp A) _ _ (fun _ _ f => by
     rw [← quasiIso_eq_subcategoryAcyclic_W,
-      ← _root_.HomotopyCategory.quasiIso_eq_subcategoryAcyclic_W]
+      ← _root_.HomotopyCategory.quasiIso_eq_trW_subcategoryAcyclic]
     exact mem_quasiIso_iff_forgetToAddCommGrp f) X
 
 end HomotopyCategory
@@ -154,25 +157,29 @@ variable (C)
 evaluation at every object is a quasi-isomorphism of complexes of abelian groups, i.e. which
 induce isomorphisms on the cohomology of the values at all objects. -/
 def quasiIso : MorphismProperty (HomotopyCategory.{w} C) := fun _ _ f =>
-  ∀ X : C, _root_.HomotopyCategory.quasiIso AddCommGrp.{w} (ComplexShape.up ℤ) ((eval X).map f)
+  ∀ X : C, _root_.HomotopyCategory.quasiIso AddCommGrpCat.{w} (ComplexShape.up ℤ) ((eval X).map f)
 
 /-- The triangulated subcategory of acyclic objects of the homotopy category of dg modules over
 `C`: the objects whose evaluation at every object of `C` is an acyclic complex. -/
-def subcategoryAcyclic : Triangulated.Subcategory (HomotopyCategory.{w} C) :=
-  Triangulated.Subcategory.mk'
-    (fun M => ∀ X : C,
-      (_root_.HomotopyCategory.subcategoryAcyclic AddCommGrp.{w}).P ((eval X).obj M))
-    (fun X => (_root_.HomotopyCategory.subcategoryAcyclic _).P.prop_of_iso
-      (eval X).mapZeroObject.symm (_root_.HomotopyCategory.subcategoryAcyclic _).zero)
-    (fun M n hM X => (_root_.HomotopyCategory.subcategoryAcyclic _).P.prop_of_iso
+def subcategoryAcyclic : ObjectProperty (HomotopyCategory.{w} C) :=
+  fun M => ∀ X : C,
+    (_root_.HomotopyCategory.subcategoryAcyclic AddCommGrpCat.{w}) ((eval X).obj M)
+
+instance : (subcategoryAcyclic.{w} C).IsTriangulated where
+  exists_zero := ⟨0, CategoryTheory.Limits.isZero_zero _, fun X =>
+    (_root_.HomotopyCategory.subcategoryAcyclic _).prop_of_iso
+      (eval X).mapZeroObject.symm (_root_.HomotopyCategory.subcategoryAcyclic _).prop_zero⟩
+  isStableUnderShiftBy n := ⟨fun M hM X =>
+    (_root_.HomotopyCategory.subcategoryAcyclic _).prop_of_iso
       (((eval X).commShiftIso n).app M).symm
-      ((_root_.HomotopyCategory.subcategoryAcyclic _).shift _ n (hM X)))
-    (fun T hT h₁ h₃ X => (_root_.HomotopyCategory.subcategoryAcyclic _).ext₂ _
+      ((_root_.HomotopyCategory.subcategoryAcyclic _).le_shift n _ (hM X))⟩
+  ext₂' T hT h₁ h₃ := ObjectProperty.le_isoClosure _ _ (fun X =>
+    (_root_.HomotopyCategory.subcategoryAcyclic _).ext_of_isTriangulatedClosed₂ _
       ((eval X).map_distinguished T hT) (h₁ X) (h₃ X))
 
-instance : (subcategoryAcyclic.{w} C).P.IsClosedUnderIsomorphisms := by
-  dsimp only [subcategoryAcyclic]
-  infer_instance
+instance : (subcategoryAcyclic.{w} C).IsClosedUnderIsomorphisms where
+  of_iso e h X := (_root_.HomotopyCategory.subcategoryAcyclic _).prop_of_iso
+    ((eval X).mapIso e) (h X)
 
 variable {C}
 
@@ -182,7 +189,7 @@ theorem mem_quasiIso_iff {M N : HomotopyCategory.{w} C} (f : M ⟶ N) :
 
 /-- An object is acyclic iff its cohomology at every object vanishes. -/
 theorem mem_subcategoryAcyclic_iff (M : HomotopyCategory.{w} C) :
-    (subcategoryAcyclic C).P M ↔ ∀ (X : C) (n : ℤ), IsZero ((cohomologyFunctor X n).obj M) :=
+    (subcategoryAcyclic C) M ↔ ∀ (X : C) (n : ℤ), IsZero ((cohomologyFunctor X n).obj M) :=
   forall_congr' fun _ => _root_.HomotopyCategory.mem_subcategoryAcyclic_iff _
 
 variable (C)
@@ -190,21 +197,21 @@ variable (C)
 /-- A morphism of the homotopy category is a quasi-isomorphism iff its cone is acyclic, i.e.
 the quasi-isomorphisms are the class of morphisms `W` attached to the triangulated subcategory
 of acyclic objects. -/
-theorem quasiIso_eq_subcategoryAcyclic_W : quasiIso.{w} C = (subcategoryAcyclic C).W := by
+theorem quasiIso_eq_subcategoryAcyclic_W : quasiIso.{w} C = (subcategoryAcyclic C).trW := by
   ext M N f
   obtain ⟨Z, g, h, hT⟩ := distinguished_cocone_triangle f
-  refine Iff.trans ?_ ((subcategoryAcyclic C).mem_W_iff_of_distinguished _ hT).symm
+  refine Iff.trans ?_ ((subcategoryAcyclic C).trW_iff_of_distinguished _ hT).symm
   refine forall_congr' fun X => ?_
-  rw [_root_.HomotopyCategory.quasiIso_eq_subcategoryAcyclic_W]
-  exact (_root_.HomotopyCategory.subcategoryAcyclic _).mem_W_iff_of_distinguished _
+  rw [_root_.HomotopyCategory.quasiIso_eq_trW_subcategoryAcyclic]
+  exact (_root_.HomotopyCategory.subcategoryAcyclic _).trW_iff_of_distinguished _
     ((eval X).map_distinguished _ hT)
 
 /-- The acyclic objects form a thick subcategory: it is triangulated and closed under direct
 summands (retracts). -/
-theorem isThick_subcategoryAcyclic : IsThick (subcategoryAcyclic.{w} C).P where
-  zero := (subcategoryAcyclic C).zero
-  shift := (subcategoryAcyclic C).shift
-  ext₂ := (subcategoryAcyclic C).ext₂
+theorem isThick_subcategoryAcyclic : IsThick (subcategoryAcyclic.{w} C) where
+  zero := (subcategoryAcyclic C).prop_zero
+  shift X n := (subcategoryAcyclic C).le_shift n X
+  ext₂ := (subcategoryAcyclic C).ext_of_isTriangulatedClosed₂
   retract {M N} e hN := by
     rw [mem_subcategoryAcyclic_iff] at hN ⊢
     intro X n
@@ -255,8 +262,8 @@ theorem mem_quasiIso_iff_evalEnd {M N : HomotopyCategory.{w} C} (f : M ⟶ N) :
 /-- An object is acyclic iff its evaluation at every object is an acyclic dg module over the
 endomorphism dg ring. -/
 theorem mem_subcategoryAcyclic_iff_evalEnd (M : HomotopyCategory.{w} C) :
-    (subcategoryAcyclic C).P M ↔
-      ∀ X : C, (DG.HomotopyCategory.subcategoryAcyclic (End X)).P ((evalEnd X).obj M) :=
+    (subcategoryAcyclic C) M ↔
+      ∀ X : C, (DG.HomotopyCategory.subcategoryAcyclic (End X)) ((evalEnd X).obj M) :=
   forall_congr' fun X =>
     (DG.HomotopyCategory.mem_subcategoryAcyclic_iff_forgetToAddCommGrp (End X) _).symm
 
@@ -269,7 +276,7 @@ theorem quotient_map_mem_quasiIso_iff {M N : CatModule.{w} C} (f : M ⟶ N) :
 
 /-- A dg module is in the subcategory of acyclic objects iff it is acyclic. -/
 theorem quotient_obj_mem_subcategoryAcyclic_iff (M : CatModule.{w} C) :
-    (subcategoryAcyclic C).P ((quotient C).obj M) ↔ IsAcyclic M :=
+    (subcategoryAcyclic C) ((quotient C).obj M) ↔ IsAcyclic M :=
   (mem_subcategoryAcyclic_iff_evalEnd _).trans (forall_congr' fun X =>
     DG.HomotopyCategory.quotient_obj_mem_subcategoryAcyclic_iff ((CatModule.eval X).obj M))
 
@@ -278,7 +285,7 @@ mapping cone is acyclic. -/
 theorem quotient_map_mem_quasiIso_iff_isAcyclic_cone {M N : CatModule.{w} C} (f : M ⟶ N) :
     quasiIso C ((quotient C).map f) ↔ IsAcyclic (cone f) := by
   rw [quasiIso_eq_subcategoryAcyclic_W, ← quotient_obj_mem_subcategoryAcyclic_iff]
-  exact (subcategoryAcyclic C).mem_W_iff_of_distinguished _ (triangleh_distinguished f)
+  exact (subcategoryAcyclic C).trW_iff_of_distinguished _ (triangleh_distinguished f)
 
 end HomotopyCategory
 

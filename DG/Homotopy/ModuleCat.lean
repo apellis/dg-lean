@@ -2,6 +2,7 @@ import Mathlib.CategoryTheory.Linear.Basic
 import Mathlib.CategoryTheory.Preadditive.Biproducts
 import Mathlib.CategoryTheory.Limits.Constructions.FiniteProductsOfBinaryProducts
 import Mathlib.CategoryTheory.ConcreteCategory.Basic
+import Mathlib.CategoryTheory.ConcreteCategory.Forget
 import DG.Algebra.Decompose
 import DG.Module.PUnit
 import DG.Module.Prod
@@ -121,7 +122,7 @@ theorem hom_ext_apply {M N : DGModuleCat.{v} A} {f g : M ⟶ N} (h : ∀ x, f x 
 
 theorem hom_bijective {M N : DGModuleCat.{v} A} :
     Function.Bijective (Hom.hom : (M ⟶ N) → (M →ᵈᵍ[A] N)) where
-  left f g h := by cases f; cases g; simpa using h
+  left f g h := by cases f; cases g; exact congrArg _ h
   right f := ⟨⟨f⟩, rfl⟩
 
 theorem hom_injective {M N : DGModuleCat.{v} A} :

@@ -24,6 +24,8 @@ universe v u
 
 noncomputable section
 
+set_option backward.isDefEq.respectTransparency false
+
 namespace DG
 
 namespace CatModule
@@ -144,10 +146,10 @@ def yonedaHOM : DGAddEquiv (HOM (representable X) M) (M.obj X) :=
     (fun {n x} hx => by
       obtain ⟨z, rfl⟩ := hx
       rw [DirectSum.toAddMonoid_of]
-      simpa using z.map_mem (id_mem_grading X))
+      simpa [yonedaEvalHom] using z.map_mem (id_mem_grading X))
     (fun x => by
       induction x using DirectSum.induction_on with
-      | zero => simp only [d_zero, map_zero]
+      | zero => simp only [map_zero]
       | of n z =>
         rw [HOM.d_of, DirectSum.toAddMonoid_of, DirectSum.toAddMonoid_of]
         change (δ n (n + 1) z).app X (𝟙 X) = d (z.app X (𝟙 X))

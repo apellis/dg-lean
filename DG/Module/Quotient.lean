@@ -43,9 +43,9 @@ theorem decompose_mem_closure {T : Set M} (hT : ∀ x ∈ T, ∃ n, x ∈ gradin
       exact AddSubgroup.subset_closure hx
     · rw [decompose_of_mem_ne _ hk hkn]
       exact zero_mem _
-  | one => simpa using zero_mem (AddSubgroup.closure T)
-  | mul x y _ _ hx hy => simpa [decompose_add] using add_mem hx hy
-  | inv x _ hx =>
+  | zero => simp
+  | add x y _ _ hx hy => simpa [decompose_add] using add_mem hx hy
+  | neg x _ hx =>
     rw [decompose_neg, ← zero_sub, DirectSum.sub_apply]
     simpa using neg_mem hx
 
@@ -57,9 +57,9 @@ theorem IsDGAddSubgroup.closure {T : Set M} (hT : ∀ x ∈ T, ∃ n, x ∈ grad
   d_mem {x} hx := by
     induction hx using AddSubgroup.closure_induction with
     | mem x hx => exact hd x hx
-    | one => rw [d_zero]; exact zero_mem _
-    | mul x y _ _ hx hy => rw [d_add]; exact add_mem hx hy
-    | inv x _ hx => rw [d_neg]; exact neg_mem hx
+    | zero => rw [d_zero]; exact zero_mem _
+    | add x y _ _ hx hy => rw [d_add]; exact add_mem hx hy
+    | neg x _ hx => rw [d_neg]; exact neg_mem hx
 
 namespace DGAddCommGroup
 
@@ -77,6 +77,7 @@ noncomputable instance quotientDecomposition : Decomposition (quotientGrading S)
       rw [QuotientAddGroup.ker_mk'] at hx ⊢
       exact hS.decompose_mem hx i
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The quotient of a dg abelian group by a dg subgroup is a dg abelian group, with
 `(M ⧸ S)ⁿ` the image of `Mⁿ` and the induced differential. -/
 noncomputable instance quotient : DGAddCommGroup (M ⧸ S) where

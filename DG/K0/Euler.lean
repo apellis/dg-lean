@@ -80,7 +80,7 @@ theorem finsum_eq_sum_range (f : ℤ → G) (a : ℤ) (m : ℕ)
     · by_contra h
       exact hn (hf n (by omega))
     · by_contra h
-      exact hn (hf n (by simp [e] at h; omega))
+      exact hn (hf n (by change ¬a + ((n - a).toNat : ℤ) = n at h; omega))
 
 /-- Telescoping of an alternating sum: if `x n = h n + c (n - 1) + c n` for all `n`, then
 `Σᵢ (-1)^(a+i) x (a+i) = Σᵢ (-1)^(a+i) h (a+i) + (-1)^a c (a-1) - (-1)^(a+m) c (a+m-1)`,

@@ -130,6 +130,7 @@ theorem eqToHom_shift_apply {a b : ℤ} (h : a = b) (M : DGModuleCat.{v} A)
   subst h
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The shift on dg modules: `M⟦n⟧ = Shift n M`. -/
 instance hasShift : HasShift (DGModuleCat.{v} A) ℤ :=
   hasShiftMk _ _
@@ -190,6 +191,7 @@ theorem shiftFunctorAdd_inv_app_apply (a b : ℤ) (M : DGModuleCat.{v} A)
     ((shiftFunctorAdd (DGModuleCat.{v} A) a b).inv.app M) x =
       Shift.mk (a + b) (unmk a (unmk b x)) := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 theorem shiftFunctorComm_hom_app_apply (a b : ℤ) (M : DGModuleCat.{v} A)
     (x : Shift b (Shift a M)) :
     ((shiftFunctorComm (DGModuleCat.{v} A) a b).hom.app M) x =
@@ -247,9 +249,8 @@ instance : (DGModuleCat.homotopic.{v} A).IsCompatibleWithShift ℤ :=
   ⟨fun n _ _ _ _ h => Homotopic.shift h n⟩
 
 /-- The shift on the homotopy category, induced by the shift on dg modules. -/
-noncomputable instance hasShift : HasShift (HomotopyCategory.{v} A) ℤ := by
-  dsimp only [HomotopyCategory]
-  infer_instance
+noncomputable instance hasShift : HasShift (HomotopyCategory.{v} A) ℤ :=
+  HasShift.quotient (DGModuleCat.homotopic.{v} A) ℤ
 
 /-- The quotient functor from dg modules to the homotopy category commutes with the shift. -/
 noncomputable instance commShiftQuotient : (quotient A).CommShift ℤ :=
@@ -353,8 +354,8 @@ theorem forgetCommShiftIso_hom_app_f_apply (n : ℤ) (M : DGModuleCat.{v} A) (i 
 
 /-- The forgetful functor from dg modules to cochain complexes commutes with the shifts. -/
 instance forgetCommShift : (forget R A).CommShift ℤ where
-  iso := forgetCommShiftIso R
-  zero := by
+  commShiftIso := forgetCommShiftIso R
+  commShiftIso_zero := by
     ext M : 3
     rw [Functor.CommShift.isoZero_hom_app]
     ext i x : 3
@@ -363,7 +364,7 @@ instance forgetCommShift : (forget R A).CommShift ℤ where
       CochainComplex.shiftFunctorZero_inv_app_f]
     exact (forget_obj_XIsoOfEq_hom_apply R M (show i = i + 0 by omega)
       ((((forget R A).map ((shiftFunctorZero (DGModuleCat.{v} A) ℤ).hom.app M)).f i).hom x)).symm
-  add a b := by
+  commShiftIso_add a b := by
     ext M : 3
     rw [Functor.CommShift.isoAdd_hom_app]
     ext i x : 3

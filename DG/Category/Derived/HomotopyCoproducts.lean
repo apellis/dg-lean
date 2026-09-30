@@ -29,6 +29,8 @@ As for `DG.CatModule` (`DG/Category/Coproducts.lean`), coproducts indexed by `J 
 constructed in `HomotopyCategory.{max w w'} C`.
 -/
 
+set_option backward.isDefEq.respectTransparency false
+
 open CategoryTheory Limits DirectSum
 
 universe w w' v u
@@ -78,6 +80,7 @@ theorem Homotopic.of_directSum {φ ψ : directSum F ⟶ N}
   rw [Homotopic.iff_sub]
   choose c hc using fun j => mem_nullHomotopic_iff_exists.mp (Homotopic.iff_sub.mp (h j))
   refine mem_nullHomotopic_iff_exists.mpr ⟨Cochain.directSumDesc c, Cochain.ext fun X x => ?_⟩
+  change (φ - ψ).app X x = (δ (-1) 0 (Cochain.directSumDesc c)).app X x
   induction x using DirectSum.induction_on with
   | zero => simp only [map_zero]
   | of j y =>
@@ -111,10 +114,9 @@ theorem coproductCofan_inj (j : J) :
 
 /-- The direct sum is a coproduct in the homotopy category. -/
 noncomputable def isColimitCoproductCofan : IsColimit (coproductCofan X) :=
-  mkCofanColimit _
+  Cofan.IsColimit.mk _
     (fun t => (quotient C).map (directSumDesc fun j => Quot.out (t.inj j)))
     (fun t j => by
-      dsimp only
       rw [coproductCofan_inj, ← Functor.map_comp, directSumι_desc, quotient_map_out])
     (fun t m hm => by
       obtain ⟨m, rfl⟩ := (quotient C).map_surjective m
@@ -142,7 +144,7 @@ variable (C)
 /-- The homotopy category of dg modules has arbitrary coproducts. -/
 instance hasCoproducts : HasCoproducts.{w'} (HomotopyCategory.{max w w'} C) := fun J =>
   { has_colimit := fun K => by
-      letI := Classical.decEq J
+      let := Classical.decEq J
       exact hasColimit_of_iso (Discrete.natIsoFunctor (F := K)) }
 
 instance hasCoproducts' : HasCoproducts.{w} (HomotopyCategory.{w} C) :=
@@ -152,7 +154,7 @@ instance hasCoproducts' : HasCoproducts.{w} (HomotopyCategory.{w} C) :=
 instance quotient_preservesColimitsOfShape_discrete (J : Type w') :
     PreservesColimitsOfShape (Discrete J) (quotient.{max w w'} C) where
   preservesColimit {K} := by
-    letI := Classical.decEq J
+    let := Classical.decEq J
     exact preservesColimit_of_iso_diagram (quotient C) (Discrete.natIsoFunctor (F := K)).symm
 
 end HomotopyCategory

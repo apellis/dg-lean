@@ -82,6 +82,7 @@ instance : DGAddCommGroup (coneObj f X) where
 
 end coneObj
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The mapping cone of a morphism `f : M ⟶ N` of dg modules over `C`: the values
 `(M⟦1⟧) X × N X` with the differential `d (x, y) = (-d x, f x + d y)` and the componentwise
 action. -/
@@ -89,7 +90,7 @@ def cone (f : M ⟶ N) : CatModule.{w} C where
   obj X := coneObj f X
   act := AddMonoidHom.mk'
     (fun g => AddMonoidHom.prodMap ((shift 1 M).act g) (N.act g)) fun g g' => by
-      ext <;> simp
+      ext <;> simp [AddMonoidHom.add_apply]
   act_mem' hg hp := Prod.mem_grading.mpr
     ⟨smul_mem_grading hg (Prod.mem_grading.mp hp).1, smul_mem_grading hg (Prod.mem_grading.mp hp).2⟩
   act_id' _ p := Prod.ext (id_smul (M := shift 1 M) p.1) (id_smul (M := N) p.2)
@@ -188,7 +189,7 @@ theorem sndAddHom_d (p : (cone f).obj X) :
 
 theorem d_inlAddHom (x : (shift 1 M).obj X) :
     d (inlAddHom f X x) = inlAddHom f X (d x) + (inr f).app X (f.app X (shift.unmk 1 x)) :=
-  ext (by simp [fstHom_d]) (by simp [sndAddHom_d])
+  ext (by simp) (by simp [sndAddHom_d])
 
 /-! ### Functoriality -/
 

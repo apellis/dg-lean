@@ -8,7 +8,6 @@ import DG.Module.HomLinear
 A *dg Lie algebra* over a commutative ring `R` is a complex of `R`-modules `L` (a dg abelian group
 whose graded pieces are `R`-submodules and whose differential is `R`-linear) with an `R`-bilinear
 bracket `[-, -]` of degree `0` such that, for homogeneous `x ∈ Lⁱ`, `y ∈ Lʲ`,
-
 * graded antisymmetry: `[x, y] = -(-1)^(i j) • [y, x]`;
 * graded Jacobi identity, in Leibniz form: `[x, [y, z]] = [[x, y], z] + (-1)^(i j) • [y, [x, z]]`
   (`ad x` is a derivation of degree `i`); the cyclic form is `DG.DGLieAlgebra.jacobi_cyclic`;
@@ -62,13 +61,13 @@ theorem DGAlgebra.oddPart_of_odd {i : ℤ} {a : A} (ha : a ∈ grading i) (hi : 
     DGAlgebra.oddPart R A a = a := by
   rw [DGAlgebra.oddPart, LinearMap.comp_apply, LinearEquiv.coe_coe, decomposeLinearEquiv_apply,
     decompose_of_mem (DGAlgebra.gradingSubmodule R A) (i := i) ha, ← lof_eq_of R,
-    toModule_lof, if_pos hi, Submodule.subtype_apply]
+    toModule_lof, ite_eq_left hi, Submodule.subtype_apply]
 
 theorem DGAlgebra.oddPart_of_even {i : ℤ} {a : A} (ha : a ∈ grading i) (hi : Even i) :
     DGAlgebra.oddPart R A a = 0 := by
   rw [DGAlgebra.oddPart, LinearMap.comp_apply, LinearEquiv.coe_coe, decomposeLinearEquiv_apply,
     decompose_of_mem (DGAlgebra.gradingSubmodule R A) (i := i) ha, ← lof_eq_of R,
-    toModule_lof, if_neg (Int.not_odd_iff_even.mpr hi), LinearMap.zero_apply]
+    toModule_lof, ite_eq_right (Int.not_odd_iff_even.mpr hi), LinearMap.zero_apply]
 
 end OddPart
 
@@ -172,7 +171,7 @@ theorem jacobi_cyclic {i j k : ℤ} {x y z : L} (hx : x ∈ grading i) (hy : y �
   rcases units_cases (koszulSign (i * j)) with h₁ | h₁ <;>
   rcases units_cases (koszulSign (i * k)) with h₂ | h₂ <;>
   rcases units_cases (koszulSign (j * k)) with h₃ | h₃ <;>
-  simp only [h₁, h₂, h₃, smul_add, smul_neg, mul_one, one_mul, neg_mul, mul_neg, neg_neg,
+  simp only [h₁, h₂, h₃, smul_add, smul_neg, mul_one, mul_neg, neg_neg,
     Units.neg_smul, one_smul] <;>
   abel
 
@@ -238,7 +237,7 @@ theorem DGAlgebra.commutator_jacobi {i j : ℤ} {a b : A} (ha : a ∈ grading i)
         koszulSign (i * j) • DGAlgebra.commutator R A b (DGAlgebra.commutator R A a c) := by
   induction c using induction_on with
   | h_zero => simp
-  | h_add c c' hc hc' => simp only [map_add, LinearMap.add_apply, hc, hc', smul_add]; abel
+  | h_add c c' hc hc' => simp only [map_add, hc, hc', smul_add]; abel
   | h_homogeneous c =>
     obtain ⟨c, hc⟩ := c
     rename_i k
@@ -253,7 +252,7 @@ theorem DGAlgebra.commutator_jacobi {i j : ℤ} {a b : A} (ha : a ∈ grading i)
     rcases units_cases (koszulSign (i * j)) with h₁ | h₁ <;>
     rcases units_cases (koszulSign (i * k)) with h₂ | h₂ <;>
     rcases units_cases (koszulSign (j * k)) with h₃ | h₃ <;>
-    simp only [h₁, h₂, h₃, smul_add, smul_neg, smul_sub, mul_one, one_mul, neg_mul, mul_neg,
+    simp only [h₁, h₂, h₃, mul_one, mul_neg,
       neg_neg, Units.neg_smul, one_smul] <;>
     abel
 
@@ -262,19 +261,19 @@ theorem DGAlgebra.d_commutator {i : ℤ} {a : A} (ha : a ∈ grading i) (b : A) 
       DGAlgebra.commutator R A (d a) b + koszulSign i • DGAlgebra.commutator R A a (d b) := by
   induction b using induction_on with
   | h_zero => simp
-  | h_add b b' hb hb' => simp only [map_add, LinearMap.add_apply, d_add, hb, hb', smul_add]; abel
+  | h_add b b' hb hb' => simp only [map_add, hb, hb', smul_add]; abel
   | h_homogeneous b =>
     obtain ⟨b, hb⟩ := b
     rename_i j
     simp only
     rw [DGAlgebra.commutator_of_mem ha hb, DGAlgebra.commutator_of_mem (d_mem ha) hb,
       DGAlgebra.commutator_of_mem ha (d_mem hb), d_sub, d_units_smul, d_mul ha, d_mul hb]
-    simp only [mul_units_smul, smul_sub, smul_add, smul_smul, add_mul, mul_add, one_mul, mul_one,
+    simp only [smul_sub, smul_add, smul_smul, add_mul, mul_add, one_mul, mul_one,
       koszulSign_add]
     rcases units_cases (koszulSign (i * j)) with h₁ | h₁ <;>
     rcases units_cases (koszulSign i) with h₂ | h₂ <;>
     rcases units_cases (koszulSign j) with h₃ | h₃ <;>
-    simp only [h₁, h₂, h₃, smul_add, smul_neg, smul_sub, mul_one, one_mul, neg_mul, mul_neg,
+    simp only [h₁, h₂, h₃, mul_one, mul_neg,
       neg_neg, Units.neg_smul, one_smul] <;>
     abel
 
@@ -283,6 +282,7 @@ variable (R A)
 /-- A dg `R`-algebra is a dg Lie algebra under the graded commutator
 `[a, b] = a * b - (-1)^(|a||b|) • (b * a)`. Not an instance: a dg algebra may carry other dg Lie
 algebra structures. -/
+@[instance_reducible]
 noncomputable def DGLieAlgebra.ofDGAlgebra : DGLieAlgebra R A where
   bracketₗ := DGAlgebra.commutator R A
   smul_mem' r _ _ hx := DGAlgebra.smul_mem r hx
@@ -312,6 +312,7 @@ variable (R A : Type*) [CommRing R] [Ring A] [Algebra R A] [DGAddCommGroup A] [D
   [Module R M] [IsScalarTower R A M]
 
 /-- `END_A(M)` is a dg Lie algebra under the graded commutator of its product. -/
+@[instance_reducible]
 noncomputable def dgLieAlgebra : DGLieAlgebra R (END A M) :=
   DGLieAlgebra.ofDGAlgebra R (END A M)
 
@@ -335,6 +336,7 @@ variable (R L : Type*) [CommRing R] [LieRing L] [LieAlgebra R L]
 
 /-- An ordinary Lie algebra, concentrated in degree `0` with zero differential
 (`DG.DGAddCommGroup.degreeZero`), as a dg Lie algebra. -/
+@[instance_reducible]
 def DGLieAlgebra.ofLieAlgebra :
     letI := DGAddCommGroup.degreeZero L
     DGLieAlgebra R L :=

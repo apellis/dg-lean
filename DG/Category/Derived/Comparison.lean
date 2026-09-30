@@ -31,6 +31,8 @@ Both derived categories are given by chosen localizations, with possibly differe
 of morphisms.
 -/
 
+set_option backward.isDefEq.respectTransparency false
+
 open CategoryTheory Category Limits Pretriangulated
 
 universe w'' w' w u

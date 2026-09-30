@@ -67,7 +67,7 @@ omit [Preadditive C] in
 @[reassoc (attr := simp)]
 theorem ι_hocolimShift (n : ℕ) :
     Sigma.ι X n ≫ hocolimShift X f = f n ≫ Sigma.ι X (n + 1) :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 @[reassoc (attr := simp)]
 theorem ι_hocolimDiff (n : ℕ) :
@@ -107,7 +107,8 @@ theorem directSumShift_apply_succ (a : DirectSum ℕ fun n => (K ⟶ X n)) (n : 
     rw [directSumShift_of]
     by_cases h : m = n
     · subst h; simp
-    · rw [DirectSum.of_eq_of_ne _ _ _ (by omega), DirectSum.of_eq_of_ne _ _ _ h, Limits.zero_comp]
+    · rw [DirectSum.of_eq_of_ne _ _ _ (by omega), DirectSum.of_eq_of_ne _ _ _ (Ne.symm h),
+        Limits.zero_comp]
   | add a b ha hb => simp [ha, hb, Preadditive.add_comp]
 
 /-- `1 - shift` is injective on `⨁ n, (K ⟶ X n)`. -/
@@ -141,11 +142,13 @@ theorem apply_eq_of_sub_directSumShift_eq {a : DirectSum ℕ fun n => (K ⟶ X n
     rw [h', DirectSum.of_eq_same]
     rcases n with _ | n
     · simp [directSumShift_apply_zero]
+      exact (Category.comp_id w).symm
     · simp [directSumShift_apply_succ, below n (by omega)]
+      exact (Category.comp_id w).symm
   | succ m hnm ih =>
     rw [h', directSumShift_apply_succ, ih, DirectSum.of_eq_of_ne _ _ _ (by omega), add_zero,
-      ← homOfLE_comp hnm (Nat.le_succ m), Functor.map_comp, Functor.ofSequence_map_homOfLE_succ,
-      Category.assoc]
+      ← homOfLE_comp hnm (Nat.le_succ m), Functor.map_comp, Functor.ofSequence_map_homOfLE_succ]
+    exact Category.assoc _ _ _
 
 end DirectSum
 
@@ -248,6 +251,7 @@ theorem f_comp_hocolimι (n : ℕ) : f n ≫ hocolimι X f (n + 1) = hocolimι X
   simp only [hocolimι, ← Category.assoc] at h ⊢
   exact h.symm
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The morphisms `X n ⟶ hocolim X f` are compatible with the transition maps `X n ⟶ X m`. -/
 @[reassoc]
 theorem map_comp_hocolimι {n m : ℕ} (h : n ≤ m) :
@@ -258,6 +262,7 @@ theorem map_comp_hocolimι {n m : ℕ} (h : n ≤ m) :
     rw [← homOfLE_comp hnm (Nat.le_succ m), Functor.map_comp, Category.assoc,
       Functor.ofSequence_map_homOfLE_succ, f_comp_hocolimι, ih]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The homotopy colimit is a weak colimit: a compatible family of morphisms `X n ⟶ Y` extends
 to a morphism `hocolim X f ⟶ Y`. -/
 theorem hocolim_exists_desc {Y : C} (p : ∀ n, X n ⟶ Y) (hp : ∀ n, f n ≫ p (n + 1) = p n) :
@@ -266,7 +271,7 @@ theorem hocolim_exists_desc {Y : C} (p : ∀ n, X n ⟶ Y) (hp : ∀ n, f n ≫ 
     (by change hocolimDiff X f ≫ Sigma.desc p = 0; ext n; simp [hp])
   refine ⟨g, fun n => ?_⟩
   simp only [hocolimTriangle, Triangle.mk_obj₂, Triangle.mk_obj₃, Triangle.mk_mor₂] at hg
-  rw [hocolimι, Category.assoc, ← hg, Sigma.ι_desc]
+  rw [hocolimι, Category.assoc, ← hg, Sigma.ι_comp_desc]
 
 end Defs
 
@@ -274,6 +279,7 @@ section Compact
 
 variable (X : ℕ → C) (f : ∀ n, X n ⟶ X (n + 1)) [HasCoproduct X] {K : C}
 
+set_option backward.isDefEq.respectTransparency false in
 /-- For `a ∈ ⨁ n, (K ⟶ X n)`, the composition of the corresponding morphism `K ⟶ ∐ X` with
 `∐ X ⟶ hocolim X f` factors through `hocolimι X f n` for some `n`. -/
 theorem exists_coproductComparison_comp_hocolimπ (a : DirectSum ℕ fun n => (K ⟶ X n)) :
@@ -289,6 +295,7 @@ theorem exists_coproductComparison_comp_hocolimπ (a : DirectSum ℕ fun n => (K
     rw [map_add, Preadditive.add_comp, hx, hy, Preadditive.add_comp, Category.assoc,
       Category.assoc, map_comp_hocolimι, map_comp_hocolimι]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Compact objects see homotopy colimits as colimits, II.** For `K` compact, if two morphisms
 `u v : K ⟶ X n` become equal in the homotopy colimit, they become equal in some `X m`, `m ≥ n`
 ([Stacks, Tag 094A]). -/
@@ -317,6 +324,7 @@ theorem hocolim_exists_eq_of_comp_eq (hK : IsCompact.{0} K) {n : ℕ} (u v : K �
 
 variable [HasCountableCoproducts C]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Compact objects see homotopy colimits as colimits, I.** For `K` compact, every morphism
 `K ⟶ hocolim X f` factors through `hocolimι X f n : X n ⟶ hocolim X f` for some `n`
 ([Stacks, Tag 094A]). -/

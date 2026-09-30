@@ -22,10 +22,10 @@ followed by the forgetful functor from `ℤ`-modules to abelian groups.
 ## Main definitions and results
 
 * `DG.HomotopyCategory.forgetToAddCommGrp A : DG.HomotopyCategory A ⥤
-  HomotopyCategory AddCommGrp (ComplexShape.up ℤ)` for a dg ring `A`, a triangulated functor
+  HomotopyCategory AddCommGrpCat (ComplexShape.up ℤ)` for a dg ring `A`, a triangulated functor
   (`DG.HomotopyCategory.forgetToAddCommGrp_isTriangulated`).
 * `DG.CatModule.HomotopyCategory.eval X : HomotopyCategory C ⥤
-  HomotopyCategory AddCommGrp (ComplexShape.up ℤ)`, a triangulated functor
+  HomotopyCategory AddCommGrpCat (ComplexShape.up ℤ)`, a triangulated functor
   (`DG.CatModule.HomotopyCategory.eval_isTriangulated`), induced by the underlying complexes
   of the values at `X` (`DG.CatModule.HomotopyCategory.evalFactors`).
 * `DG.CatModule.HomotopyCategory.cohomologyFunctor X n`: the `n`-th cohomology of the value at
@@ -35,6 +35,8 @@ The forgetful functor for a dg ring `A` is stated for a general dg ring (so that
 structure is the canonical one) and then applied to `End X`, whose `ℤ`-algebra structure is
 otherwise found through the `ℤ`-linear structure of `C`.
 -/
+
+set_option backward.isDefEq.respectTransparency false
 
 open CategoryTheory Category Limits Pretriangulated
 
@@ -48,19 +50,19 @@ variable (A : Type u) [Ring A] [DGAddCommGroup A] [DGRing A]
 
 /-- The underlying complexes of abelian groups of dg `A`-modules, on homotopy categories. -/
 noncomputable def forgetToAddCommGrp :
-    HomotopyCategory.{w} A ⥤ _root_.HomotopyCategory AddCommGrp.{w} (ComplexShape.up ℤ) :=
-  forget ℤ A ⋙ (forget₂ (ModuleCat.{w} ℤ) AddCommGrp.{w}).mapHomotopyCategory _
+    HomotopyCategory.{w} A ⥤ _root_.HomotopyCategory AddCommGrpCat.{w} (ComplexShape.up ℤ) :=
+  forget ℤ A ⋙ (forget₂ (ModuleCat.{w} ℤ) AddCommGrpCat.{w}).mapHomotopyCategory _
 
 noncomputable instance forgetToAddCommGrpCommShift :
     (forgetToAddCommGrp.{w} A).CommShift ℤ :=
   inferInstanceAs ((forget ℤ A ⋙
-    (forget₂ (ModuleCat.{w} ℤ) AddCommGrp.{w}).mapHomotopyCategory _).CommShift ℤ)
+    (forget₂ (ModuleCat.{w} ℤ) AddCommGrpCat.{w}).mapHomotopyCategory _).CommShift ℤ)
 
 /-- The underlying complexes of abelian groups define a triangulated functor on the homotopy
 category of dg `A`-modules. -/
 instance forgetToAddCommGrp_isTriangulated : (forgetToAddCommGrp.{w} A).IsTriangulated :=
   inferInstanceAs (forget ℤ A ⋙
-    (forget₂ (ModuleCat.{w} ℤ) AddCommGrp.{w}).mapHomotopyCategory _).IsTriangulated
+    (forget₂ (ModuleCat.{w} ℤ) AddCommGrpCat.{w}).mapHomotopyCategory _).IsTriangulated
 
 /-- The functor `forgetToAddCommGrp A` is induced by the underlying complexes of abelian groups
 `DG.DGModuleCat.forgetToAddCommGrp A` of dg `A`-modules. -/
@@ -83,7 +85,7 @@ variable {C : Type u} [Category.{v} C] [Preadditive C] [∀ X Y : C, DGAddCommGr
 /-- Evaluation at an object `X`, on homotopy categories: the underlying complex of abelian
 groups of the value at `X`, as a functor to Mathlib's homotopy category. -/
 noncomputable def eval (X : C) :
-    HomotopyCategory.{w} C ⥤ _root_.HomotopyCategory AddCommGrp.{w} (ComplexShape.up ℤ) :=
+    HomotopyCategory.{w} C ⥤ _root_.HomotopyCategory AddCommGrpCat.{w} (ComplexShape.up ℤ) :=
   precomp (endInclusion X) ⋙ toDGHomotopyCategory (End X) ⋙
     DG.HomotopyCategory.forgetToAddCommGrp (End X)
 
@@ -105,8 +107,8 @@ noncomputable def evalFactors (X : C) :
     rfl
 
 /-- The `n`-th cohomology of the value at `X`, as a functor on the homotopy category. -/
-noncomputable def cohomologyFunctor (X : C) (n : ℤ) : HomotopyCategory.{w} C ⥤ AddCommGrp.{w} :=
-  eval X ⋙ _root_.HomotopyCategory.homologyFunctor AddCommGrp.{w} (ComplexShape.up ℤ) n
+noncomputable def cohomologyFunctor (X : C) (n : ℤ) : HomotopyCategory.{w} C ⥤ AddCommGrpCat.{w} :=
+  eval X ⋙ _root_.HomotopyCategory.homologyFunctor AddCommGrpCat.{w} (ComplexShape.up ℤ) n
 
 /-- The cohomology at an object is a homological functor on the homotopy category. -/
 instance cohomologyFunctor_isHomological (X : C) (n : ℤ) :

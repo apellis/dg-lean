@@ -307,6 +307,7 @@ section Graded
 
 /-- The canonical internal grading of an external direct sum `⨁ i, β i`: the `i`-th piece is the
 range of `DirectSum.of β i`. -/
+@[instance_reducible]
 def ofRangeDecomposition {ι : Type*} [DecidableEq ι] (β : ι → Type*) [∀ i, AddCommGroup (β i)] :
     DirectSum.Decomposition (fun i => (DirectSum.of β i).range) where
   decompose' := DirectSum.map fun i => (DirectSum.of β i).rangeRestrict
@@ -578,6 +579,7 @@ variable (M N : Type*) [AddCommGroup M] [DGAddCommGroup M] [AddCommGroup N] [DGA
 
 namespace cohomology
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Cohomology commutes with finite direct sums: `Hⁿ(M × N) ≃+ Hⁿ(M) × Hⁿ(N)`, induced by the
 projections. -/
 def prodAddEquiv (n : ℤ) : cohomology (M × N) n ≃+ cohomology M n × cohomology N n where

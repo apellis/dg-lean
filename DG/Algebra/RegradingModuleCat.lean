@@ -70,7 +70,7 @@ unit. -/
 def dHom (hN : IsPeriodicDGModule hA 𝒩 dN) : Unperiodize ℬ 𝒩 →+ Unperiodize ℬ 𝒩 :=
   DirectSum.toAddMonoid (β := fun j => ↥(lowGrading 𝒩 j)) fun j =>
     (of ℬ 𝒩 (j + 1)).comp
-      (((DistribMulAction.toAddMonoidHom N
+      (((DistribSMul.toAddMonoidHom N
           (Periodize.evenOne ℬ (dShift j) (cast_dShift j))).comp
         (dN.comp (lowGrading 𝒩 j).subtype)).codRestrict _ fun x => dShift_smul_mem hN x.2)
 
@@ -191,6 +191,7 @@ def periodizeDG : ZMod2DGModuleCat.{v} ℬ dA ⥤ PeriodicDGModuleCat.{v} ℬ hA
   map_id X := WithDifferential.hom_ext ((periodize ℬ).map_id X.obj)
   map_comp f g := WithDifferential.hom_ext ((periodize ℬ).map_comp f.hom g.hom)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The functor `N ↦ N⁰ ⊕ N¹` on dg modules. -/
 def unperiodizeDG : PeriodicDGModuleCat.{v} ℬ hA ⥤ ZMod2DGModuleCat.{v} ℬ dA where
   obj X := ⟨(unperiodize ℬ).obj X.obj, Unperiodize.dHom ℬ X.obj.grading X.prop,
@@ -199,7 +200,7 @@ def unperiodizeDG : PeriodicDGModuleCat.{v} ℬ hA ⥤ ZMod2DGModuleCat.{v} ℬ 
     change Unperiodize.map ℬ _ (Unperiodize.dHom ℬ _ X.prop y) =
       Unperiodize.dHom ℬ _ Y.prop (Unperiodize.map ℬ _ y)
     induction y using Unperiodize.induction_on with
-    | zero => simp
+    | zero => erw [map_zero, map_zero]
     | of j x =>
       rw [Unperiodize.dHom_of, Unperiodize.map_of, Unperiodize.map_of, Unperiodize.dHom_of]
       refine Unperiodize.of_eq_of rfl ?_
@@ -226,7 +227,7 @@ theorem unitHom_d (X : ZMod2DGModuleCat.{v} ℬ dA) (m : X.obj) :
           (Periodize.mk X.obj.grading (j.val : ℤ) m (by rwa [intCast_val_zmodTwo]))
     rw [Periodize.dHom_mk, Periodize.evenOne_smul_mk]
     exact Periodize.mk_congr (by rw [Unperiodize.dShift]; ring) rfl _ _
-  | add m m' hm hm' => rw [map_add, map_add, hm, hm', map_add, map_add]
+  | add m m' hm hm' => simp only [map_add, hm, hm']
 
 theorem counitHom_d (X : PeriodicDGModuleCat.{v} ℬ hA)
     (z : Periodize (Unperiodize.grading ℬ X.obj.grading)) :

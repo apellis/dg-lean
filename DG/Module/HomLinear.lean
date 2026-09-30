@@ -117,6 +117,7 @@ variable (R A : Type*) [CommRing R] [Ring A] [Algebra R A] [DGAddCommGroup A] [D
   [DGAlgebra R A] (M : Type*) [AddCommGroup M] [DGAddCommGroup M] [Module A M] [DGModule A M]
   [Module R M] [IsScalarTower R A M]
 
+set_option backward.isDefEq.respectTransparency false in
 variable {R A M} in
 theorem smul_of_mul_of (r : R) {m n : ℤ} (f : Cochain A M M m) (g : Cochain A M M n) :
     (r • DirectSum.of (fun n => Cochain A M M n) m f) * DirectSum.of _ n g =
@@ -124,9 +125,10 @@ theorem smul_of_mul_of (r : R) {m n : ℤ} (f : Cochain A M M m) (g : Cochain A 
   rw [HOM.smul_of, of_mul_of, of_mul_of, HOM.smul_of]
   congr 1
   ext x
-  simp only [Cochain.units_smul_apply, Cochain.comp_apply, Cochain.smul_ground_apply,
+  simp only [Cochain.comp_apply, Cochain.smul_ground_apply,
     Cochain.map_smul_ground, Units.smul_def, smul_comm r]
 
+set_option backward.isDefEq.respectTransparency false in
 variable {R A M} in
 theorem of_mul_smul_of (r : R) {m n : ℤ} (f : Cochain A M M m) (g : Cochain A M M n) :
     DirectSum.of (fun n => Cochain A M M n) m f * (r • DirectSum.of _ n g) =
@@ -134,7 +136,7 @@ theorem of_mul_smul_of (r : R) {m n : ℤ} (f : Cochain A M M m) (g : Cochain A 
   rw [HOM.smul_of, of_mul_of, of_mul_of, HOM.smul_of]
   congr 1
   ext x
-  simp only [Cochain.units_smul_apply, Cochain.comp_apply, Cochain.smul_ground_apply,
+  simp only [Cochain.comp_apply, Cochain.smul_ground_apply,
     Units.smul_def, smul_comm r]
 
 variable {R A M} in

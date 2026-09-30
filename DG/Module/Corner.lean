@@ -48,8 +48,9 @@ theorem mem_gradingComap {n : ℤ} {t : T} : t ∈ gradingComap ι n ↔ ι t �
 
 /-- The map of direct sums induced by `ι` on homogeneous components. -/
 def gradingComapMap : (⨁ n, gradingComap ι n) →+ ⨁ n, grading (M := M) n :=
-  DirectSum.map fun n => (ι.restrict (gradingComap ι n)).codRestrict (grading n) fun t => t.2
+  DirectSum.map fun n => (ι.domRestrict (gradingComap ι n)).codRestrict (grading n) fun t => t.2
 
+set_option backward.isDefEq.respectTransparency false in
 theorem coeAddMonoidHom_gradingComapMap (x : ⨁ n, gradingComap ι n) :
     DirectSum.coeAddMonoidHom (grading (M := M)) (gradingComapMap ι x) =
       ι (DirectSum.coeAddMonoidHom (gradingComap ι) x) := by
@@ -58,6 +59,7 @@ theorem coeAddMonoidHom_gradingComapMap (x : ⨁ n, gradingComap ι n) :
   ext n t
   simp [gradingComapMap]
 
+set_option backward.isDefEq.respectTransparency false in
 include hι hhom in
 theorem isInternal_gradingComap : DirectSum.IsInternal (gradingComap ι) := by
   classical
@@ -83,6 +85,7 @@ include hι hhom in
 /-- Transport a dg structure along an injective additive map `ι : T →+ M` whose image is
 closed under the homogeneous projections, given a differential `dT` on `T` compatible with
 `ι`. The homogeneous components of `T` are the preimages of those of `M`. -/
+@[instance_reducible]
 noncomputable def DGAddCommGroup.ofInjective : DGAddCommGroup T where
   grading := gradingComap ι
   decomposition := (isInternal_gradingComap ι hι hhom).chooseDecomposition
@@ -92,11 +95,12 @@ noncomputable def DGAddCommGroup.ofInjective : DGAddCommGroup T where
     exact d_mem ht
   d_d' t := hι (by rw [hd, hd, d_d, map_zero])
 
+set_option backward.isDefEq.respectTransparency false in
 include hd in
 theorem DGAddCommGroup.ofInjective_coe_decompose (t : T) (n : ℤ) :
     letI := DGAddCommGroup.ofInjective ι hι dT hd hhom
     ι (decompose (grading (M := T)) t n) = decompose (grading (M := M)) (ι t) n := by
-  letI := DGAddCommGroup.ofInjective ι hι dT hd hhom
+  let := DGAddCommGroup.ofInjective ι hι dT hd hhom
   have h : gradingComapMap ι (decompose (grading (M := T)) t) =
       decompose (grading (M := M)) (ι t) := by
     apply (DirectSum.Decomposition.isInternal (grading (M := M))).injective
@@ -128,9 +132,9 @@ theorem isIdempotentElem : IsIdempotentElem e.val := e.mul_self
 /-- The left ideal `A e = {a | a * e = a}`. -/
 def leftIdeal : Ideal A where
   carrier := {a | a * e.val = a}
-  add_mem' ha hb := by simp only [Set.mem_setOf_eq] at *; rw [add_mul, ha, hb]
+  add_mem' ha hb := by simp only [Set.mem_ofPred_eq] at *; rw [add_mul, ha, hb]
   zero_mem' := zero_mul _
-  smul_mem' r a ha := by simp only [Set.mem_setOf_eq, smul_eq_mul] at *; rw [mul_assoc, ha]
+  smul_mem' r a ha := by simp only [Set.mem_ofPred_eq, smul_eq_mul] at *; rw [mul_assoc, ha]
 
 theorem mem_leftIdeal {a : A} : a ∈ e.leftIdeal ↔ a * e.val = a := Iff.rfl
 
@@ -145,10 +149,10 @@ theorem leftIdeal_eq_span : e.leftIdeal = Ideal.span {e.val} := by
 /-- The right ideal `e A = {a | e * a = a}`, as a submodule over `Aᵐᵒᵖ`. -/
 def rightIdeal : Submodule Aᵐᵒᵖ A where
   carrier := {a | e.val * a = a}
-  add_mem' ha hb := by simp only [Set.mem_setOf_eq] at *; rw [mul_add, ha, hb]
+  add_mem' ha hb := by simp only [Set.mem_ofPred_eq] at *; rw [mul_add, ha, hb]
   zero_mem' := mul_zero _
   smul_mem' r a ha := by
-    simp only [Set.mem_setOf_eq, MulOpposite.smul_eq_mul_unop] at *; rw [← mul_assoc, ha]
+    simp only [Set.mem_ofPred_eq, MulOpposite.smul_eq_mul_unop] at *; rw [← mul_assoc, ha]
 
 theorem mem_rightIdeal {a : A} : a ∈ e.rightIdeal ↔ e.val * a = a := Iff.rfl
 
@@ -310,6 +314,7 @@ theorem decompose_mem {a : A} (ha : a ∈ Subsemigroup.corner e.val) (n : ℤ) :
   refine ⟨decompose (grading (M := A)) a n, ?_⟩
   conv_rhs => rw [← he, ← he', e.coe_decompose_val_mul, e.coe_decompose_mul_val, ← mul_assoc]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The differential of `e A e`, the restriction of that of `A`. -/
 def dAddHom : e.Corner →+ e.Corner where
   toFun x := ⟨d x, d_mem e (coe_mem e x)⟩

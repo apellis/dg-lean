@@ -22,6 +22,7 @@ section Internal
 variable {ι : Type*} {T : Type*} [AddCommGroup T] (ℳ : ℤ → AddSubgroup T)
   {P : ι → Type*} [∀ i, AddCommGroup (P i)] [∀ i, DGAddCommGroup (P i)]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If a jointly injective family of additive maps `φ i : T →+ P i` into dg abelian groups sends
 `ℳ n` into degree `n`, then the canonical map `⨁ n, ℳ n → T` is injective. -/
 theorem coeAddMonoidHom_injective_of_forall_eq_zero (φ : ∀ i, T →+ P i)
@@ -62,6 +63,7 @@ theorem coeAddMonoidHom_injective_of_injective {N : Type*} [AddCommGroup N] [DGA
   coeAddMonoidHom_injective_of_forall_eq_zero ℳ (P := fun _ : Unit => N) (fun _ => φ)
     (fun _ => hφ) fun x hx => hinj (by rw [hx (), map_zero])
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Two-map version of `DG.coeAddMonoidHom_injective_of_forall_eq_zero`. -/
 theorem coeAddMonoidHom_injective_of_pair {M N : Type*} [AddCommGroup M] [DGAddCommGroup M]
     [AddCommGroup N] [DGAddCommGroup N] (φ : T →+ M) (ψ : T →+ N)

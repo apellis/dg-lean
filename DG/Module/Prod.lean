@@ -41,7 +41,7 @@ omit [Decomposition 𝒩] in
 private theorem coe_prodDecomposeFst (m : M) :
     DirectSum.coeAddMonoidHom (fun i => (ℳ i).prod (𝒩 i)) (prodDecomposeFst ℳ 𝒩 m) = (m, 0) := by
   induction m using Decomposition.inductionOn ℳ with
-  | zero => simp
+  | zero => rw [map_zero, map_zero]; rfl
   | homogeneous x =>
     simp only [prodDecomposeFst, AddMonoidHom.comp_apply, AddEquiv.coe_toAddMonoidHom,
       decomposeAddEquiv_apply, decompose_coe, toAddMonoid_of, coeAddMonoidHom_of]
@@ -52,7 +52,7 @@ omit [Decomposition ℳ] in
 private theorem coe_prodDecomposeSnd (n : N) :
     DirectSum.coeAddMonoidHom (fun i => (ℳ i).prod (𝒩 i)) (prodDecomposeSnd ℳ 𝒩 n) = (0, n) := by
   induction n using Decomposition.inductionOn 𝒩 with
-  | zero => simp
+  | zero => rw [map_zero, map_zero]; rfl
   | homogeneous y =>
     simp only [prodDecomposeSnd, AddMonoidHom.comp_apply, AddEquiv.coe_toAddMonoidHom,
       decomposeAddEquiv_apply, decompose_coe, toAddMonoid_of, coeAddMonoidHom_of]
@@ -61,6 +61,7 @@ private theorem coe_prodDecomposeSnd (n : N) :
 
 /-- The product of two internal direct sum decompositions:
 `M × N = ⨁ i, ℳ i × 𝒩 i`. -/
+@[instance_reducible]
 def prod : Decomposition fun i => (ℳ i).prod (𝒩 i) where
   decompose' p := prodDecomposeFst ℳ 𝒩 p.1 + prodDecomposeSnd ℳ 𝒩 p.2
   left_inv p := by

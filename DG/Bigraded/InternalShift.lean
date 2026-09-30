@@ -80,11 +80,12 @@ theorem mem_grading_iff' {n : ℤ} {m : InternalShift k M} :
 
 variable [InternalGrading M]
 
+set_option backward.isDefEq.respectTransparency false in
 instance instInternalGrading : InternalGrading (InternalShift k M) where
   wgrading j := wgrading (M := M) (j + k)
   wdecomposition := Decomposition.reindex (wgrading (M := M)) (Equiv.addRight k)
   isHomogeneous_grading' n j m hm := by
-    letI : Decomposition fun j => wgrading (M := M) (Equiv.addRight k j) :=
+    let : Decomposition fun j => wgrading (M := M) (Equiv.addRight k j) :=
       Decomposition.reindex (wgrading (M := M)) (Equiv.addRight k)
     have h := Decomposition.coe_decompose_reindex (wgrading (M := M)) (Equiv.addRight k)
       (unmk k m) j
@@ -104,7 +105,7 @@ theorem mem_wgrading_iff' {j : ℤ} {m : InternalShift k M} :
 theorem coe_decompose_wgrading (m : InternalShift k M) (j : ℤ) :
     unmk k (decompose (wgrading (M := InternalShift k M)) m j : InternalShift k M) =
       (decompose (wgrading (M := M)) (unmk k m) (j + k) : M) := by
-  letI : Decomposition fun j => wgrading (M := M) (Equiv.addRight k j) :=
+  let : Decomposition fun j => wgrading (M := M) (Equiv.addRight k j) :=
     Decomposition.reindex (wgrading (M := M)) (Equiv.addRight k)
   change (decompose (fun j => wgrading (M := M) (Equiv.addRight k j)) (unmk k m) j : M) = _
   exact Decomposition.coe_decompose_reindex (wgrading (M := M)) (Equiv.addRight k) (unmk k m) j

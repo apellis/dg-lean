@@ -3,9 +3,10 @@ import Mathlib.Algebra.Homology.HomologicalComplex
 import Mathlib.Algebra.Lie.IdealOperations
 import Mathlib.Algebra.Lie.OfAssociative
 import Mathlib.GroupTheory.Perm.Fin
-import Mathlib.LinearAlgebra.Alternating.Basic
+import Mathlib.LinearAlgebra.Alternating.Curry
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.Multilinear.Curry
+import Mathlib.LinearAlgebra.Quotient.Basic
 import DG.Basic
 
 /-!
@@ -123,7 +124,7 @@ theorem lieAct_lie {n : ℕ} (x y : 𝔤) (f : MCochain R 𝔤 n) :
     refine ext_curry fun z => ?_
     simp only [curry_lieAct, map_sub, LinearMap.sub_apply, ih]
     rw [leibniz_lie x y z]
-    simp only [map_add, map_sub]
+    simp only [map_add]
     abel
 
 /-- The differential commutes with the coadjoint action. -/
@@ -133,9 +134,9 @@ theorem ceDiff_lieAct {n : ℕ} (x : 𝔤) (f : MCochain R 𝔤 n) :
   | zero => simp
   | succ n ih =>
     refine ext_curry fun z => ?_
-    simp only [curry_ceDiff, curry_lieAct, map_sub, LinearMap.sub_apply, ih, lieAct_lie]
+    simp only [curry_ceDiff, curry_lieAct, map_sub, ih, lieAct_lie]
     rw [← lie_skew x z]
-    simp only [map_neg, LinearMap.neg_apply]
+    simp only [map_neg]
     abel
 
 /-- `d ∘ d = 0` on multilinear cochains. -/
@@ -156,9 +157,9 @@ theorem lieAct_apply {n : ℕ} (x : 𝔤) (f : MCochain R 𝔤 n) (v : Fin n →
   | succ n ih =>
     rw [← Fin.cons_self_tail v]
     conv_lhs => rw [← curryEquiv_apply (lieAct R 𝔤 (n + 1) x f), curry_lieAct]
-    rw [MultilinearMap.sub_apply, ih, Fin.sum_univ_succ]
+    rw [sub_apply, ih, Fin.sum_univ_succ]
     simp only [curryEquiv_apply, Fin.cons_zero, Fin.cons_succ, Fin.update_cons_zero,
-      ← Fin.cons_update, Fin.tail_cons]
+      ← Fin.cons_update]
     abel
 
 /-! ### Alternating cochains -/
@@ -171,7 +172,7 @@ theorem isAlt_zero {n : ℕ} : IsAlt (0 : MCochain R 𝔤 n) := fun _ _ _ _ _ =>
 
 theorem IsAlt.sub {n : ℕ} {f g : MCochain R 𝔤 n} (hf : IsAlt f) (hg : IsAlt g) :
     IsAlt (f - g) := fun v i j h hij => by
-  rw [MultilinearMap.sub_apply, hf v i j h hij, hg v i j h hij, sub_zero]
+  rw [sub_apply, hf v i j h hij, hg v i j h hij, sub_zero]
 
 theorem isAlt_toMultilinearMap {n : ℕ} (ω : 𝔤 [⋀^Fin n]→ₗ[R] R) : IsAlt ω.toMultilinearMap :=
   fun v _ _ h hij => ω.map_eq_zero_of_eq v h hij
@@ -201,15 +202,16 @@ theorem IsAlt.lieAct {n : ℕ} {f : MCochain R 𝔤 n} (hf : IsAlt f) (x : 𝔤)
       congr 1
       ext k
       rcases eq_or_ne k i with rfl | hki
-      · simp [Function.update_apply, hij, h]
+      · simp [h]
       rcases eq_or_ne k j with rfl | hkj
-      · simp [Function.update_apply, hij, hki, h]
-      · simp [Function.update_apply, Equiv.swap_apply_of_ne_of_ne hkj hki, hki, hkj]
+      · simp [hij, hki, h]
+      · simp [Equiv.swap_apply_of_ne_of_ne hkj hki, hki, hkj]
     rw [key, neg_add_cancel]
   · obtain ⟨hkj, hk⟩ := Finset.mem_erase.mp hk
     obtain ⟨hki, -⟩ := Finset.mem_erase.mp hk
-    exact hf _ i j (by simp [Function.update_apply, hki.symm, hkj.symm, h]) hij
+    exact hf _ i j (by simp [hki.symm, hkj.symm, h]) hij
 
+set_option backward.isDefEq.respectTransparency false in
 /-- An alternating cochain vanishing whenever its first argument is `x` vanishes whenever any
 argument is `x`. -/
 theorem IsAlt.eq_zero_of_apply_eq {n : ℕ} {f : MCochain R 𝔤 (n + 1)} (hf : IsAlt f) {x : 𝔤}
@@ -220,6 +222,7 @@ theorem IsAlt.eq_zero_of_apply_eq {n : ℕ} {f : MCochain R 𝔤 (n + 1)} (hf : 
     exact hx _
   · rw [← neg_eq_zero, ← hf.map_swap v hk0.symm, ← Fin.cons_self_tail (v ∘ Equiv.swap 0 k)]
     convert hx (Fin.tail (v ∘ Equiv.swap 0 k))
+    simp [hk]
 
 /-- Uncurrying a family `φ` of alternating cochains with `φ x (…, x, …) = 0` gives an
 alternating cochain. -/
@@ -247,7 +250,7 @@ theorem IsAlt.ceDiff {n : ℕ} {f : MCochain R 𝔤 n} (hf : IsAlt f) :
     refine isAlt_curryEquiv_symm _ (fun x => (hf.lieAct x).sub (ih (hf.curry x))) ?_
     intro x w k hk
     refine IsAlt.eq_zero_of_apply_eq ((hf.lieAct x).sub (ih (hf.curry x))) (fun u => ?_) w k hk
-    rw [MultilinearMap.sub_apply, sub_eq_zero,
+    rw [sub_apply, sub_eq_zero,
       ← curryEquiv_apply (ChevalleyEilenberg.lieAct R 𝔤 (n + 1) x f),
       curry_lieAct, lie_self, map_zero, sub_zero]
     cases n with
@@ -264,6 +267,11 @@ variable (R 𝔤)
 /-- The Chevalley–Eilenberg `n`-cochains of `𝔤` with trivial coefficients: the alternating
 `R`-multilinear maps `𝔤ⁿ → R`. -/
 abbrev CECochain (n : ℕ) : Type _ := 𝔤 [⋀^Fin n]→ₗ[R] R
+
+/-- The additive group structure of `CECochain R 𝔤 n`, registered for the abbreviation so that
+instance search finds it when it arises by unification (e.g. for `⨁ n, CECochain R 𝔤 n`). -/
+instance CECochain.instAddCommGroup (n : ℕ) : AddCommGroup (CECochain R 𝔤 n) :=
+  AlternatingMap.instAddCommGroup
 
 /-- The Chevalley–Eilenberg differential `Cⁿ(𝔤) → Cⁿ⁺¹(𝔤)`. -/
 def ceD (n : ℕ) : CECochain R 𝔤 n →ₗ[R] CECochain R 𝔤 (n + 1) where
@@ -321,15 +329,17 @@ theorem removeNth_succ_cons {n : ℕ} (j : Fin (n + 1)) (a : 𝔤) (y : Fin (n +
   | zero => simp [Fin.removeNth]
   | succ k => simp [Fin.removeNth, Fin.succ_succAbove_succ]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem curryEquiv_toMultilinearMap {n : ℕ} (ω : CECochain R 𝔤 (n + 1)) (x : 𝔤) :
     curryEquiv R 𝔤 n ω.toMultilinearMap x = (ω.curryLeft x).toMultilinearMap := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- One step of the Chevalley–Eilenberg differential. -/
 theorem ceD_cons {n : ℕ} (ω : CECochain R 𝔤 (n + 1)) (x₀ : 𝔤) (y : Fin (n + 1) → 𝔤) :
     ceD R 𝔤 (n + 1) ω (Fin.cons x₀ y) =
       -(∑ j : Fin (n + 1), koszulSign ((j : ℕ) : ℤ) • ω (Fin.cons ⁅x₀, y j⁆ (Fin.removeNth j y)))
         - ceD R 𝔤 n (ω.curryLeft x₀) y := by
-  rw [ceD_apply, ← curryEquiv_apply, curry_ceDiff, MultilinearMap.sub_apply, lieAct_apply]
+  rw [ceD_apply, ← curryEquiv_apply, curry_ceDiff, sub_apply, lieAct_apply]
   congr 2
   refine Finset.sum_congr rfl fun j _ => ?_
   have h := map_cons_removeNth ω (Function.update y j ⁅x₀, y j⁆) j
@@ -340,6 +350,7 @@ theorem ceD_cons {n : ℕ} (ω : CECochain R 𝔤 (n + 1)) (x₀ : 𝔤) (y : Fi
 private theorem ks_succ (k : ℕ) : koszulSign ((k + 1 : ℕ) : ℤ) = -koszulSign (k : ℤ) := by
   rw [Nat.cast_add, Nat.cast_one, koszulSign_add, koszulSign_odd odd_one, mul_neg_one]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The Chevalley–Eilenberg differential is given by the standard formula
 `(d ω)(x₀, …, xₙ₊₁) = ∑_{i < j} (-1)^(i + j) ω([xᵢ, xⱼ], x₀, …, x̂ᵢ, …, x̂ⱼ, …, xₙ₊₁)`. Here
 `Fin.removeNth i (Fin.removeNth j x)` is `x` with the entries `j` and then `i < j` removed. -/
@@ -351,7 +362,7 @@ theorem ceD_apply_eq_sum {n : ℕ} (ω : CECochain R 𝔤 (n + 1)) (x : Fin (n +
   | zero =>
     rw [← Fin.cons_self_tail x, ceD_cons, ceD_zero, AlternatingMap.zero_apply, sub_zero]
     simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, Fin.val_zero, Fin.val_succ, lt_irrefl,
-      if_false, zero_lt_one, if_true, add_zero, zero_add, Fin.castSucc_zero, Fin.cons_zero,
+      ite_false, zero_lt_one, ite_true, add_zero, zero_add, Fin.castSucc_zero, Fin.cons_zero,
       Fin.cons_succ, Nat.cast_zero, Nat.cast_one, koszulSign_zero, one_smul,
       koszulSign_odd odd_one, Units.neg_smul, Fin.tail]
     congr 3
@@ -360,15 +371,15 @@ theorem ceD_apply_eq_sum {n : ℕ} (ω : CECochain R 𝔤 (n + 1)) (x : Fin (n +
     generalize x 0 = x₀
     generalize Fin.tail x = y
     conv_rhs => rw [Fin.sum_univ_succ]
-    simp only [Fin.val_zero, Nat.not_lt_zero, if_false, Finset.sum_const_zero, zero_add]
+    simp only [Fin.val_zero, Nat.not_lt_zero, ite_false, Finset.sum_const_zero, zero_add]
     rw [← Finset.sum_neg_distrib, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun j _ => ?_
     conv_rhs => rw [Fin.sum_univ_succ]
     rw [sub_eq_add_neg, ← Finset.sum_neg_distrib]
     congr 1
-    · rw [if_pos (by simp), Fin.castSucc_zero, Fin.cons_zero, Fin.cons_succ, removeNth_succ_cons,
-        Fin.removeNth_zero, Fin.tail_cons, Fin.val_zero, zero_add, Fin.val_succ, ks_succ,
-        Units.neg_smul]
+    · rw [ite_eq_left (by simp), Fin.castSucc_zero, Fin.cons_zero, Fin.cons_succ,
+        removeNth_succ_cons, Fin.removeNth_zero, Fin.tail_cons, Fin.val_zero, zero_add,
+        Fin.val_succ, ks_succ, Units.neg_smul]
     · refine Finset.sum_congr rfl fun i _ => ?_
       rw [show i.succ.castSucc = i.castSucc.succ from rfl, Fin.cons_succ, Fin.cons_succ,
         removeNth_succ_cons, removeNth_succ_cons, map_cons_cons_swap]
@@ -406,6 +417,12 @@ theorem ceCoboundaries_le_ceCocycles (n : ℕ) : ceCoboundaries R 𝔤 n ≤ ceC
     rintro _ ⟨ω, rfl⟩
     exact ceD_ceD ω
 
+/- Instance search no longer finds `AddCommGroup (ceCocycles R 𝔤 n)` when it arises by
+unification (the `Module R R` instances of the codomain do not unify), so the quotient below
+needs it as an explicit local instance. -/
+local instance (n : ℕ) : AddCommGroup (ceCocycles R 𝔤 n) := Submodule.addCommGroup _
+
+set_option backward.isDefEq.respectTransparency false in
 /-- The Lie algebra cohomology `Hⁿ(𝔤, R) = Zⁿ(𝔤) / Bⁿ(𝔤)` with trivial coefficients. -/
 abbrev CECohomology (n : ℕ) : Type _ :=
   ceCocycles R 𝔤 n ⧸ (ceCoboundaries R 𝔤 n).comap (ceCocycles R 𝔤 n).subtype
@@ -423,6 +440,7 @@ theorem comap_ceCoboundaries_one :
     exact LinearMap.ext ceD_zero
   rw [h, Submodule.comap_bot, Submodule.ker_subtype]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- `H⁰(𝔤, R) ≅ R`. -/
 def ceCohomologyZeroEquiv : CECohomology R 𝔤 0 ≃ₗ[R] R :=
   (Submodule.quotEquivOfEqBot _ (comap_ceCoboundaries_zero R 𝔤)).trans <|
@@ -445,13 +463,14 @@ variable {R 𝔤}
 @[simp]
 theorem cochainOneEquiv_apply (ω : CECochain R 𝔤 1) (x : 𝔤) :
     cochainOneEquiv R 𝔤 ω x = ω ![x] := by
-  simp only [cochainOneEquiv, LinearEquiv.coe_mk, MultilinearMap.toLinearMap_apply]
+  simp only [cochainOneEquiv, LinearEquiv.coe_mk]
   exact congrArg ω (funext fun i => by fin_cases i; rfl)
 
 @[simp]
 theorem cochainOneEquiv_symm_apply (φ : Module.Dual R 𝔤) (v : Fin 1 → 𝔤) :
     (cochainOneEquiv R 𝔤).symm φ v = φ (v 0) := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 theorem ceD_one_apply (ω : CECochain R 𝔤 1) (x y : 𝔤) :
     ceD R 𝔤 1 ω ![x, y] = -ω ![⁅x, y⁆] := by
   rw [show (![x, y] : Fin 2 → 𝔤) = Fin.cons x ![y] from rfl, ceD_cons, ceD_zero,
@@ -492,6 +511,7 @@ theorem mem_dualAnnihilator_derivedSubmodule (φ : Module.Dual R 𝔤) :
     | add w w' _ _ hw hw' => rw [map_add, hw, hw', add_zero]
     | smul r w _ hw => rw [map_smul, hw, smul_zero]
 
+set_option backward.isDefEq.respectTransparency false in
 variable (R 𝔤) in
 /-- `H¹(𝔤, R) ≅ (𝔤 / [𝔤, 𝔤])^*`. -/
 def ceCohomologyOneEquiv : CECohomology R 𝔤 1 ≃ₗ[R] Module.Dual R (𝔤 ⧸ derivedSubmodule R 𝔤) :=

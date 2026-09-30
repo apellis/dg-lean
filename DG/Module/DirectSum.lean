@@ -53,7 +53,7 @@ theorem of_mem_grading {n : ℤ} (i : ι) {m : M i} (hm : m ∈ DGAddCommGroup.g
   intro j
   by_cases hij : i = j
   · subst hij; rwa [DirectSum.of_eq_same]
-  · rw [DirectSum.of_eq_of_ne _ _ _ hij]; exact zero_mem _
+  · rw [DirectSum.of_eq_of_ne _ _ _ (Ne.symm hij)]; exact zero_mem _
 
 theorem mem_iSup_grading (x : ⨁ i, M i) : x ∈ ⨆ n, grading M n := by
   induction x using DirectSum.induction_on with
@@ -190,9 +190,8 @@ def submodule : Submodule A (∀ i, M i) where
     change x ∈ ⨆ n, piGrading M n at hx
     change a • x ∈ ⨆ n, piGrading M n
     refine AddSubgroup.iSup_induction _ (C := fun x => a • x ∈ ⨆ n, piGrading M n) hx
-      (fun n x hx => ?_) (by dsimp only; rw [smul_zero]; exact zero_mem _)
-      (fun x y hx hy => by dsimp only at hx hy ⊢; rw [smul_add]; exact add_mem hx hy)
-    dsimp only
+      (fun n x hx => ?_) (by rw [smul_zero]; exact zero_mem _)
+      (fun x y hx hy => by rw [smul_add]; exact add_mem hx hy)
     induction a using DG.induction_on with
     | h_zero => rw [zero_smul]; exact zero_mem _
     | @h_homogeneous k a =>
@@ -280,16 +279,15 @@ theorem isInternal_grading : DirectSum.IsInternal (grading A M) :=
 
 /-- The differential on the product `∀ i, M i`, componentwise. -/
 def dPi : (∀ i, M i) →+ ∀ i, M i :=
-  Pi.addMonoidHom fun i => (DGAddCommGroup.d : M i →+ M i).comp (Pi.evalAddMonoidHom M i)
+  AddMonoidHom.pi fun i => (DGAddCommGroup.d : M i →+ M i).comp (Pi.evalAddMonoidHom M i)
 
 @[simp]
 theorem dPi_apply (x : ∀ i, M i) (i : ι) : dPi M x i = DGAddCommGroup.d (x i) := rfl
 
 theorem dPi_mem {x : ∀ i, M i} (hx : x ∈ ⨆ n, piGrading M n) : dPi M x ∈ ⨆ n, piGrading M n := by
   refine AddSubgroup.iSup_induction _ (C := fun x => dPi M x ∈ ⨆ n, piGrading M n) hx
-    (fun n x hx => ?_) (by dsimp only; rw [map_zero]; exact zero_mem _)
-    (fun x y hx hy => by dsimp only at hx hy ⊢; rw [map_add]; exact add_mem hx hy)
-  dsimp only
+    (fun n x hx => ?_) (by rw [map_zero]; exact zero_mem _)
+    (fun x y hx hy => by rw [map_add]; exact add_mem hx hy)
   exact AddSubgroup.mem_iSup_of_mem (n + 1) ((mem_piGrading_iff M).mpr fun i =>
     DG.d_mem ((mem_piGrading_iff M).mp hx i))
 

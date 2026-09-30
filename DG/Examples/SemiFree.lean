@@ -1,6 +1,6 @@
 import Mathlib.Algebra.FreeAlgebra
 import Mathlib.Data.Matrix.Basic
-import Mathlib.Data.Matrix.Notation
+import Mathlib.LinearAlgebra.Matrix.Notation
 import DG.Algebra.Hom
 
 /-!
@@ -125,6 +125,7 @@ instance gradedAlgebra : GradedAlgebra (freeGrading R deg) :=
 
 /-- The decomposition of the free algebra into the additive subgroups underlying the
 grading. -/
+@[instance_reducible]
 def decompositionAddSubgroup : Decomposition fun n => (freeGrading R deg n).toAddSubgroup where
   decompose' := DirectSum.decompose (freeGrading R deg)
   left_inv x := DirectSum.Decomposition.left_inv (ℳ := freeGrading R deg) x

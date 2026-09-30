@@ -349,7 +349,7 @@ section Differential
 
 variable {M N P : CatModule.{w} C}
 
-open Cochain
+open DG.CatModule.Cochain
 
 /-- The differential of the Hom complex: for a cochain `z` of degree `n`, `δ n m z` is the
 cochain `d ∘ z - (-1)^n • z ∘ d` (objectwise) of degree `m` if `n + 1 = m`, and `0` otherwise
@@ -361,7 +361,7 @@ def δ (n m : ℤ) (z : Cochain M N n) : Cochain M N m :=
         { toFun := fun x => d (z.app X x) - koszulSign n • z.app X (d x)
           map_zero' := by simp
           map_add' := fun x y => by
-            simp only [map_add, d_add, _root_.smul_add]
+            simp only [map_add, _root_.smul_add]
             abel }
       map_mem' := fun {X i x} hx => by
         subst hnm
@@ -388,7 +388,7 @@ variable (n m : ℤ)
 theorem δ_apply (hnm : n + 1 = m) (z : Cochain M N n) {X : C} (x : M.obj X) :
     (δ n m z).app X x = d (z.app X x) - koszulSign n • z.app X (d x) := by
   unfold δ
-  rw [dif_pos hnm]
+  rw [dite_eq_left hnm]
   rfl
 
 /-- The differential in the form used by Mathlib's `CochainComplex.HomComplex.δ`:
@@ -401,7 +401,7 @@ theorem δ_apply' (hnm : n + 1 = m) (z : Cochain M N n) {X : C} (x : M.obj X) :
 
 theorem δ_shape (hnm : ¬ n + 1 = m) (z : Cochain M N n) : δ n m z = 0 := by
   unfold δ
-  rw [dif_neg hnm]
+  rw [dite_eq_right hnm]
 
 variable (M N) in
 /-- The differential of the Hom complex, as an additive map. -/
@@ -432,7 +432,7 @@ def δ_hom : Cochain M N n →+ Cochain M N m where
   (δ_hom M N n m).map_neg z
 
 @[simp] theorem δ_zsmul (k : ℤ) (z : Cochain M N n) : δ n m (k • z) = k • δ n m z :=
-  (δ_hom M N n m).map_zsmul z k
+  (δ_hom M N n m).map_zsmul k z
 
 @[simp] theorem δ_units_smul (u : ℤˣ) (z : Cochain M N n) : δ n m (u • z) = u • δ n m z := by
   rw [Units.smul_def, Units.smul_def, δ_zsmul]
@@ -458,9 +458,9 @@ theorem δ_comp {n₁ n₂ n₁₂ : ℤ} (z₁ : Cochain M N n₁) (z₂ : Coch
         koszulSign n₂ • z₂.comp (δ n₁ m₁ z₁)
           (by rw [← h₁₂, ← h₁, ← h, add_assoc, add_comm 1, add_assoc]) := by
   ext X x
-  simp only [Cochain.add_apply, units_smul_apply, comp_apply, δ_apply _ _ h₁₂, δ_apply _ _ h₁,
+  simp only [Cochain.add_apply, units_smul_apply, Cochain.comp_apply, δ_apply _ _ h₁₂, δ_apply _ _ h₁,
     δ_apply _ _ h₂, map_sub, map_units_smul, _root_.smul_sub, smul_smul, ← h, koszulSign_add,
-    Int.units_mul_self, one_smul, mul_comm (koszulSign n₁)]
+    mul_comm (koszulSign n₁)]
   abel
 
 theorem δ_zero_cochain_comp {n₂ : ℤ} (z₁ : Cochain M N 0) (z₂ : Cochain N P n₂)

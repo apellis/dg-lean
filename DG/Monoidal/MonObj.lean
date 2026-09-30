@@ -1,5 +1,5 @@
 import Mathlib.Algebra.DirectSum.Algebra
-import Mathlib.CategoryTheory.Monoidal.Mon_
+import Mathlib.CategoryTheory.Monoidal.Mon
 import DG.Monoidal.Complex
 import DG.Monoidal.ComplexSum
 
@@ -26,6 +26,7 @@ differential `d (x ⊗ y) = d x ⊗ y + (-1)^|x| x ⊗ d y` of the tensor produc
 -/
 
 open CategoryTheory MonoidalCategory HomologicalComplex DirectSum
+open scoped CategoryTheory.MonObj
 
 universe u
 
@@ -60,37 +61,42 @@ end ComplexTensor
 
 namespace MonObj
 
-variable {R : Type u} [CommRing R] (M : Mon_ (CochainComplex (ModuleCat.{u} R) ℤ))
+variable {R : Type u} [CommRing R] (M : Mon (CochainComplex (ModuleCat.{u} R) ℤ))
 
 open ComplexTensor
 
 /-- The unit `1 ∈ M⁰` of a monoid object `M` in cochain complexes. -/
-def one : M.X.X 0 := M.one.f 0 (unitOne R)
+def one : M.X.X 0 := (η[M.X]).f 0 (unitOne R)
 
 /-- The multiplication `Mⁱ × Mʲ → Mⁱ⁺ʲ` of a monoid object `M` in cochain complexes. -/
 def mul {i j : ℤ} (x : M.X.X i) (y : M.X.X j) : M.X.X (i + j) :=
-  M.mul.f (i + j) (tmul M.X M.X rfl x y)
+  (μ[M.X]).f (i + j) (tmul M.X M.X rfl x y)
 
 /-- The left unit axiom of a monoid object on elements: `μ (1 ⊗ x) = x`. -/
 theorem one_mul_apply {n : ℤ} (x : M.X.X n) :
-    M.mul.f n (tmul M.X M.X (zero_add n) (one M) x) = x := by
-  have := congrArg (fun φ => φ.f n (tmul _ M.X (zero_add n) (unitOne R) x)) M.one_mul
-  simpa only [comp_f, ModuleCat.comp_apply, whiskerRight_f_tmul, leftUnitor_hom_f_tmul] using this
+    (μ[M.X]).f n (tmul M.X M.X (zero_add n) (one M) x) = x := by
+  have := congrArg (fun φ => φ.f n (tmul _ M.X (zero_add n) (unitOne R) x))
+    (CategoryTheory.MonObj.one_mul M.X)
+  simp only [comp_f, ModuleCat.comp_apply, whiskerRight_f_tmul, leftUnitor_hom_f_tmul] at this
+  exact this
 
 /-- The right unit axiom of a monoid object on elements: `μ (x ⊗ 1) = x`. -/
 theorem mul_one_apply {n : ℤ} (x : M.X.X n) :
-    M.mul.f n (tmul M.X M.X (add_zero n) x (one M)) = x := by
-  have := congrArg (fun φ => φ.f n (tmul M.X _ (add_zero n) x (unitOne R))) M.mul_one
-  simpa only [comp_f, ModuleCat.comp_apply, whiskerLeft_f_tmul, rightUnitor_hom_f_tmul] using this
+    (μ[M.X]).f n (tmul M.X M.X (add_zero n) x (one M)) = x := by
+  have := congrArg (fun φ => φ.f n (tmul M.X _ (add_zero n) x (unitOne R)))
+    (CategoryTheory.MonObj.mul_one M.X)
+  simp only [comp_f, ModuleCat.comp_apply, whiskerLeft_f_tmul, rightUnitor_hom_f_tmul] at this
+  exact this
 
 /-- The associativity axiom of a monoid object on elements:
 `μ (μ (x ⊗ y) ⊗ z) = μ (x ⊗ μ (y ⊗ z))`. -/
 theorem mul_assoc_apply {p q r n : ℤ} (h : p + q + r = n) (x : M.X.X p) (y : M.X.X q)
     (z : M.X.X r) :
-    M.mul.f n (tmul M.X M.X h (M.mul.f (p + q) (tmul M.X M.X rfl x y)) z) =
-      M.mul.f n (tmul M.X M.X (show p + (q + r) = n by omega) x
-        (M.mul.f (q + r) (tmul M.X M.X rfl y z))) := by
-  have := congrArg (fun φ => φ.f n (tmul _ M.X h (tmul M.X M.X rfl x y) z)) M.mul_assoc
+    (μ[M.X]).f n (tmul M.X M.X h ((μ[M.X]).f (p + q) (tmul M.X M.X rfl x y)) z) =
+      (μ[M.X]).f n (tmul M.X M.X (show p + (q + r) = n by omega) x
+        ((μ[M.X]).f (q + r) (tmul M.X M.X rfl y z))) := by
+  have := congrArg (fun φ => φ.f n (tmul _ M.X h (tmul M.X M.X rfl x y) z))
+    (CategoryTheory.MonObj.mul_assoc M.X)
   simpa only [comp_f, ModuleCat.comp_apply, whiskerRight_f_tmul, whiskerLeft_f_tmul,
     associator_hom_f_tmul] using this
 
@@ -106,14 +112,14 @@ instance gRing : DirectSum.GRing (fun n : ℤ => (M.X.X n : Type u)) where
   one := one M
   one_mul := by
     rintro ⟨i, x⟩
-    exact (mk_f_tmul M.mul rfl (zero_add i) _ _).trans (congrArg _ (one_mul_apply M x))
+    exact (mk_f_tmul μ[M.X] rfl (zero_add i) _ _).trans (congrArg _ (one_mul_apply M x))
   mul_one := by
     rintro ⟨i, x⟩
-    exact (mk_f_tmul M.mul rfl (add_zero i) _ _).trans (congrArg _ (mul_one_apply M x))
+    exact (mk_f_tmul μ[M.X] rfl (add_zero i) _ _).trans (congrArg _ (mul_one_apply M x))
   mul_assoc := by
     rintro ⟨i, x⟩ ⟨j, y⟩ ⟨k, z⟩
-    exact (mk_f_tmul M.mul rfl rfl _ _).trans ((congrArg _ (mul_assoc_apply M rfl x y z)).trans
-      (mk_f_tmul M.mul _ rfl _ _))
+    exact (mk_f_tmul μ[M.X] rfl rfl _ _).trans ((congrArg _ (mul_assoc_apply M rfl x y z)).trans
+      (mk_f_tmul μ[M.X] _ rfl _ _))
   mul_zero x := by simp [mul]
   zero_mul x := by simp [mul]
   mul_add x y y' := by simp [mul]
@@ -128,13 +134,13 @@ instance gRing : DirectSum.GRing (fun n : ℤ => (M.X.X n : Type u)) where
 theorem mk_smul_one_mul (r : R) {i : ℤ} (x : M.X.X i) :
     GradedMonoid.mk (A := fun n => M.X.X n) (0 + i) (mul M (r • one M) x) =
       GradedMonoid.mk i (r • x) :=
-  (mk_f_tmul M.mul rfl (zero_add i) _ _).trans (by
+  (mk_f_tmul μ[M.X] rfl (zero_add i) _ _).trans (by
     rw [tmul_smul_left, map_smul, one_mul_apply])
 
 theorem mk_mul_smul_one (r : R) {i : ℤ} (x : M.X.X i) :
     GradedMonoid.mk (A := fun n => M.X.X n) (i + 0) (mul M x (r • one M)) =
       GradedMonoid.mk i (r • x) :=
-  (mk_f_tmul M.mul rfl (add_zero i) _ _).trans (by
+  (mk_f_tmul μ[M.X] rfl (add_zero i) _ _).trans (by
     rw [tmul_smul_right, map_smul, mul_one_apply])
 
 /-- The `R`-algebra structure on the graded ring of components of a monoid object: `R` maps to
@@ -163,7 +169,7 @@ instance : Algebra R (ComplexSum M.X) :=
 /-- The product of `⨁ n, Mⁿ` on summands. -/
 theorem of_mul_of {i j : ℤ} (x : M.X.X i) (y : M.X.X j) :
     ComplexSum.of M.X i x * ComplexSum.of M.X j y =
-      ComplexSum.of M.X (i + j) (M.mul.f (i + j) (tmul M.X M.X rfl x y)) :=
+      ComplexSum.of M.X (i + j) ((μ[M.X]).f (i + j) (tmul M.X M.X rfl x y)) :=
   DirectSum.of_mul_of (A := fun n => M.X.X n) x y
 
 theorem one_def : (1 : ComplexSum M.X) = ComplexSum.of M.X 0 (one M) :=
@@ -180,7 +186,7 @@ theorem d_of_mul_of {n j : ℤ} (x : M.X.X n) (y : M.X.X j) :
         koszulSign n • (ComplexSum.of M.X n x * d (ComplexSum.of M.X j y)) := by
   rw [of_mul_of, ComplexSum.d_of, ComplexSum.d_of, ComplexSum.d_of, of_mul_of, of_mul_of,
     ← Hom.comm_apply, d_tmul, map_add, map_add, Units.smul_def, Units.smul_def, map_zsmul,
-    map_zsmul, of_f_tmul M.mul _ (rfl : n + 1 + j = _), of_f_tmul M.mul _ (rfl : n + (j + 1) = _)]
+    map_zsmul, of_f_tmul μ[M.X] _ (rfl : n + 1 + j = _), of_f_tmul μ[M.X] _ (rfl : n + (j + 1) = _)]
 
 theorem d_of_mul_add {n : ℤ} (x : M.X.X n) (b b' : ComplexSum M.X)
     (hb : d (ComplexSum.of M.X n x * b) =

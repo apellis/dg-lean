@@ -136,14 +136,13 @@ theorem dLinear_mem {n : ℤ} {x : 𝒜 ᵍ⊗[R] ℬ} (hx : x ∈ GradedTensorP
     dLinear R A B x ∈ GradedTensorProduct.grading 𝒜 ℬ (n + 1) := by
   refine grading_induction 𝒜 ℬ hx (motive := fun x =>
     dLinear R A B x ∈ GradedTensorProduct.grading 𝒜 ℬ (n + 1)) ?_ ?_ ?_
-  · dsimp only; rw [map_zero]; exact zero_mem _
+  · rw [map_zero]; exact zero_mem _
   · intro i j a b hij
-    dsimp only
     rw [dLinear_tmul_of_mem a.2, Units.smul_def]
     exact add_mem (tmul_mem_of_eq 𝒜 ℬ (by omega) (d_mem a.2) b.2)
       (zsmul_mem (tmul_mem_of_eq 𝒜 ℬ (by omega) a.2 (d_mem b.2)) _)
   · intro x y hx hy
-    dsimp only; rw [map_add]; exact add_mem hx hy
+    rw [map_add]; exact add_mem hx hy
 
 /-- The tensor product of two dg algebras is a dg abelian group, with the grading of the graded
 tensor product and the differential `d (a ⊗ b) = d a ⊗ b + (-1)^{|a|} • a ⊗ d b`. -/
@@ -305,13 +304,12 @@ def map (f : A →ᵈᵍₐ[R] A') (g : B →ᵈᵍₐ[R] B') : (𝒜 ᵍ⊗[R] 
     change mapAlgHom f g x ∈ DG.grading n
     refine grading_induction 𝒜 ℬ hx (motive := fun x => mapAlgHom f g x ∈ DG.grading n)
       ?_ ?_ ?_
-    · dsimp only; rw [map_zero]; exact zero_mem _
+    · rw [map_zero]; exact zero_mem _
     · intro i j a b hij
-      dsimp only
       rw [mapAlgHom_tmul, ← hij]
       exact tmul_mem_grading (f.map_mem a.2) (g.map_mem b.2)
     · intro x y hx hy
-      dsimp only; rw [map_add]; exact add_mem hx hy
+      rw [map_add]; exact add_mem hx hy
   map_d' x := by
     change mapAlgHom f g (d x) = d (mapAlgHom f g x)
     refine induction_on_tmul ?_ ?_ ?_ x
@@ -379,6 +377,7 @@ def commDGAlgEquiv :
 theorem commDGAlgEquiv_apply (x : 𝒜 ᵍ⊗[R] ℬ) :
     commDGAlgEquiv R A B x = _root_.GradedTensorProduct.comm 𝒜 ℬ x := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 variable (R A B C) in
 /-- The associativity isomorphism `(A ⊗ B) ⊗ C ≅ A ⊗ (B ⊗ C)`, `(a ⊗ b) ⊗ c ↦ a ⊗ (b ⊗ c)`, is an
 isomorphism of dg algebras. -/
@@ -452,9 +451,9 @@ theorem lidDegreeZeroHom_tmul (r : R) (b : B) :
     haveI := DGAlgebra.degreeZero R
     lidDegreeZeroHom R B (r ᵍ⊗ₜ[R] b : GradedTensorProduct R (DGAlgebra.gradingSubmodule R R) ℬ) =
       r • b := by
-  letI := DGAddCommGroup.degreeZero R
-  haveI := DGRing.degreeZero R
-  haveI := DGAlgebra.degreeZero R
+  let := DGAddCommGroup.degreeZero R
+  have := DGRing.degreeZero R
+  have := DGAlgebra.degreeZero R
   rw [lidDegreeZeroHom, lift_tmul, Algebra.ofId_apply, AlgHom.id_apply, Algebra.smul_def]
 
 /-- The unit isomorphism `R ⊗ B ≅ B`, `r ⊗ b ↦ r • b`, where `R` is the dg algebra concentrated
@@ -484,9 +483,8 @@ def lidDGAlgEquiv :
     (fun {n x} hx => by
       refine grading_induction _ ℬ hx (motive := fun x => lidDegreeZeroHom R B x ∈ DG.grading n)
         ?_ ?_ ?_
-      · dsimp only; rw [map_zero]; exact zero_mem _
+      · rw [map_zero]; exact zero_mem _
       · intro i j r b hij
-        dsimp only
         rw [lidDegreeZeroHom_tmul]
         rcases (mem_degreeZeroGrading_iff R).mp r.2 with h | h
         · subst h
@@ -495,7 +493,7 @@ def lidDGAlgEquiv :
           exact DGAlgebra.smul_mem _ b.2
         · rw [h, zero_smul]; exact zero_mem _
       · intro x y hx hy
-        dsimp only; rw [map_add]; exact add_mem hx hy)
+        rw [map_add]; exact add_mem hx hy)
     fun x => by
       change lidDegreeZeroHom R B (d x) = d (lidDegreeZeroHom R B x)
       refine induction_on_tmul ?_ ?_ ?_ x

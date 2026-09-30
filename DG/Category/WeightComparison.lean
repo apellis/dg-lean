@@ -31,6 +31,8 @@ universe v u
 
 noncomputable section
 
+set_option backward.isDefEq.respectTransparency false
+
 namespace DG
 
 variable {A : Type u} [Ring A] [DGAddCommGroup A] [InternalGrading A] [BigradedDGRing A]
@@ -89,7 +91,7 @@ theorem coe_decompose_range [Decomposition fun i => (f i).range]
       rw [decompose_of_mem_same (fun i => (f i).range) (AddMonoidHom.mem_range.mpr ⟨y, rfl⟩),
         DirectSum.of_eq_same]
     · rw [decompose_of_mem_ne (fun i => (f i).range) (AddMonoidHom.mem_range.mpr ⟨y, rfl⟩) h,
-        DirectSum.of_eq_of_ne _ _ _ h, map_zero]
+        DirectSum.of_eq_of_ne _ _ _ (Ne.symm h), map_zero]
   | add x y hx hy =>
     simp only [map_add, decompose_add, DirectSum.add_apply, AddSubgroup.coe_add, hx, hy]
 
@@ -375,7 +377,7 @@ def weightSumMap {N' : CatModule.{v} (WeightCategory A)} (φ : N ⟶ N') :
   map_add' := map_add _
   map_smul' a x := by
     induction a using DirectSum.Decomposition.inductionOn (wgrading (M := A)) with
-    | zero => simp only [_root_.zero_smul, map_zero, RingHom.id_apply]
+    | zero => simp only [_root_.zero_smul, map_zero]
     | add a a' ha ha' => simp only [_root_.add_smul, map_add, ha, ha', RingHom.id_apply]
     | homogeneous a =>
       induction x using DirectSum.induction_on with
@@ -416,7 +418,8 @@ def toBigraded : CatModule.{v} (WeightCategory A) ⥤ BigradedDGModuleCat.{v} A 
     rfl
   map_comp φ ψ := BigradedDGModuleCat.hom_ext_apply fun x => by
     ext k
-    change DirectSum.map _ x k = DirectSum.map _ (DirectSum.map _ x) k
+    change (DirectSum.map (fun k => (φ ≫ ψ).app ⟨k⟩) x) k =
+      (DirectSum.map (fun k => ψ.app ⟨k⟩) (DirectSum.map (fun k => φ.app ⟨k⟩) x)) k
     rw [DirectSum.map_apply, DirectSum.map_apply, DirectSum.map_apply]
     rfl
 

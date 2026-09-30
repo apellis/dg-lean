@@ -7,9 +7,7 @@ import DG.Category.Basic
 The opposite of a dg category `C` has the objects of `C`, the Hom complexes
 `Cᵒᵖ(X, Y) = C(Y, X)` (with the same grading and differential), and the composition twisted by the
 Koszul sign: for homogeneous `f ∈ Cᵒᵖ(X, Y)ⁱ` and `g ∈ Cᵒᵖ(Y, Z)ʲ`,
-
   `f ≫ᵒᵖ g = (-1)^{i j} • (g ≫ f)`,
-
 extended bilinearly. This is the sign rule of `docs/CONVENTIONS.md` (the two morphisms are
 exchanged), and it is the sign making the Leibniz rule hold in `Cᵒᵖ`. Mathlib's `Cᵒᵖ` has the
 unsigned composition, so the opposite dg category is the separate type `DG.DGOpposite C`.
@@ -139,7 +137,7 @@ theorem d_signedComp {j : ℤ} {g : X ⟶ Y} (hg : g ∈ grading j) (f : Y ⟶ Z
       signedComp X Y Z (d g) f + koszulSign j • signedComp X Y Z g (d f) := by
   induction f using induction_on with
   | h_zero => simp
-  | h_add f f' hf hf' => simp only [map_add, d_add, hf, hf', smul_add]; abel
+  | h_add f f' hf hf' => simp only [map_add, hf, hf', smul_add]; abel
   | h_homogeneous f =>
     rename_i i
     have h₁ : koszulSign ((j + 1) * i) = koszulSign (j * i + i) := by rw [add_mul, one_mul]

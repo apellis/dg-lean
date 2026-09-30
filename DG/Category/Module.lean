@@ -174,7 +174,7 @@ theorem d_smul_of_d_eq_zero_right {X Y : C} {m : M.obj X} (hm : d m = 0) (f : X 
 theorem sum_smul {X Y : C} {ι : Type*} (s : Finset ι) (f : ι → (X ⟶ Y)) (m : M.obj X) :
     (∑ i ∈ s, f i) • m = ∑ i ∈ s, f i • m := by
   change M.act (∑ i ∈ s, f i) m = ∑ i ∈ s, M.act (f i) m
-  rw [map_sum, AddMonoidHom.finset_sum_apply]
+  rw [map_sum, AddMonoidHom.finsetSum_apply]
 
 theorem smul_sum {X Y : C} {ι : Type*} (s : Finset ι) (f : X ⟶ Y) (m : ι → M.obj X) :
     f • (∑ i ∈ s, m i) = ∑ i ∈ s, f • m i :=

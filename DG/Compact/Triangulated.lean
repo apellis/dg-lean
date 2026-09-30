@@ -13,7 +13,7 @@ shifts in both directions and under cones: in a distinguished triangle
 `X₁ ⟶ X₂ ⟶ X₃ ⟶ X₁⟦1⟧`, if two of the three objects are compact, so is the third.
 Together with the closure under retracts of `DG.Compact.Basic`, this says that the compact
 objects form a thick triangulated subcategory `C^c` of `C`, packaged as
-`DG.compactSubcategory C : CategoryTheory.Triangulated.Subcategory C`; compare
+`DG.compactSubcategory C : ObjectProperty C` (with `ObjectProperty.IsTriangulated`); compare
 [Ne, Def. 4.2.7 and Lemma 4.2.4] (A. Neeman, *Triangulated categories*, Ann. Math. Studies 148).
 
 ## Proofs
@@ -95,7 +95,6 @@ theorem IsCompact.shift {X : C} (hX : IsCompact.{w} X) (n : ℤ) : IsCompact.{w}
     change adj.homEquiv X (∐ W) (g ≫ Sigma.ι W i) ≫ inv sc = adj.homEquiv X (W i) g ≫ Sigma.ι W' i
     rw [Adjunction.homEquiv_naturality_right, Category.assoc]
     congr 1
-    change (shiftFunctor C (-n)).map (Sigma.ι W i) ≫ inv sc = _
     rw [← ι_comp_sigmaComparison, Category.assoc, IsIso.hom_inv_id, Category.comp_id]
   have hcomp : ψ ∘ coproductComparison (X⟦n⟧) W = coproductComparison X W' ∘ Φ := by
     rw [← AddMonoidHom.coe_comp, ← AddMonoidHom.coe_comp, comm]
@@ -153,21 +152,28 @@ variable (C)
 /-- The compact objects of a pretriangulated category with coproducts form a (strictly full)
 triangulated subcategory `C^c` [Ne, Def. 4.2.7, Lemma 4.2.4]. It is closed under retracts
 (`DG.compactSubcategory_of_retract`), i.e. thick. -/
-def compactSubcategory : Triangulated.Subcategory C :=
-  Triangulated.Subcategory.mk' IsCompact.{w} (IsCompact.of_isZero (isZero_zero C))
-    (fun _ n hX => hX.shift n) (fun T hT h₁ h₃ => IsCompact.ext₂ T hT h₁ h₃)
+def compactSubcategory : ObjectProperty C := IsCompact.{w}
 
+omit [HasZeroObject C] [HasShift C ℤ] [∀ (n : ℤ), (shiftFunctor C n).Additive]
+  [Pretriangulated C] [HasCoproducts.{w} C] in
 @[simp]
-theorem compactSubcategory_P : (compactSubcategory.{w} C).P = IsCompact.{w} := rfl
+theorem compactSubcategory_P : compactSubcategory.{w} C = IsCompact.{w} := rfl
 
-instance : (compactSubcategory.{w} C).P.IsClosedUnderIsomorphisms :=
+instance : (compactSubcategory.{w} C).IsClosedUnderIsomorphisms :=
   isClosedUnderIsomorphisms_isCompact
+
+instance : (compactSubcategory.{w} C).IsTriangulated where
+  toContainsZero := ⟨⟨_, isZero_zero C, IsCompact.of_isZero (isZero_zero C)⟩⟩
+  toIsStableUnderShift := ⟨fun n => ⟨fun _ hX => IsCompact.shift hX n⟩⟩
+  toIsTriangulatedClosed₂ := .mk' (fun T hT h₁ h₃ => IsCompact.ext₂ T hT h₁ h₃)
 
 variable {C}
 
+omit [HasZeroObject C] [HasShift C ℤ] [∀ (n : ℤ), (shiftFunctor C n).Additive]
+  [Pretriangulated C] [HasCoproducts.{w} C] in
 /-- The subcategory of compact objects is closed under retracts (it is thick). -/
 theorem compactSubcategory_of_retract {X Y : C} (h : Retract X Y)
-    (hY : (compactSubcategory.{w} C).P Y) : (compactSubcategory.{w} C).P X :=
+    (hY : compactSubcategory.{w} C Y) : compactSubcategory.{w} C X :=
   IsCompact.of_retract h hY
 
 end cone

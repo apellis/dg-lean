@@ -197,7 +197,7 @@ theorem d_of_smul_of {k n : ℤ} (F : Cochain A M M k) (f : Cochain A M P n) :
   rw [δ_units_smul, δ_comp F f rfl (k + 1) (n + 1) (k + n + 1) rfl rfl rfl]
   ext x
   simp only [Cochain.add_apply, Cochain.units_smul_apply, Cochain.comp_apply, smul_add,
-    smul_smul, add_mul, mul_add, one_mul, mul_one, koszulSign_add, Int.units_mul_self]
+    smul_smul, add_mul, mul_add, one_mul, mul_one, koszulSign_add]
   rw [mul_left_comm, Int.units_mul_self, mul_one, add_comm]
 
 /-- A homogeneous element of `HOM_A(M, P)` of degree `k` is the image of its degree-`k`
@@ -403,6 +403,7 @@ def evalOne : HOM A A P →+ P :=
       map_zero' := rfl
       map_add' := fun _ _ => rfl }
 
+set_option backward.isDefEq.respectTransparency false in
 omit [DGRing A] in
 @[simp]
 theorem evalOne_of {n : ℤ} (f : Cochain A A P n) :

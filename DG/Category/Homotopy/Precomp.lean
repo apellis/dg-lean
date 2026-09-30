@@ -20,6 +20,8 @@ Hom complexes, the shifts and the mapping cones. This file shows:
   functor (`DG.CatModule.HomotopyCategory.precomp_isTriangulated`).
 -/
 
+set_option backward.isDefEq.respectTransparency false
+
 open CategoryTheory Category Limits Pretriangulated
 
 universe w v₁ v₂ u₁ u₂
@@ -143,13 +145,13 @@ theorem precompShiftIso_inv_app (n : ℤ) (M : CatModule.{w} D) (X : C)
 
 /-- Restriction along a dg functor commutes with the shifts. -/
 instance precompCommShift : (CatModule.precomp.{w} F).CommShift ℤ where
-  iso n := NatIso.ofComponents (fun M => precompShiftIso F n M) fun _ => rfl
-  zero := by
+  commShiftIso n := NatIso.ofComponents (fun M => precompShiftIso F n M) fun _ => rfl
+  commShiftIso_zero := by
     ext M : 3
     refine hom_ext fun X m => ?_
     rw [Functor.CommShift.isoZero_hom_app]
     rfl
-  add a b := by
+  commShiftIso_add a b := by
     ext M : 3
     refine hom_ext fun X m => ?_
     rw [Functor.CommShift.isoAdd_hom_app]

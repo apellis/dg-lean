@@ -31,6 +31,9 @@ The names are those of the dg-ring version in the namespace `DG.CatModule`; `DG.
 `CatModule C`. Morphisms compose in diagrammatic order.
 -/
 
+set_option backward.isDefEq.respectTransparency false
+set_option backward.dsimp.useDefEqAttr false
+
 open CategoryTheory Category Limits Pretriangulated
 
 universe w v u
@@ -56,7 +59,7 @@ namespace cone
 
 section Cochains
 
-open Cochain
+open DG.CatModule.Cochain
 
 theorem fstHom_eq_mk_fst {M N : CatModule.{w} C} (f : M ⟶ N) {X : C} (p : (cone f).obj X) :
     (fstHom f).app X p = shift.mk 1 ((fst f).1.app X p) := rfl
@@ -123,8 +126,8 @@ def homotopyInvHomId : DGHomotopy (inv f ≫ hom f) (𝟙 _) :=
       · simp [inv_apply, d_fst_apply, d_snd_apply, ← fst_apply]
         abel
       · refine ext_to ?_ ?_
-        · simp [inv_apply, d_fst_apply, d_snd_apply, ← fst_apply]
-        · simp [inv_apply, d_fst_apply, d_snd_apply, ← fst_apply])
+        · simp [inv_apply, d_snd_apply, ← fst_apply]
+        · simp [inv_apply, d_snd_apply, ← fst_apply])
 
 /-- Mathlib's `rotateHomotopyEquivComm₂Homotopy`: the homotopy
 `(-fstHom f) ≫ hom ≃ inr (inr f)`, given by the cochain `-inl (inr f) ∘ snd f`. -/
@@ -133,8 +136,8 @@ def comm₂Homotopy : DGHomotopy ((-fstHom f) ≫ hom f) (inr (inr f)) :=
     refine ext_to ?_ ?_
     · simp [d_fst_apply, d_snd_apply, ← fst_apply]
     · refine ext_to ?_ ?_
-      · simp [d_fst_apply, d_snd_apply, ← fst_apply]
-      · simp [d_fst_apply, d_snd_apply, ← fst_apply])
+      · simp [d_snd_apply, ← fst_apply]
+      · simp [d_snd_apply, ← fst_apply])
 
 /-- Mathlib's `rotateHomotopyEquiv_comm₃`. -/
 theorem comm₃ : hom f ≫ (-fstHom (inr f)) = -shiftMap 1 f := by
@@ -166,14 +169,14 @@ def hom : shift n (cone f) ⟶ cone (shiftMap n f) :=
   lift (shiftMap n f) (koszulSign n • (fst f).shift n) ((snd f).shift n) (by
     refine Cochain.ext fun X x => ?_
     obtain ⟨x, rfl⟩ := shift.mk_surjective (n := n) x
-    simp [δ_zero_cochain_apply, d_snd_apply, Cocycle.coe_units_smul])
+    simp [Cocycle.coe_units_smul])
 
 /-- The morphism `cone (f⟦n⟧) ⟶ (cone f)⟦n⟧` of Mathlib's `mappingCone.shiftIso`. -/
 def inv : cone (shiftMap n f) ⟶ shift n (cone f) :=
   desc (shiftMap n f) (koszulSign n • (inl f).shift n) (shiftMap n (inr f)) (by
     refine Cochain.ext fun X x => ?_
     obtain ⟨x, rfl⟩ := shift.mk_surjective (n := n) x
-    simp [δ_neg_one_apply, inl_d_apply, smul_smul])
+    simp [smul_smul])
 
 variable {f n} {X : C}
 
@@ -210,7 +213,7 @@ theorem hom_comp_inv : hom f n ≫ inv f n = 𝟙 _ := by
 theorem inv_comp_hom : inv f n ≫ hom f n = 𝟙 _ := by
   refine hom_ext fun X q => ext_to ?_ ?_
   · simp [inv_apply, smul_smul]
-  · simp [inv_apply, smul_smul]
+  · simp [inv_apply]
 
 /-- Mathlib's `shiftTriangleIso`, second square. -/
 theorem shift_inr_comp_hom : shiftMap n (inr f) ≫ hom f n = inr (shiftMap n f) := by
@@ -343,7 +346,7 @@ noncomputable def rotateTrianglehIso :
     (((quotient C).commShiftIso (1 : ℤ)).symm.app M ≪≫
       isoOfHomotopyEquiv (rotateHomotopyEquiv φ))
     (by dsimp; simp) (by dsimp; simp) (by
-      dsimp
+      dsimp [Triangle.rotate, isoOfHomotopyEquiv]
       rw [CategoryTheory.Functor.map_id, comp_id, assoc, ← Functor.map_comp_assoc,
         rotateHomotopyEquiv_comm₃, Functor.map_neg, Preadditive.neg_comp,
         Functor.commShiftIso_hom_naturality, Preadditive.comp_neg,
@@ -365,11 +368,11 @@ theorem shiftIso_comm₂ :
 noncomputable def shiftTriangleIso :
     (Triangle.shiftFunctor _ n).obj (triangle φ) ≅ triangle (φ⟦n⟧') := by
   refine Triangle.isoMk _ _ (Iso.refl _) (n.negOnePow • Iso.refl _) (shiftIso φ n) ?_ ?_ ?_
-  · dsimp
+  · dsimp [Triangle.shiftFunctor]
     simp only [Linear.comp_units_smul, comp_id, id_comp, smul_smul, Int.units_mul_self, one_smul]
-  · dsimp
+  · dsimp [Triangle.shiftFunctor]
     rw [Linear.units_smul_comp, Linear.units_smul_comp, id_comp, shiftIso_comm₂]
-  · dsimp
+  · dsimp [Triangle.shiftFunctor]
     rw [CategoryTheory.Functor.map_id]
     erw [comp_id]
     rw [shiftFunctorComm_hom_app_eq]
@@ -418,7 +421,8 @@ theorem contractible_distinguished (X : HomotopyCategory.{w} C) :
   refine ⟨_, _, 𝟙 X, ⟨?_⟩⟩
   have h := (isZero_quotient_obj_iff (cone (𝟙 X))).2 (cone.isContractible_id X)
   exact Triangle.isoMk _ _ (Iso.refl _) (Iso.refl _) h.isoZero.symm
-    (by simp) (h.eq_of_tgt _ _) (by dsimp; ext)
+    (by simp [contractibleTriangle]) (h.eq_of_tgt _ _)
+    (by dsimp [contractibleTriangle]; ext)
 
 theorem distinguished_cocone_triangle {X Y : HomotopyCategory.{w} C} (f : X ⟶ Y) :
     ∃ (Z : HomotopyCategory.{w} C) (g : Y ⟶ Z) (h : Z ⟶ X⟦(1 : ℤ)⟧),
@@ -477,7 +481,7 @@ theorem complete_distinguished_triangle_morphism
   let γ := e₁.hom ≫ trianglehMapOfHomotopy H ≫ e₂.inv
   have comm₂ := γ.comm₂
   have comm₃ := γ.comm₃
-  dsimp [γ] at comm₂ comm₃
+  dsimp [γ, trianglehMapOfHomotopy] at comm₂ comm₃
   simp only [ha', hb'] at comm₂ comm₃
   refine ⟨γ.hom₃, ?_, ?_⟩
   · simpa [γ] using comm₂

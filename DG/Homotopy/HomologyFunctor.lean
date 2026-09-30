@@ -27,8 +27,9 @@ library's cohomology `DG.cohomology M n = Zⁿ(M) ⧸ Bⁿ(M)`:
 * `DG.HomotopyCategory.homologyFunctor_linear`, `DG.HomotopyCategory.cohomologyFunctor_linear`:
   the cohomology functors on `H(A)` are `R`-linear.
 
-We also record `ModuleCat.isZero_iff_subsingleton`: a module is a zero object of `ModuleCat R`
-iff it is a subsingleton.
+We use the imported Mathlib theorem `ModuleCat.isZero_iff_subsingleton`, with the same
+statement `IsZero X ↔ Subsingleton X`: a module is a zero object of `ModuleCat R` iff it is
+a subsingleton. The theorem remains available to files importing this module.
 -/
 
 open CategoryTheory Limits
@@ -37,25 +38,11 @@ universe v u w
 
 noncomputable section
 
-namespace ModuleCat
-
-/-- An `R`-module is a zero object of `ModuleCat R` iff it is a subsingleton. -/
-theorem isZero_iff_subsingleton {R : Type w} [Ring R] {X : ModuleCat.{v} R} :
-    IsZero X ↔ Subsingleton X := by
-  refine ⟨fun h => ⟨fun x y => ?_⟩, fun _ => ModuleCat.isZero_of_subsingleton X⟩
-  have h1 := congrArg (fun φ : X ⟶ X => φ.hom x) ((IsZero.iff_id_eq_zero _).mp h)
-  have h2 := congrArg (fun φ : X ⟶ X => φ.hom y) ((IsZero.iff_id_eq_zero _).mp h)
-  simp only [ModuleCat.hom_id, LinearMap.id_apply, ModuleCat.hom_zero, LinearMap.zero_apply]
-    at h1 h2
-  rw [h1, h2]
-
-end ModuleCat
-
 namespace DG
 
 namespace DGModuleCat
 
-open Algebra
+open DG.DGModuleCat.Algebra
 
 variable (R : Type w) (A : Type u) [CommRing R] [Ring A] [DGAddCommGroup A] [Algebra R A]
   [DGRing A] [DGAlgebra R A]
@@ -98,6 +85,7 @@ instance (n : ℤ) : (cohomologyFunctor.{v} R A n).Linear R where
 
 variable (R A)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The homology of the underlying cochain complex of `R`-modules is naturally isomorphic to the
 cohomology `Hⁿ(M) = Zⁿ(M) ⧸ Bⁿ(M)` of a dg module. -/
 def forgetCompHomologyFunctorIso (n : ℤ) :
@@ -125,8 +113,8 @@ cohomology `M ↦ Hⁿ(M)` of dg modules. -/
 def quotientCompHomologyFunctorIso (n : ℤ) :
     quotient A ⋙ homologyFunctor R A n ≅ DGModuleCat.cohomologyFunctor.{v} R A n :=
   (Functor.associator _ _ _).symm ≪≫
-    isoWhiskerRight (forgetFactors R A) _ ≪≫ Functor.associator _ _ _ ≪≫
-    isoWhiskerLeft _ (_root_.HomotopyCategory.homologyFunctorFactors _ _ n) ≪≫
+    Functor.isoWhiskerRight (forgetFactors R A) _ ≪≫ Functor.associator _ _ _ ≪≫
+    Functor.isoWhiskerLeft _ (_root_.HomotopyCategory.homologyFunctorFactors _ _ n) ≪≫
     DGModuleCat.forgetCompHomologyFunctorIso R A n
 
 /-- The cohomology `M ↦ Hⁿ(M)` of dg modules, as a functor on the homotopy category (the
@@ -162,13 +150,13 @@ variable (R A) in
 /-- The cohomology functors on the homotopy category are `R`-linear. -/
 instance homologyFunctor_linear (n : ℤ) : (homologyFunctor.{v} R A n).Linear R := by
   have : (quotient A ⋙ homologyFunctor.{v} R A n).Linear R :=
-    Functor.linear_of_iso (quotientCompHomologyFunctorIso R A n).symm
+    Functor.linear_of_iso R (quotientCompHomologyFunctorIso R A n).symm
   exact Functor.linear_of_full_essSurj_comp (quotient A) _
 
 variable (R A) in
 instance cohomologyFunctor_linear (n : ℤ) : (cohomologyFunctor.{v} R A n).Linear R := by
   have : (quotient A ⋙ cohomologyFunctor.{v} R A n).Linear R :=
-    Functor.linear_of_iso (quotientCompCohomologyFunctorIso R A n).symm
+    Functor.linear_of_iso R (quotientCompCohomologyFunctorIso R A n).symm
   exact Functor.linear_of_full_essSurj_comp (quotient A) _
 
 /-- A dg module is acyclic iff all cohomology functors vanish on it. -/

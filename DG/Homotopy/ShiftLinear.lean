@@ -25,34 +25,8 @@ open CategoryTheory
 
 universe v u w
 
-namespace CategoryTheory.Functor
-
-universe v₁ v₂ v₃ u₁ u₂ u₃
-
-variable {R : Type*} [Semiring R] {C : Type u₁} {D : Type u₂} {E : Type u₃} [Category.{v₁} C]
-  [Category.{v₂} D] [Category.{v₃} E] [Preadditive C] [Preadditive D] [Preadditive E]
-  [CategoryTheory.Linear R C] [CategoryTheory.Linear R D] [CategoryTheory.Linear R E]
-
-/-- A functor isomorphic to an `R`-linear functor is `R`-linear. -/
-theorem linear_of_iso {F G : C ⥤ D} [F.Linear R] (e : F ≅ G) : G.Linear R where
-  map_smul {X Y} f r := by
-    rw [← NatIso.naturality_1 e (r • f), ← NatIso.naturality_1 e f, F.map_smul,
-      CategoryTheory.Linear.smul_comp, CategoryTheory.Linear.comp_smul]
-
-/-- If `F` is full, essentially surjective and `R`-linear, and `F ⋙ G` is `R`-linear, then `G`
-is `R`-linear. -/
-theorem linear_of_full_essSurj_comp (F : C ⥤ D) [F.Full] [F.EssSurj] [F.Linear R] (G : D ⥤ E)
-    [(F ⋙ G).Linear R] : G.Linear R where
-  map_smul {X Y} f r := by
-    obtain ⟨f', hf'⟩ := F.map_surjective ((F.objObjPreimageIso X).hom ≫ f ≫
-      (F.objObjPreimageIso Y).inv)
-    rw [← cancel_mono (G.map (F.objObjPreimageIso Y).inv),
-      ← cancel_epi (G.map (F.objObjPreimageIso X).hom), CategoryTheory.Linear.smul_comp,
-      CategoryTheory.Linear.comp_smul, ← G.map_comp, ← G.map_comp, ← G.map_comp, ← G.map_comp,
-      CategoryTheory.Linear.smul_comp, CategoryTheory.Linear.comp_smul, ← hf', ← F.map_smul]
-    exact (F ⋙ G).map_smul r f'
-
-end CategoryTheory.Functor
+-- Mathlib now provides `Functor.linear_of_iso` and
+-- `Functor.linear_of_full_essSurj_comp` under their original names.
 
 namespace DG
 
@@ -65,13 +39,13 @@ variable (R : Type w) (A : Type u) [CommRing R] [Ring A] [DGAddCommGroup A] [Alg
 instance (priority := 100) shiftFunctor_linear (n : ℤ) :
     (shiftFunctor (HomotopyCategory.{v} A) n).Linear R := by
   have : (quotient A ⋙ shiftFunctor (HomotopyCategory.{v} A) n).Linear R :=
-    Functor.linear_of_iso ((quotient A).commShiftIso n)
+    Functor.linear_of_iso R ((quotient A).commShiftIso n)
   exact Functor.linear_of_full_essSurj_comp (quotient A) _
 
 /-- The forgetful functor from the homotopy category of dg `A`-modules to the homotopy category
 of cochain complexes of `R`-modules is `R`-linear. -/
 instance forget_linear : (forget.{v} R A).Linear R := by
-  have : (quotient A ⋙ forget.{v} R A).Linear R := Functor.linear_of_iso (forgetFactors R A).symm
+  have : (quotient A ⋙ forget.{v} R A).Linear R := Functor.linear_of_iso R (forgetFactors R A).symm
   exact Functor.linear_of_full_essSurj_comp (quotient A) _
 
 end HomotopyCategory

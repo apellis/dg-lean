@@ -101,6 +101,7 @@ theorem mk_X₂ {S : ShortComplex C} (hS : S.ShortExact) : mk S.X₂ = mk S.X₁
   change mkHom C _ = 0 at h
   rwa [map_sub, map_sub, sub_sub, sub_eq_zero] at h
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Induction principle for `K₀(C)`: every element is obtained from the classes of objects by
 sums and negatives. -/
 theorem induction_on {p : AbelianK0 C → Prop} (x : AbelianK0 C) (zero : p 0)
@@ -108,22 +109,24 @@ theorem induction_on {p : AbelianK0 C → Prop} (x : AbelianK0 C) (zero : p 0)
     p x := by
   obtain ⟨y, rfl⟩ := mkHom_surjective x
   induction y using FreeAbelianGroup.induction_on with
-  | C0 => simpa using zero
-  | C1 X => exact mk X
-  | Cn y hy => rw [map_neg]; exact neg _ hy
-  | Cp y z hy hz => rw [map_add]; exact add _ _ hy hz
+  | zero => simpa using zero
+  | of X => exact mk X
+  | neg y hy => rw [map_neg]; exact neg _ hy
+  | add y z hy hz => rw [map_add]; exact add _ _ hy hz
 
 section lift
 
 variable {G : Type*} [AddCommGroup G]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Two homomorphisms out of `K₀(C)` which agree on the classes of objects are equal. -/
 @[ext]
 theorem addMonoidHom_ext ⦃f g : AbelianK0 C →+ G⦄ (h : ∀ X : C, f (mk X) = g (mk X)) :
     f = g := by
   apply QuotientAddGroup.addMonoidHom_ext
-  exact FreeAbelianGroup.lift.ext _ _ h
+  exact FreeAbelianGroup.lift_ext _ _ h
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The universal property of `K₀(C)`: a function `f : C → G` to an abelian group which satisfies
 `f S.X₂ = f S.X₁ + f S.X₃` for every short exact sequence `S` induces a homomorphism
 `AbelianK0 C →+ G` sending `[X]` to `f X`. -/
@@ -132,13 +135,15 @@ def lift (f : C → G) (hf : ∀ S : ShortComplex C, S.ShortExact → f S.X₂ =
   QuotientAddGroup.lift _ (FreeAbelianGroup.lift f) (by
     refine (AddSubgroup.closure_le _).2 ?_
     rintro x ⟨S, hS, rfl⟩
-    simp only [SetLike.mem_coe, AddMonoidHom.mem_ker, map_sub, FreeAbelianGroup.lift.of, hf S hS]
+    simp only [SetLike.mem_coe, AddMonoidHom.mem_ker, map_sub, FreeAbelianGroup.lift_apply_of]
+    rw [hf S hS]
     abel)
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem lift_mk (f : C → G) (hf) (X : C) : lift f hf (mk X) = f X :=
   (QuotientAddGroup.lift_mk' (relations C) _ (FreeAbelianGroup.of X)).trans
-    (FreeAbelianGroup.lift.of f X)
+    (FreeAbelianGroup.lift_apply_of f X)
 
 theorem lift_unique (f : C → G) (hf) (g : AbelianK0 C →+ G) (hg : ∀ X, g (mk X) = f X) :
     g = lift f hf := by

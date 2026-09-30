@@ -117,8 +117,7 @@ theorem tmul_mem_tensorGrading {i j k : ℤ} (h : i + j = k) {m : M} (hm : m ∈
 theorem tensor_induction_on {P : M ⊗[ℤ] N → Prop} (x : M ⊗[ℤ] N) (zero : P 0)
     (tmul : ∀ {i j : ℤ} (m : grading (M := M) i) (n : grading (M := N) j), P ((m : M) ⊗ₜ (n : N)))
     (add : ∀ x y, P x → P y → P (x + y)) : P x := by
-  induction x using TensorProduct.induction_on with
-  | zero => exact zero
+  induction x using TensorProduct.inductionOn with
   | tmul m n =>
     induction m using induction_on with
     | h_zero => simpa using zero
@@ -153,8 +152,7 @@ theorem tensorD_tmul_of_mem {i : ℤ} {m : M} (hm : m ∈ grading i) (n : N) :
   rw [tensorD_tmul, gradeInvolution_of_mem hm, Units.smul_def, Units.smul_def, smul_tmul']
 
 theorem tensorD_tensorD (x : M ⊗[ℤ] N) : tensorD M N (tensorD M N x) = 0 := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
+  induction x using TensorProduct.inductionOn with
   | tmul m n =>
     rw [tensorD_tmul, map_add, tensorD_tmul, tensorD_tmul, d_d, zero_tmul, zero_add, d_d,
       tmul_zero, d_gradeInvolution, neg_tmul, add_zero, add_neg_cancel]
@@ -169,15 +167,15 @@ theorem tensorD_mem {k : ℤ} {x : M ⊗[ℤ] N} (hx : x ∈ tensorGrading M N k
     refine add_mem (tmul_mem_tensorGrading (by ring) (d_mem hm) hn) ?_
     rw [Units.smul_def]
     exact zsmul_mem (tmul_mem_tensorGrading (by ring) hm (d_mem hn)) _
-  | one => rw [map_zero]; exact zero_mem _
-  | mul x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
-  | inv x _ hx => rw [map_neg]; exact neg_mem hx
+  | zero => rw [map_zero]; exact zero_mem _
+  | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
+  | neg x _ hx => rw [map_neg]; exact neg_mem hx
 
 /-- The bi-additive extension of a family of bi-additive maps on homogeneous components. -/
 def liftHomogeneous₂ {P : Type*} [AddCommGroup P]
     (φ : ∀ i j, grading (M := M) i →+ grading (M := N) j →+ P) : M →+ N →+ P :=
   liftHomogeneous (grading (M := M)) fun i =>
-    (liftHomogeneousEquiv (grading (M := N))).toAddMonoidHom.comp (Pi.addMonoidHom (φ i))
+    (liftHomogeneousEquiv (grading (M := N))).toAddMonoidHom.comp (AddMonoidHom.pi (φ i))
 
 theorem liftHomogeneous₂_of_mem {P : Type*} [AddCommGroup P]
     (φ : ∀ i j, grading (M := M) i →+ grading (M := N) j →+ P) {i j : ℤ} {m : M}
@@ -230,9 +228,9 @@ theorem tensorDecompose_of_mem {k : ℤ} {x : M ⊗[ℤ] N} (hx : x ∈ tensorGr
   | mem x hx =>
     obtain ⟨i, j, h, m, hm, n, hn, rfl⟩ := hx
     rw [tensorDecompose_tmul h hm hn]
-  | one => rw [map_zero]; exact (map_zero _).symm.trans (congrArg _ rfl)
-  | mul x y hx' hy' hx hy => rw [map_add, hx, hy, ← map_add]; rfl
-  | inv x hx' hx => rw [map_neg, hx, ← map_neg]; rfl
+  | zero => rw [map_zero]; exact (map_zero _).symm.trans (congrArg _ rfl)
+  | add x y hx' hy' hx hy => rw [map_add, hx, hy, ← map_add]; rfl
+  | neg x hx' hx => rw [map_neg, hx, ← map_neg]; rfl
 
 /-- The decomposition of `M ⊗ N` into total degrees `(M ⊗ N)ᵏ = Σ_{i+j=k} Mⁱ ⊗ Nʲ`. -/
 instance tensorDecomposition : Decomposition (tensorGrading M N) :=
@@ -285,9 +283,9 @@ theorem map_mem_grading_of_tmul {Y : Type*} [AddCommGroup Y] [DGAddCommGroup Y]
   | mem x hx =>
     obtain ⟨i, j, rfl, m, hm, n, hn, rfl⟩ := hx
     exact h hm hn
-  | one => rw [map_zero]; exact zero_mem _
-  | mul x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
-  | inv x _ hx => rw [map_neg]; exact neg_mem hx
+  | zero => rw [map_zero]; exact zero_mem _
+  | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
+  | neg x _ hx => rw [map_neg]; exact neg_mem hx
 
 theorem gradeInvolution_tmul (m : M) (n : N) :
     gradeInvolution (M ⊗[ℤ] N) (m ⊗ₜ n) = gradeInvolution M m ⊗ₜ gradeInvolution N n := by
@@ -344,8 +342,7 @@ theorem tensorMap_d (f : M →+ M') (g : N →+ N')
     (hf : ∀ {n : ℤ} {m : M}, m ∈ grading n → f m ∈ grading n)
     (hfd : ∀ m, f (d m) = d (f m)) (hgd : ∀ n, g (d n) = d (g n)) (x : M ⊗[ℤ] N) :
     tensorMap f g (d x) = d (tensorMap f g x) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
+  induction x using TensorProduct.inductionOn with
   | tmul m n =>
     rw [d_tmul, map_add, tensorMap_tmul, tensorMap_tmul, tensorMap_tmul, d_tmul, hfd, hgd,
       gradeInvolution_map f hf]
@@ -362,7 +359,7 @@ variable (M N : Type*) [AddCommGroup M] [DGAddCommGroup M] [AddCommGroup N] [DGA
 /-- The bi-additive map `(m, n) ↦ m ⊗ n`. -/
 def tmulAddHom : M →+ N →+ M ⊗[ℤ] N :=
   AddMonoidHom.mk' (fun m => (TensorProduct.mk ℤ M N m).toAddMonoidHom)
-    (fun m m' => by ext n; simp [add_tmul])
+    (fun m m' => by ext n; simp)
 
 omit [DGAddCommGroup M] [DGAddCommGroup N] in
 @[simp]
@@ -440,6 +437,7 @@ section Associativity
 variable (M N P : Type*) [AddCommGroup M] [DGAddCommGroup M] [AddCommGroup N] [DGAddCommGroup N]
   [AddCommGroup P] [DGAddCommGroup P]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem assoc_mem {k : ℤ} {x : (M ⊗[ℤ] N) ⊗[ℤ] P}
     (hx : x ∈ grading (M := (M ⊗[ℤ] N) ⊗[ℤ] P) k) :
     TensorProduct.assoc ℤ M N P x ∈ grading k := by
@@ -451,13 +449,12 @@ theorem assoc_mem {k : ℤ} {x : (M ⊗[ℤ] N) ⊗[ℤ] P}
         (fun {i j m n} hm hn => by
           simpa [add_assoc] using tmul_mem_grading hm (tmul_mem_grading hn hp)) hy) hx
 
+set_option backward.isDefEq.respectTransparency false in
 theorem assoc_d (x : (M ⊗[ℤ] N) ⊗[ℤ] P) :
     TensorProduct.assoc ℤ M N P (d x) = d (TensorProduct.assoc ℤ M N P x) := by
-  induction x using TensorProduct.induction_on with
-  | zero => simp
+  induction x using TensorProduct.inductionOn with
   | tmul y p =>
-    induction y using TensorProduct.induction_on with
-    | zero => simp
+    induction y using TensorProduct.inductionOn with
     | tmul m n =>
       simp [d_tmul, gradeInvolution_tmul, add_tmul, tmul_add, add_assoc]
     | add y y' hy hy' => rw [add_tmul, d_add, map_add, hy, hy', map_add, d_add]
@@ -490,9 +487,9 @@ instance instDGModuleTensorProduct : DGModule A (M ⊗[ℤ] N) where
   smul_mem {i k a x} ha hx := by
     show a • x ∈ grading (i + k)
     rw [add_comm]
-    exact map_mem_grading_of_tmul ((DistribMulAction.toAddMonoidHom _ a)) i
+    exact map_mem_grading_of_tmul ((DistribSMul.toAddMonoidHom _ a)) i
       (fun {p q m n} hm hn => by
-        rw [DistribMulAction.toAddMonoidHom_apply, smul_tmul', add_right_comm, add_comm p i]
+        rw [DistribSMul.toAddMonoidHom_apply, smul_tmul', add_right_comm, add_comm p i]
         exact tmul_mem_grading (smul_mem_grading ha hm) hn) hx
   d_smul' {k a} ha x := by
     induction x using tensor_induction_on with

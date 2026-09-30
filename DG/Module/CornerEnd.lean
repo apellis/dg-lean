@@ -65,6 +65,7 @@ theorem selfEquiv_of {n : ℤ} (f : Cochain A A A n) :
   rw [selfEquiv_apply, op_of_smul f one_mem_grading, mul_zero, koszulSign, Int.negOnePow_zero,
     one_smul]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The inverse of `DG.DGModule.END.selfEquiv` acts on `A` by right multiplication. -/
 @[simp]
 theorem op_selfEquiv_symm_smul (a x : A) : op ((selfEquiv A).symm a) • x = x * a := by
@@ -143,6 +144,7 @@ theorem endLeftCornerEquiv_of {n : ℤ} (f : Cochain A e.LeftCorner e.LeftCorner
   rw [coe_endLeftCornerEquiv, DGModule.END.op_of_smul f (idem_mem_grading e), mul_zero,
     koszulSign, Int.negOnePow_zero, one_smul]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The inverse of `DG.DGIdempotent.endLeftCornerEquiv` sends `y` to the right multiplication by
 `y`. -/
 theorem coe_op_endLeftCornerEquiv_symm_smul (y : e.Corner) (x : e.LeftCorner) :
@@ -192,9 +194,9 @@ theorem isIdempotentElem : IsIdempotentElem e.val := e.mul_self
 /-- The left ideal `A e = {a | a * e = a}`. -/
 def leftIdeal : Ideal A where
   carrier := {a | a * e.val = a}
-  add_mem' ha hb := by simp only [Set.mem_setOf_eq] at *; rw [add_mul, ha, hb]
+  add_mem' ha hb := by simp only [Set.mem_ofPred_eq] at *; rw [add_mul, ha, hb]
   zero_mem' := zero_mul _
-  smul_mem' r a ha := by simp only [Set.mem_setOf_eq, smul_eq_mul] at *; rw [mul_assoc, ha]
+  smul_mem' r a ha := by simp only [Set.mem_ofPred_eq, smul_eq_mul] at *; rw [mul_assoc, ha]
 
 theorem mem_leftIdeal {a : A} : a ∈ e.leftIdeal ↔ a * e.val = a := Iff.rfl
 
@@ -367,7 +369,7 @@ noncomputable instance instDGAddCommGroup : DGAddCommGroup e.Corner where
   d := dAddHom e
   d_mem' {n x} hx := by
     rw [mem_gradingComap]
-    simpa using mul_mem_grading e.mem_zero (d_mem hx)
+    simpa using! mul_mem_grading e.mem_zero (d_mem hx)
   d_d' x := ext e (by
     show e.val * d (e.val * d (x : A)) = 0
     rw [d_mul_of_mem_zero e.mem_zero, d_d, mul_zero, add_zero, ← mul_assoc, val_mul_d,
@@ -377,6 +379,7 @@ noncomputable instance instDGAddCommGroup : DGAddCommGroup e.Corner where
 @[simp]
 theorem coe_d (x : e.Corner) : ((d x : e.Corner) : A) = e.val * d (x : A) := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The differential of `e A e` in the form `e a e ↦ e * d (a * e)`. -/
 theorem coe_d_mk (a : A) :
     ((d (mk e (e.val * a * e.val) ⟨a, rfl⟩) : e.Corner) : A) = e.val * d (a * e.val) := by
@@ -514,6 +517,7 @@ theorem endLeftCornerEquiv_of {n : ℤ} (f : Cochain A e.LeftCorner e.LeftCorner
   rw [coe_endLeftCornerEquiv, DGModule.END.op_of_smul f (idem_mem_grading e), mul_zero,
     koszulSign, Int.negOnePow_zero, one_smul]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The inverse of `DG.LeftDGIdempotent.endLeftCornerEquiv` sends `y` to the right
 multiplication by `y`. -/
 theorem coe_op_endLeftCornerEquiv_symm_smul (y : e.Corner) (x : e.LeftCorner) :

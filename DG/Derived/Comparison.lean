@@ -88,6 +88,7 @@ noncomputable def comparison : DerivedCategory R ⥤ _root_.DerivedCategory (Mod
       ((HomotopyCategory.mem_quasiIso_iff_forget R f).mp hf))
     Qh
 
+set_option backward.isDefEq.respectTransparency false in
 noncomputable instance comparisonLifting :
     Localization.Lifting Qh (HomotopyCategory.quasiIso R)
       (HomotopyCategory.forget R R ⋙ _root_.DerivedCategory.Qh) (comparison R) :=
@@ -102,10 +103,10 @@ noncomputable def QhCompComparisonIso :
 `DG.DGModuleCat.forget R R` to cochain complexes. -/
 noncomputable def QCompComparisonIso :
     Q ⋙ comparison R ≅ DGModuleCat.forget R R ⋙ _root_.DerivedCategory.Q :=
-  Functor.associator _ _ _ ≪≫ isoWhiskerLeft _ (QhCompComparisonIso R) ≪≫
+  Functor.associator _ _ _ ≪≫ Functor.isoWhiskerLeft _ (QhCompComparisonIso R) ≪≫
     (Functor.associator _ _ _).symm ≪≫
-    isoWhiskerRight (HomotopyCategory.forgetFactors R R) _ ≪≫ Functor.associator _ _ _ ≪≫
-    isoWhiskerLeft _ (_root_.DerivedCategory.quotientCompQhIso (ModuleCat.{u} R))
+    Functor.isoWhiskerRight (HomotopyCategory.forgetFactors R R) _ ≪≫ Functor.associator _ _ _ ≪≫
+    Functor.isoWhiskerLeft _ (_root_.DerivedCategory.quotientCompQhIso (ModuleCat.{u} R))
 
 noncomputable instance : CatCommSq (HomotopyCategory.comparisonLocalizerMorphism R).functor Qh
     _root_.DerivedCategory.Qh (comparison R) :=

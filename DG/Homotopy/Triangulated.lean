@@ -27,11 +27,13 @@ open CategoryTheory Category Limits Pretriangulated
 
 universe v u
 
+set_option backward.isDefEq.respectTransparency false
+
 namespace DG
 
 namespace Cone
 
-open DGModuleCat HomotopyCategory
+open DGModuleCat DG.HomotopyCategory
 
 variable {A : Type u} [Ring A] [DGAddCommGroup A] [DGRing A]
   {X₁ X₂ X₃ : DGModuleCat.{v} A} (f : X₁ ⟶ X₂) (g : X₂ ⟶ X₃)
@@ -65,7 +67,7 @@ theorem mappingConeCompTriangleh_comm₁ :
   rw [← cancel_mono (isoOfHomotopyEquiv (M := DGModuleCat.of A (Cone g.hom))
     (N := DGModuleCat.of A (Cone (compMor₁ f.hom g.hom)))
     (mappingConeCompHomotopyEquiv f.hom g.hom)).inv, assoc]
-  dsimp [mappingConeCompTriangleh]
+  dsimp [mappingConeCompTriangleh, mappingConeCompTriangle, isoOfHomotopyEquiv, triangle]
   rw [← Functor.map_comp, ← Functor.map_comp, ← Functor.map_comp,
     mappingConeCompHomotopyEquiv_hom_inv_id, comp_id]
   congr 1
@@ -85,8 +87,8 @@ theorem mappingConeCompTriangleh_distinguished {X₁ X₂ X₃ : DGModuleCat.{v}
   refine Triangle.isoMk _ _ (Iso.refl _) (Iso.refl _)
     (isoOfHomotopyEquiv (M := DGModuleCat.of A (Cone g.hom))
       (N := DGModuleCat.of A (Cone (compMor₁ f.hom g.hom)))
-      (mappingConeCompHomotopyEquiv f.hom g.hom)) (by aesop_cat) (by simp) ?_
-  dsimp [mappingConeCompTriangleh]
+      (mappingConeCompHomotopyEquiv f.hom g.hom)) (by aesop_cat) (by simp; rfl) ?_
+  dsimp [mappingConeCompTriangleh, mappingConeCompTriangle, isoOfHomotopyEquiv, triangle]
   rw [CategoryTheory.Functor.map_id, comp_id, ← Functor.map_comp_assoc]
   congr 2
   exact (DGModuleCat.hom_ext (mappingConeCompHomotopyEquiv_comm₂ f.hom g.hom)).symm
@@ -114,7 +116,7 @@ noncomputable instance isTriangulated : IsTriangulated (HomotopyCategory.{v} A) 
       exact Triangle.isoMk _ _ (Iso.refl _) (Iso.refl _) (Iso.refl _)
         (by dsimp [α, mappingConeCompTriangleh]; simp; rfl)
         (by dsimp [β, mappingConeCompTriangleh]; simp; rfl)
-        (by dsimp [mappingConeCompTriangleh]; simp))
+        (by dsimp [mappingConeCompTriangleh, mappingConeCompTriangle, isoOfHomotopyEquiv, triangle]; simp))
 
 end HomotopyCategory
 

@@ -52,7 +52,7 @@ noncomputable instance decomposition (n : ℤ) : Decomposition (cocycles.wgradin
 theorem coe_decompose_wgrading {n : ℤ} (z : cocycles M n) (k : ℤ) :
     ((decompose (cocycles.wgrading M n) z k : cocycles M n) : M) =
       decompose (InternalGrading.wgrading (M := M)) (z : M) k := by
-  letI : Decomposition fun k =>
+  let : Decomposition fun k =>
       (InternalGrading.wgrading (M := M) k).comap (cocycles M n).subtype :=
     cocycles.decomposition n
   exact coe_decompose_comap _ (cocycles M n).subtype z k
@@ -132,6 +132,7 @@ section InternalShift
 
 omit [InternalGrading M]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The cohomology of the internal shift: `Hⁿ(M⟨k⟩) ≃ Hⁿ(M)`, the identity on classes of
 cocycles. It sends `Hⁿ(M⟨k⟩)⟨j⟩` onto `Hⁿ(M)⟨j + k⟩`
 (`DG.cohomology.mem_wgrading_internalShiftAddEquiv_iff`), so that `H(M⟨k⟩) ≅ H(M)⟨k⟩`. -/

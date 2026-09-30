@@ -36,11 +36,13 @@ namespace DG
 
 namespace LocalizationCoproducts
 
+set_option backward.isDefEq.respectTransparency false in
 /-- A coproduct of morphisms in `W` is in `W` if `W` is stable under coproducts. -/
 theorem sigmaMap_mem {C : Type*} [Category C] (W : MorphismProperty C) {J : Type*}
     (hW : W.IsStableUnderCoproductsOfShape J) {X X' : J → C} [HasCoproduct X] [HasCoproduct X']
     (s : ∀ j, X' j ⟶ X j) (hs : ∀ j, W (s j)) : W (Limits.Sigma.map s) :=
-  hW.colimMap _ fun j => hs j.as
+  have := hW
+  W.colimMap _ fun j => hs j.as
 
 variable {C D : Type*} [Category C] [Category D] [Preadditive C] [Preadditive D]
   (L : C ⥤ D) (W : MorphismProperty C) [L.IsLocalization W] [W.HasRightCalculusOfFractions]
@@ -102,7 +104,7 @@ theorem exists_desc (X : J → C) {Y : D} (φ : ∀ j, L.obj (X j) ⟶ Y) :
   rw [← cancel_mono e.inv, assoc, assoc, assoc, e.hom_inv_id, comp_id, hψ j,
     ← cancel_epi (L.map (ψ j).s), MorphismProperty.RightFraction.map_s_comp_map,
     ← L.map_comp_assoc, hS', L.map_comp, assoc, IsIso.hom_inv_id_assoc, ← L.map_comp,
-    Sigma.ι_desc]
+    Sigma.ι_comp_desc]
 
 /-- The image under a localization functor `L` of a coproduct is a coproduct, provided that the
 class `W` has a calculus of right fractions and is stable under coproducts. -/

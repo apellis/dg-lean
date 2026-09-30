@@ -81,6 +81,8 @@ open DirectSum
 
 universe w w' u v
 
+set_option backward.isDefEq.respectTransparency false
+
 namespace DG
 
 /-! ### Morphisms out of shifts of `A` -/

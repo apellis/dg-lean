@@ -49,7 +49,7 @@ namespace CatModule
 
 namespace cone
 
-open Cochain
+open DG.CatModule.Cochain
 
 variable {C : Type u} [Category.{v} C] [Preadditive C] [∀ X Y : C, DGAddCommGroup (X ⟶ Y)]
   [DGCategory C] {M N K L : CatModule.{w} C} (f : M ⟶ N)
@@ -223,7 +223,7 @@ theorem δ_inl : δ (-1) 0 (inl f) = ofHom (f ≫ inr f) := by
 @[simp]
 theorem δ_snd : δ 0 1 (snd f) = -(ofHom f).comp (fst f).1 (add_zero 1) := by
   ext X p
-  rw [δ_zero_cochain_apply, d_snd_apply, Cochain.neg_apply, comp_apply, ofHom_apply]
+  rw [δ_zero_cochain_apply, d_snd_apply, Cochain.neg_apply, DG.CatModule.Cochain.comp_apply, ofHom_apply]
   abel
 
 /-- The morphism `fstHom f : cone f ⟶ shift 1 M` is the `1`-cocycle `fst f` shifted to degree
@@ -285,9 +285,9 @@ theorem δ_descCochain (n' : ℤ) (hn' : n + 1 = n') :
     rw [← h, koszulSign, koszulSign, Int.negOnePow_succ, neg_neg]
   have hn : koszulSign n' = -koszulSign n := by
     rw [← hn', koszulSign, koszulSign, Int.negOnePow_succ]
-  simp only [δ_apply _ _ hn', δ_apply _ _ h, descCochain_apply, Cochain.add_apply, comp_apply,
+  simp only [δ_apply _ _ hn', δ_apply _ _ h, descCochain_apply, Cochain.add_apply, DG.CatModule.Cochain.comp_apply,
     units_smul_apply, Cochain.neg_apply, ofHom_apply, d_fst_apply, d_snd_apply, map_add, map_neg,
-    d_add, hm, hn, Units.neg_smul, _root_.smul_add, _root_.smul_neg, map_sub, map_units_smul,
+    hm, hn, Units.neg_smul, _root_.smul_add, _root_.smul_neg,
     sub_eq_add_neg, neg_neg]
   abel
 
@@ -357,12 +357,12 @@ def descHomotopy (f₁ f₂ : cone f ⟶ K) (γ₁ : Cochain M K (-2)) (γ₂ : 
     refine ⟨?_, ?_⟩
     · ext X x
       have := congrArg (fun γ : Cochain M K (-1) => γ.app X x) h₁
-      simp only [comp_apply, Cochain.add_apply, units_smul_apply] at this ⊢
+      simp only [DG.CatModule.Cochain.comp_apply, Cochain.add_apply] at this ⊢
       rw [this, δ_descCochain f γ₁ γ₂ (by norm_num) 0 (neg_add_cancel 1)]
       simp [koszulSign]
     · ext X y
       have := congrArg (fun γ : Cochain N K 0 => γ.app X y) h₂
-      simp only [comp_apply, Cochain.add_apply] at this ⊢
+      simp only [DG.CatModule.Cochain.comp_apply, Cochain.add_apply] at this ⊢
       rw [this, δ_descCochain f γ₁ γ₂ (by norm_num) 0 (neg_add_cancel 1)]
       simp
 
@@ -415,13 +415,13 @@ theorem δ_liftCochain (m' : ℤ) (hm' : m + 1 = m') :
     rw [← h, koszulSign, koszulSign, Int.negOnePow_succ]
   refine ext_to ?_ ?_
   · simp only [δ_apply _ _ h, δ_apply _ _ hm', liftCochain_apply, Cochain.add_apply,
-      Cochain.neg_apply, comp_apply, units_smul_apply, map_add, map_sub, map_neg, map_units_smul,
-      d_add, inl_d_apply, inr_d_apply, inl_fst_apply, inr_fst_apply, hm, Units.neg_smul,
+      Cochain.neg_apply, DG.CatModule.Cochain.comp_apply, map_add, map_sub, map_neg, map_units_smul,
+      inl_d_apply, inr_d_apply, inl_fst_apply, inr_fst_apply, hm, Units.neg_smul,
       ofHom_apply, _root_.smul_zero, add_zero]
     abel
   · simp only [δ_apply _ _ h, δ_apply _ _ hm', liftCochain_apply, Cochain.add_apply,
-      Cochain.neg_apply, comp_apply, units_smul_apply, ofHom_apply, map_add, map_sub, map_neg,
-      map_units_smul, d_add, inl_d_apply, inr_d_apply, inl_snd_apply, inr_snd_apply, zero_add,
+      Cochain.neg_apply, DG.CatModule.Cochain.comp_apply, ofHom_apply, map_add, map_sub, map_neg,
+      map_units_smul, inl_d_apply, inr_d_apply, inl_snd_apply, inr_snd_apply, zero_add,
       _root_.smul_zero]
     abel
 
@@ -491,12 +491,12 @@ def liftHomotopy (f₁ f₂ : K ⟶ cone f) (α : Cochain K M 0) (β : Cochain K
     refine ⟨?_, ?_⟩
     · ext X k
       have := congrArg (fun γ : Cochain K M 1 => γ.app X k) h₁
-      simp only [comp_apply, Cochain.add_apply, Cochain.neg_apply] at this ⊢
+      simp only [DG.CatModule.Cochain.comp_apply, Cochain.add_apply, Cochain.neg_apply] at this ⊢
       rw [this, δ_liftCochain f α β (neg_add_cancel 1) 1 (zero_add 1)]
       simp
     · ext X k
       have := congrArg (fun γ : Cochain K N 0 => γ.app X k) h₂
-      simp only [comp_apply, Cochain.add_apply] at this ⊢
+      simp only [DG.CatModule.Cochain.comp_apply, Cochain.add_apply] at this ⊢
       rw [this, δ_liftCochain f α β (neg_add_cancel 1) 1 (zero_add 1)]
       simp
 

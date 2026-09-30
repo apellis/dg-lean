@@ -22,6 +22,8 @@ functor on the derived categories.
   triangulated functor (`DG.CatModule.DerivedCategory.restrict_isTriangulated`).
 -/
 
+set_option backward.isDefEq.respectTransparency false
+
 open CategoryTheory Category Limits Pretriangulated
 
 universe w' w'' w v₁ v₂ u₁ u₂
@@ -90,9 +92,9 @@ noncomputable def QhCompRestrictIso : Qh ⋙ restrict F ≅ HomotopyCategory.pre
 
 /-- Restriction on derived categories is induced by restriction of dg modules. -/
 noncomputable def QCompRestrictIso : Q ⋙ restrict F ≅ CatModule.precomp F ⋙ Q :=
-  Functor.associator _ _ _ ≪≫ isoWhiskerLeft _ (QhCompRestrictIso F) ≪≫
+  Functor.associator _ _ _ ≪≫ Functor.isoWhiskerLeft _ (QhCompRestrictIso F) ≪≫
     (Functor.associator _ _ _).symm ≪≫
-    isoWhiskerRight (HomotopyCategory.precompFactors F) _ ≪≫ Functor.associator _ _ _
+    Functor.isoWhiskerRight (HomotopyCategory.precompFactors F) _ ≪≫ Functor.associator _ _ _
 
 /-- Restriction on derived categories commutes with the shifts. -/
 noncomputable instance restrict_commShift : (restrict F).CommShift ℤ :=

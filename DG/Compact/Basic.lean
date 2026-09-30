@@ -1,5 +1,5 @@
 import Mathlib.Algebra.DirectSum.Basic
-import Mathlib.Algebra.Exact
+import Mathlib.Algebra.Exact.Basic
 import Mathlib.CategoryTheory.Limits.Preserves.Shapes.Products
 import Mathlib.CategoryTheory.ObjectProperty.ClosedUnderIsomorphisms
 import Mathlib.CategoryTheory.Preadditive.Biproducts
@@ -44,7 +44,7 @@ quantifies over all such instances (its truth does not depend on the choice).
 * `DG.IsCompact.of_isZero`: a zero object is compact.
 * `DG.isCompact_biprod_iff`: `X ⊞ Y` is compact if and only if `X` and `Y` are.
 * `DG.isCompact_iff_preservesColimitsOfShape`: `X` is compact if and only if the functor
-  `Hom(X, -) : C ⥤ AddCommGrp` (`preadditiveCoyoneda.obj (op X)`) preserves coproducts indexed
+  `Hom(X, -) : C ⥤ AddCommGrpCat` (`preadditiveCoyoneda.obj (op X)`) preserves coproducts indexed
   by types in `Type w`; this is the comparison with the categorical formulation.
 * `DG.exact_directSum_map`: a direct sum of exact sequences of abelian groups is exact
   (used for the five-lemma arguments in `DG.Compact.Triangulated`).
@@ -76,8 +76,8 @@ theorem exact_directSum_map (f : ∀ i, α i →+ β i) (g : ∀ i, β i →+ γ
     rw [DirectSum.map_apply]
     by_cases hi : i ∈ DFinsupp.support y
     · rw [DirectSum.mk_apply_of_mem hi, (hy' i).choose_spec]
-    · rw [DirectSum.mk_apply_of_not_mem hi, map_zero]
-      exact (DFinsupp.not_mem_support_iff.1 hi).symm
+    · rw [DirectSum.mk_apply_of_notMem hi, map_zero]
+      exact (DFinsupp.notMem_support_iff.1 hi).symm
   · rintro ⟨x, rfl⟩
     ext i
     simp [(h i).apply_apply_eq_zero]
@@ -183,10 +183,11 @@ theorem of_iso (e : X ≅ Y) (hY : IsCompact.{w} Y) : IsCompact.{w} X :=
 theorem iff_of_iso (e : X ≅ Y) : IsCompact.{w} X ↔ IsCompact.{w} Y :=
   ⟨of_iso e.symm, of_iso e⟩
 
+set_option backward.isDefEq.respectTransparency false in
 /-- A zero object is compact. -/
 theorem of_isZero (hX : IsZero X) : IsCompact.{w} X := by
   intro ι _ W _
-  exact ⟨fun a b _ => DirectSum.ext _ fun i => hX.eq_of_src _ _, fun f => ⟨0, hX.eq_of_src _ _⟩⟩
+  exact ⟨fun a b _ => DirectSum.ext fun i => hX.eq_of_src _ _, fun f => ⟨0, hX.eq_of_src _ _⟩⟩
 
 section biprod
 
@@ -242,14 +243,15 @@ open Opposite
 
 variable {ι : Type w} [DecidableEq ι] (X : C) (Y : ι → C) [HasCoproduct Y]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If the comparison map of `X` for the family `Y` is bijective, the functor
-`Hom(X, -) : C ⥤ AddCommGrp` preserves the coproduct of `Y`. -/
+`Hom(X, -) : C ⥤ AddCommGrpCat` preserves the coproduct of `Y`. -/
 theorem preservesColimit_of_bijective (h : Function.Bijective (coproductComparison X Y)) :
     PreservesColimit (Discrete.functor Y) (preadditiveCoyoneda.obj (op X)) := by
   let e := AddEquiv.ofBijective _ h
   refine preservesColimit_of_preserves_colimit_cocone (coproductIsCoproduct Y) ?_
   refine
-    { desc := fun s => AddCommGrp.ofHom
+    { desc := fun s => AddCommGrpCat.ofHom
         ((DirectSum.toAddMonoid fun i => (s.ι.app ⟨i⟩).hom).comp e.symm.toAddMonoidHom)
       fac := ?_
       uniq := ?_ }
@@ -276,7 +278,8 @@ theorem preservesColimit_of_bijective (h : Function.Bijective (coproductComparis
       rw [coproductComparison_of]
     exact DFunLike.congr_fun key a
 
-/-- If the functor `Hom(X, -) : C ⥤ AddCommGrp` preserves the coproduct of `Y`, the comparison
+set_option backward.isDefEq.respectTransparency false in
+/-- If the functor `Hom(X, -) : C ⥤ AddCommGrpCat` preserves the coproduct of `Y`, the comparison
 map of `X` for the family `Y` is bijective. The injectivity uses the test cocones projecting onto
 one summand, the surjectivity the test cocone with values in the quotient by the image. -/
 theorem bijective_of_preservesColimit
@@ -289,12 +292,12 @@ theorem bijective_of_preservesColimit
     intro a ha
     ext j
     let t : Cocone (Discrete.functor Y ⋙ preadditiveCoyoneda.obj (op X)) :=
-      { pt := AddCommGrp.of (X ⟶ Y j)
-        ι := Discrete.natTrans fun ⟨i⟩ => AddCommGrp.ofHom
+      { pt := AddCommGrpCat.of (X ⟶ Y j)
+        ι := Discrete.natTrans fun ⟨i⟩ => AddCommGrpCat.ofHom
           (if h : i = j then Preadditive.rightComp X (eqToHom (congrArg Y h)) else 0) }
     let ev : (DirectSum ι fun i => (X ⟶ Y i)) →+ (X ⟶ Y j) :=
       { toFun := fun a => a j
-        map_zero' := DirectSum.zero_apply _ j
+        map_zero' := DirectSum.zero_apply j
         map_add' := fun a b => DirectSum.add_apply a b j }
     have key : (hc.desc t).hom.comp (coproductComparison X Y) = ev := by
       ext i g
@@ -307,7 +310,7 @@ theorem bijective_of_preservesColimit
       by_cases hij : i = j
       · subst hij
         simp [t, Preadditive.rightComp]
-      · simp [t, hij, DirectSum.of_eq_of_ne _ _ _ hij]
+      · simp [t, hij, DirectSum.of_eq_of_ne _ _ _ (Ne.symm hij)]
     have h4 : (hc.desc t).hom (coproductComparison X Y a) = a j := DFunLike.congr_fun key a
     rw [ha, map_zero] at h4
     rw [DirectSum.zero_apply]
@@ -316,9 +319,9 @@ theorem bijective_of_preservesColimit
   · intro f
     let S := (coproductComparison X Y).range
     let t : Cocone (Discrete.functor Y ⋙ preadditiveCoyoneda.obj (op X)) :=
-      { pt := AddCommGrp.of ((X ⟶ ∐ Y) ⧸ S)
+      { pt := AddCommGrpCat.of ((X ⟶ ∐ Y) ⧸ S)
         ι := Discrete.natTrans fun _ => 0 }
-    have h1 : hc.desc t = AddCommGrp.ofHom (QuotientAddGroup.mk' S) := by
+    have h1 : hc.desc t = AddCommGrpCat.ofHom (QuotientAddGroup.mk' S) := by
       symm
       apply hc.uniq t
       rintro ⟨i⟩
@@ -335,7 +338,7 @@ theorem bijective_of_preservesColimit
     rw [QuotientAddGroup.mk'_apply, QuotientAddGroup.eq_zero_iff] at h3
     exact h3
 
-/-- `X` is compact if and only if the functor `Hom(X, -) : C ⥤ AddCommGrp` preserves coproducts
+/-- `X` is compact if and only if the functor `Hom(X, -) : C ⥤ AddCommGrpCat` preserves coproducts
 indexed by types in `Type w`. -/
 theorem isCompact_iff_preservesColimitsOfShape (X : C) :
     IsCompact.{w} X ↔
@@ -347,7 +350,7 @@ theorem isCompact_iff_preservesColimitsOfShape (X : C) :
       intro Y
       constructor
       intro c hc
-      haveI : HasCoproduct Y := HasColimit.mk ⟨c, hc⟩
+      have : HasCoproduct Y := HasColimit.mk ⟨c, hc⟩
       classical
       exact (preservesColimit_of_bijective X Y (hX ι Y)).preserves hc
     exact preservesColimitsOfShape_of_discrete _

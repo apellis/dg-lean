@@ -37,7 +37,7 @@ prove statements which do not involve the derived category.
   give the cohomology `M ↦ Hⁿ(M)` of dg modules, `homologyFunctorFactors`); they are
   homological.
   `DG.DerivedCategory.cohomologyAddEquiv R M n : Hⁿ(M) ≃+ Hⁿ(Q M)`. The case `R = ℤ`,
-  composed with `ModuleCat ℤ ⥤ AddCommGrp`, is `DG.DerivedCategory.cohomologyFunctor A n`,
+  composed with `ModuleCat ℤ ⥤ AddCommGrpCat`, is `DG.DerivedCategory.cohomologyFunctor A n`,
   defined for every dg ring.
 
 Coproducts in `D(A)` are in `DG/Derived/Coproducts.lean`.
@@ -58,14 +58,19 @@ namespace DG
 variable (A : Type u) [Ring A] [DGAddCommGroup A] [DGRing A]
 
 /-- The assumption that a localization of the homotopy category of dg `A`-modules (in
-`Type v`) at the quasi-isomorphisms has been chosen, with morphisms in `Type w`. -/
-abbrev HasDerivedCategory :=
+`Type v`) at the quasi-isomorphisms has been chosen, with morphisms in `Type w`.
+
+This single-parent class packages precisely `MorphismProperty.HasLocalization`, with no
+additional fields or hypotheses. The wrapper exposes the two independent universe parameters
+in its constructor (an abbreviation's result sort only contains their maximum). -/
+class HasDerivedCategory extends
   MorphismProperty.HasLocalization.{w} (HomotopyCategory.quasiIso.{v} A)
 
 /-- The derived category obtained from the constructed localization. This should be used only
 while proving statements which do not involve the derived category. -/
-def HasDerivedCategory.standard : HasDerivedCategory.{max (v + 1) u, v} A :=
-  MorphismProperty.HasLocalization.standard _
+@[instance_reducible]
+noncomputable def HasDerivedCategory.standard : HasDerivedCategory.{max (v + 1) u, v} A where
+  toHasLocalization := MorphismProperty.HasLocalization.standard _
 
 variable [HasDerivedCategory.{w, v} A]
 
@@ -95,15 +100,15 @@ instance Qh_isLocalization : (Qh (A := A)).IsLocalization (HomotopyCategory.quas
   dsimp only [Qh, DerivedCategory]
   infer_instance
 
-instance : (Qh (A := A)).IsLocalization (HomotopyCategory.subcategoryAcyclic A).W := by
+instance : (Qh (A := A)).IsLocalization (HomotopyCategory.subcategoryAcyclic A).trW := by
   rw [← HomotopyCategory.quasiIso_eq_subcategoryAcyclic_W]
   infer_instance
 
 noncomputable instance : Preadditive (DerivedCategory A) :=
-  Localization.preadditive Qh (HomotopyCategory.subcategoryAcyclic A).W
+  Localization.preadditive Qh (HomotopyCategory.subcategoryAcyclic A).trW
 
 instance : (Qh (A := A)).Additive :=
-  Localization.functor_additive Qh (HomotopyCategory.subcategoryAcyclic A).W
+  Localization.functor_additive Qh (HomotopyCategory.subcategoryAcyclic A).trW
 
 instance : (Q (A := A)).Additive := by
   dsimp only [Q]
@@ -113,38 +118,38 @@ noncomputable instance : HasZeroObject (DerivedCategory A) :=
   Qh.hasZeroObject_of_additive
 
 noncomputable instance : HasShift (DerivedCategory A) ℤ :=
-  HasShift.localized Qh (HomotopyCategory.subcategoryAcyclic A).W ℤ
+  HasShift.localized Qh (HomotopyCategory.subcategoryAcyclic A).trW ℤ
 
 noncomputable instance Qh_commShift : (Qh (A := A)).CommShift ℤ :=
-  Functor.CommShift.localized Qh (HomotopyCategory.subcategoryAcyclic A).W ℤ
+  Functor.CommShift.localized Qh (HomotopyCategory.subcategoryAcyclic A).trW ℤ
 
 noncomputable instance : (Q (A := A)).CommShift ℤ := by
   dsimp only [Q]
   infer_instance
 
 instance (n : ℤ) : (shiftFunctor (DerivedCategory A) n).Additive := by
-  rw [Localization.functor_additive_iff Qh (HomotopyCategory.subcategoryAcyclic A).W]
+  rw [Localization.functor_additive_iff Qh (HomotopyCategory.subcategoryAcyclic A).trW]
   exact Functor.additive_of_iso (Qh.commShiftIso n)
 
 /-- The derived category is pretriangulated. -/
 noncomputable instance pretriangulated : Pretriangulated (DerivedCategory A) :=
-  Triangulated.Localization.pretriangulated Qh (HomotopyCategory.subcategoryAcyclic A).W
+  Triangulated.Localization.pretriangulated Qh (HomotopyCategory.subcategoryAcyclic A).trW
 
 /-- The localization functor `H(A) ⥤ D(A)` is triangulated. -/
 instance Qh_isTriangulated : (Qh (A := A)).IsTriangulated :=
-  Triangulated.Localization.isTriangulated_functor Qh (HomotopyCategory.subcategoryAcyclic A).W
+  Triangulated.Localization.isTriangulated_functor Qh (HomotopyCategory.subcategoryAcyclic A).trW
 
 /-- The derived category is triangulated. -/
 noncomputable instance isTriangulated : IsTriangulated (DerivedCategory A) :=
-  Triangulated.Localization.isTriangulated Qh (HomotopyCategory.subcategoryAcyclic A).W
+  Triangulated.Localization.isTriangulated Qh (HomotopyCategory.subcategoryAcyclic A).trW
 
 instance : (Qh (A := A)).mapArrow.EssSurj :=
-  Localization.essSurj_mapArrow _ (HomotopyCategory.subcategoryAcyclic A).W
+  Localization.essSurj_mapArrow _ (HomotopyCategory.subcategoryAcyclic A).trW
 
-instance {D : Type*} [Category D] : ((whiskeringLeft _ _ D).obj (Qh (A := A))).Full :=
+instance {D : Type*} [Category D] : ((Functor.whiskeringLeft _ _ D).obj (Qh (A := A))).Full :=
   inferInstanceAs (Localization.whiskeringLeftFunctor' _ (HomotopyCategory.quasiIso A) D).Full
 
-instance {D : Type*} [Category D] : ((whiskeringLeft _ _ D).obj (Qh (A := A))).Faithful :=
+instance {D : Type*} [Category D] : ((Functor.whiskeringLeft _ _ D).obj (Qh (A := A))).Faithful :=
   inferInstanceAs (Localization.whiskeringLeftFunctor' _ (HomotopyCategory.quasiIso A) D).Faithful
 
 /-- The distinguished triangles of `D(A)` are the triangles isomorphic to the images of the
@@ -185,7 +190,7 @@ instance homologyFunctor_isHomological (n : ℤ) : (homologyFunctor (A := A) R n
 modules. -/
 noncomputable def homologyFunctorFactors (n : ℤ) :
     Q ⋙ homologyFunctor R n ≅ DGModuleCat.cohomologyFunctor.{v} R A n :=
-  Functor.associator _ _ _ ≪≫ isoWhiskerLeft (HomotopyCategory.quotient A)
+  Functor.associator _ _ _ ≪≫ Functor.isoWhiskerLeft (HomotopyCategory.quotient A)
     (homologyFunctorFactorsh R n) ≪≫ HomotopyCategory.quotientCompHomologyFunctorIso R A n
 
 /-- The cohomology of a dg module is the cohomology of its image in the derived category. -/
@@ -196,20 +201,20 @@ noncomputable def cohomologyAddEquiv (M : DGModuleCat.{v} A) (n : ℤ) :
 end Cohomology
 
 variable (A) in
-/-- The `n`-th cohomology functor `D(A) ⥤ AddCommGrp` of a dg ring `A`. -/
-noncomputable def cohomologyFunctor (n : ℤ) : DerivedCategory A ⥤ AddCommGrp.{v} :=
-  homologyFunctor ℤ n ⋙ forget₂ (ModuleCat.{v} ℤ) AddCommGrp.{v}
+/-- The `n`-th cohomology functor `D(A) ⥤ AddCommGrpCat` of a dg ring `A`. -/
+noncomputable def cohomologyFunctor (n : ℤ) : DerivedCategory A ⥤ AddCommGrpCat.{v} :=
+  homologyFunctor ℤ n ⋙ forget₂ (ModuleCat.{v} ℤ) AddCommGrpCat.{v}
 
 instance (n : ℤ) : (cohomologyFunctor A n).PreservesZeroMorphisms := by
   dsimp only [cohomologyFunctor]
   infer_instance
 
-/-- The cohomology functors `D(A) ⥤ AddCommGrp` are homological. -/
+/-- The cohomology functors `D(A) ⥤ AddCommGrpCat` are homological. -/
 instance cohomologyFunctor_isHomological (n : ℤ) : (cohomologyFunctor A n).IsHomological where
   exact T hT := ((homologyFunctor ℤ n).map_distinguished_exact T hT).map
-    (forget₂ (ModuleCat.{v} ℤ) AddCommGrp.{v})
+    (forget₂ (ModuleCat.{v} ℤ) AddCommGrpCat.{v})
 
-/-- `Hⁿ(M) ≃+ Hⁿ(Q M)` for the cohomology functor `D(A) ⥤ AddCommGrp`. -/
+/-- `Hⁿ(M) ≃+ Hⁿ(Q M)` for the cohomology functor `D(A) ⥤ AddCommGrpCat`. -/
 noncomputable def cohomologyFunctorObjQAddEquiv (M : DGModuleCat.{v} A) (n : ℤ) :
     cohomology M n ≃+ (cohomologyFunctor A n).obj (Q.obj M) :=
   cohomologyAddEquiv ℤ M n
@@ -247,7 +252,7 @@ private theorem isIso_iff_isZero_of_isZero {C : Type*} [Category C] [HasZeroMorp
 /-- An object of the homotopy category becomes zero in the derived category iff it is
 acyclic. -/
 theorem isZero_Qh_obj_iff (X : HomotopyCategory.{v} A) :
-    IsZero (Qh.obj X) ↔ (HomotopyCategory.subcategoryAcyclic A).P X := by
+    IsZero (Qh.obj X) ↔ (HomotopyCategory.subcategoryAcyclic A) X := by
   have h₀ : IsZero (Qh.obj (0 : HomotopyCategory.{v} A)) := Qh.map_isZero (isZero_zero _)
   rw [← isIso_iff_isZero_of_isZero (Qh.map (0 : X ⟶ 0)) h₀, isIso_Qh_map_iff,
     HomotopyCategory.mem_quasiIso_iff, HomotopyCategory.mem_subcategoryAcyclic_iff]

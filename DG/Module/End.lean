@@ -138,7 +138,7 @@ theorem d_of_mul_of {m n : ℤ} (f : Cochain A M M m) (g : Cochain A M M n) :
   rw [δ_units_smul, δ_comp f g rfl (m + 1) (n + 1) (m + n + 1) rfl rfl rfl]
   ext x
   simp only [Cochain.add_apply, Cochain.units_smul_apply, Cochain.comp_apply, smul_add,
-    smul_smul, add_mul, mul_add, one_mul, mul_one, koszulSign_add, Int.units_mul_self]
+    smul_smul, add_mul, mul_add, one_mul, mul_one, koszulSign_add]
   rw [mul_left_comm, Int.units_mul_self, mul_one, add_comm]
 
 variable (A M)
@@ -245,6 +245,7 @@ theorem signedEval_mul (F G : END A M) :
     | add G₁ G₂ h₁ h₂ => simp [mul_add, h₁, h₂, AddMonoidHom.add_comp]
   | add F₁ F₂ h₁ h₂ => simp [add_mul, h₁, h₂, AddMonoidHom.comp_add]
 
+set_option backward.isDefEq.respectTransparency false in
 variable (A M) in
 /-- The right action of `END A M` on `M`, `x · f = (-1)^{|f||x|} • f x` for homogeneous `f` and
 `x`, as a ring homomorphism to the multiplicative opposite of `AddMonoid.End M`. -/

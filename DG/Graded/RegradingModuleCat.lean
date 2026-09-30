@@ -261,6 +261,7 @@ theorem periodizeHom_mk {M N : GradedModuleCat.{v} ℬ} (f : M ⟶ N) (n : ℤ) 
 
 variable (ℬ)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The periodization of a morphism. -/
 def periodizeMap {M N : GradedModuleCat.{v} ℬ} (f : M ⟶ N) :
     periodizeObj ℬ M ⟶ periodizeObj ℬ N where
@@ -308,6 +309,7 @@ def periodize : GradedModuleCat.{v} ℬ ⥤ GradedModuleCat.{v} (periodizeGradin
 abbrev unperiodizeObj (N : GradedModuleCat.{v} (periodizeGrading ℬ)) : GradedModuleCat.{v} ℬ :=
   of ℬ (Unperiodize ℬ N.grading) (Unperiodize.grading ℬ N.grading)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The map `N⁰ ⊕ N¹ → N'⁰ ⊕ N'¹` induced by a morphism `N ⟶ N'`. -/
 def unperiodizeMap {N N' : GradedModuleCat.{v} (periodizeGrading ℬ)} (g : N ⟶ N') :
     unperiodizeObj ℬ N ⟶ unperiodizeObj ℬ N' where
@@ -334,6 +336,7 @@ theorem unperiodizeMap_hom_of {N N' : GradedModuleCat.{v} (periodizeGrading ℬ)
       Unperiodize.of ℬ N'.grading j (g.restrict (j.val : ℤ) x) :=
   Unperiodize.map_of _ j x
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The functor `N ↦ N⁰ ⊕ N¹` from `ℤ`-graded `Periodize ℬ`-modules to `ℤ/2`-graded
 `B`-modules. -/
 def unperiodize : GradedModuleCat.{v} (periodizeGrading ℬ) ⥤ GradedModuleCat.{v} ℬ where
@@ -369,7 +372,7 @@ theorem unitHom_of_mem {j : ZMod 2} {m : M} (hm : m ∈ M.grading j) :
     unitHom M m = Unperiodize.of ℬ (periodizeGrading M.grading) j
       ⟨Periodize.mk M.grading (j.val : ℤ) m (by rwa [intCast_val_zmodTwo]),
         Periodize.mk_mem _ _⟩ := by
-  simp only [unitHom, AddMonoidHom.finset_sum_apply, AddMonoidHom.comp_apply]
+  simp only [unitHom, AddMonoidHom.finsetSum_apply, AddMonoidHom.comp_apply]
   rw [Finset.sum_eq_single j]
   · congr 1
     exact Subtype.ext (Periodize.single_of_mem _)
@@ -461,7 +464,7 @@ variable {ℬ} (N : GradedModuleCat.{v} (periodizeGrading ℬ))
 sent to `u^((n - n mod 2) / 2) • y ∈ Nⁿ`. -/
 def counitHom : Periodize (Unperiodize.grading ℬ N.grading) →+ N :=
   DirectSum.toAddMonoid fun n : ℤ =>
-    (DistribMulAction.toAddMonoidHom N
+    (DistribSMul.toAddMonoidHom N
       (Periodize.evenOne ℬ (n - ((n : ZMod 2).val : ℤ)) (Periodize.cast_sub_val_cast n))).comp
       (Unperiodize.fold.comp (AddSubmonoidClass.subtype _))
 
@@ -493,7 +496,7 @@ def counitInv : N →+ Periodize (Unperiodize.grading ℬ N.grading) :=
       (((Unperiodize.of ℬ N.grading (n : ZMod 2)).codRestrict
           (periodicGrading (Unperiodize.grading ℬ N.grading) n)
           (Unperiodize.of_mem_grading _)).comp
-        (((DistribMulAction.toAddMonoidHom N
+        (((DistribSMul.toAddMonoidHom N
             (Periodize.evenOne ℬ (((n : ZMod 2).val : ℤ) - n) (Periodize.cast_val_cast_sub n))).comp
           (N.grading n).subtype).codRestrict (lowGrading N.grading (n : ZMod 2)) fun x => by
             have := evenOne_smul_mem (Periodize.cast_val_cast_sub n) x.2
@@ -540,6 +543,7 @@ theorem counitInv_counitHom (z : Periodize (Unperiodize.grading ℬ N.grading)) 
     exact evenOne_smul_evenOne_smul _ _ (by ring) _
   | add z z' hz hz' => rw [map_add, map_add, hz, hz']
 
+set_option backward.isDefEq.respectTransparency false in
 theorem counitHom_smul (p : Periodize ℬ) (z : Periodize (Unperiodize.grading ℬ N.grading)) :
     counitHom N (p • z) = p • counitHom N z := by
   refine map_smul_of_homogeneous (periodizeGrading ℬ)
@@ -605,6 +609,7 @@ def periodizeUnitIso : 𝟭 (GradedModuleCat.{v} ℬ) ≅ periodize ℬ ⋙ unpe
     congr 1
     exact Subtype.ext (periodizeMap_hom_mk ℬ f _ m _).symm
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The counit of the periodization equivalence. -/
 def periodizeCounitIso :
     unperiodize ℬ ⋙ periodize ℬ ≅ 𝟭 (GradedModuleCat.{v} (periodizeGrading ℬ)) :=

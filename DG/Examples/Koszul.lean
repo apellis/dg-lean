@@ -9,9 +9,7 @@ import DG.Module.Cohomology
 Let `R` be a commutative ring, `M` an `R`-module and `φ : M →ₗ[R] R` a linear form. The Koszul
 complex `K(φ)` is the exterior algebra `⋀ M`, with `⋀ᵏ M` placed in cohomological degree `-k`,
 and with differential the contraction (interior product) with `φ`,
-
   `d (m₁ ∧ ⋯ ∧ mₖ) = ∑ᵢ (-1)^(i-1) φ(mᵢ) m₁ ∧ ⋯ ∧ m̂ᵢ ∧ ⋯ ∧ mₖ`,
-
 which is Mathlib's `CliffordAlgebra.contractLeft φ` for the zero quadratic form. It is the
 unique derivation (for the graded Leibniz rule `d (a * b) = d a * b + (-1)^{|a|} a * d b`)
 extending `m ↦ φ m` on `M = ⋀¹ M`. For `M = R^ι` and `φ = ∑ᵢ xᵢ eᵢ*`, this is the Koszul
@@ -81,7 +79,7 @@ theorem ι_mem_exteriorPower_one (m : M) : ι R m ∈ ⋀[R]^1 M := by
 theorem contract_mem_aux {k : ℕ} {a : ExteriorAlgebra R M} (ha : a ∈ ⋀[R]^k M) :
     contract φ a ∈ ⋀[R]^(k - 1) M ∧ (k = 0 → contract φ a = 0) := by
   induction ha using Submodule.pow_induction_on_left' with
-  | algebraMap r => simp [contract_algebraMap]
+  | algebraMap r => simp
   | add x y i _ _ ihx ihy =>
     exact ⟨by rw [map_add]; exact add_mem ihx.1 ihy.1,
       fun h => by rw [map_add, ihx.2 h, ihy.2 h, add_zero]⟩
@@ -110,7 +108,7 @@ theorem contract_mul {k : ℕ} {a : ExteriorAlgebra R M} (ha : a ∈ ⋀[R]^k M)
     (b : ExteriorAlgebra R M) :
     contract φ (a * b) = contract φ a * b + koszulSign k • (a * contract φ b) := by
   induction ha using Submodule.pow_induction_on_left' with
-  | algebraMap r => simp [contract_algebraMap_mul, contract_algebraMap]
+  | algebraMap r => simp [contract_algebraMap_mul]
   | add x y i _ _ ihx ihy =>
     rw [add_mul, map_add, ihx, ihy, map_add, add_mul, add_mul, smul_add]
     abel
@@ -179,13 +177,13 @@ def koszulGrading (n : ℤ) : Submodule R (ExteriorAlgebra R M) :=
 namespace koszulGrading
 
 theorem neg_natCast (k : ℕ) : koszulGrading R M (-(k : ℤ)) = ⋀[R]^k M := by
-  rw [koszulGrading, if_pos (by omega), neg_neg, Int.toNat_natCast]
+  rw [koszulGrading, ite_eq_left (by omega), neg_neg, Int.toNat_natCast]
 
 theorem zero : koszulGrading R M 0 = ⋀[R]^0 M := by
   simpa using neg_natCast (R := R) (M := M) 0
 
 theorem of_pos {n : ℤ} (hn : 0 < n) : koszulGrading R M n = ⊥ := by
-  rw [koszulGrading, if_neg (by omega)]
+  rw [koszulGrading, ite_eq_right (by omega)]
 
 theorem mem_neg_natCast {k : ℕ} {a : ExteriorAlgebra R M} (ha : a ∈ ⋀[R]^k M) :
     a ∈ koszulGrading R M (-k) := by
@@ -294,6 +292,7 @@ instance isGradedCommStrict : IsGradedCommStrict (koszulGrading R M) where
 
 /-- The decomposition of the exterior algebra into the additive subgroups underlying
 `koszulGrading R M`. -/
+@[instance_reducible]
 def decompositionAddSubgroup : Decomposition fun n => (koszulGrading R M n).toAddSubgroup where
   decompose' := DirectSum.decompose (koszulGrading R M)
   left_inv x := DirectSum.Decomposition.left_inv (ℳ := koszulGrading R M) x
@@ -356,6 +355,7 @@ theorem d_ι (m : M) :
 
 variable (φ)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The Koszul complex is a dg ring: the contraction with `φ` is an antiderivation. -/
 instance instDGRing : DGRing (KoszulComplex φ) where
   one_mem := by

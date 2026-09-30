@@ -42,11 +42,11 @@ variable {A B C : Type*} [Ring A] [DGAddCommGroup A] [Ring B] [DGAddCommGroup B]
 
 instance : FunLike (A →ᵈᵍ+* B) A B where
   coe f := f.toFun
-  coe_injective' f g h := by
+  coe_injective f g h := by
     cases f
     cases g
     congr
-    apply DFunLike.coe_injective'
+    apply DFunLike.coe_injective
     exact h
 
 instance : RingHomClass (A →ᵈᵍ+* B) A B where
@@ -141,11 +141,11 @@ variable {R A B C : Type*} [CommRing R] [Ring A] [Algebra R A] [DGAddCommGroup A
 
 instance : FunLike (A →ᵈᵍₐ[R] B) A B where
   coe f := f.toFun
-  coe_injective' f g h := by
+  coe_injective f g h := by
     cases f
     cases g
     congr
-    apply DFunLike.coe_injective'
+    apply DFunLike.coe_injective
     exact h
 
 instance : AlgHomClass (A →ᵈᵍₐ[R] B) R A B where

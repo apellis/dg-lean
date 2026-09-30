@@ -205,14 +205,17 @@ theorem smul_mul_mk {i j : ℤ} (r : R) (a : cocycles A i) (b : cocycles A j) :
 
 variable (R A)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The structure map `R → H⁰(A)`, `r ↦ r • 1`. -/
 def algebraMapZero : R →+ cohomology A 0 :=
   (smulAddHom R (cohomology A 0)).flip GOne.one
 
 variable {R A}
 
+set_option backward.isDefEq.respectTransparency false in
 theorem algebraMapZero_apply (r : R) : algebraMapZero R A r = r • GOne.one := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The structure map `R → H⁰(A)` sends `r` to the class of `algebraMap R A r`. -/
 theorem algebraMapZero_eq_mk (r : R) :
     algebraMapZero R A r = cohomology.mk A 0 ⟨algebraMap R A r,
@@ -221,6 +224,7 @@ theorem algebraMapZero_eq_mk (r : R) :
 
 variable (R A)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The cohomology `H(A) = ⨁ n, Hⁿ(A)` of a dg `R`-algebra is a graded `R`-algebra. -/
 instance galgebra : DirectSum.GAlgebra R (fun n => cohomology A n) where
   toFun := algebraMapZero R A
@@ -286,6 +290,7 @@ theorem cohomologyMap_smul (n : ℤ) (r : R) (x : cohomology A n) :
       cohomology.smul_mk]
     exact congrArg (cohomology.mk B n) (Subtype.ext (map_smul f r (z : A)))
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The morphism of `R`-algebras `H(A) →ₐ[R] H(B)` induced by a morphism of dg `R`-algebras
 `A → B`; its underlying ring homomorphism is `DG.DGRingHom.cohomologyRingHom`. -/
 def cohomologyAlgHom : Cohomology A →ₐ[R] Cohomology B :=

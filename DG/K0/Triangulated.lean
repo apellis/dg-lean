@@ -104,27 +104,30 @@ theorem mk_obj₂ (T : Triangle C) (hT : T ∈ distTriang C) :
   change mkHom C _ = 0 at h
   rwa [map_sub, map_sub, sub_sub, sub_eq_zero] at h
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Induction principle for `K₀(C)`: every element is obtained from the classes of objects by
 sums and negatives. -/
 theorem induction_on {p : K0 C → Prop} (x : K0 C) (zero : p 0) (mk : ∀ X : C, p (mk X))
     (neg : ∀ x, p x → p (-x)) (add : ∀ x y, p x → p y → p (x + y)) : p x := by
   obtain ⟨y, rfl⟩ := mkHom_surjective x
   induction y using FreeAbelianGroup.induction_on with
-  | C0 => simpa using zero
-  | C1 X => exact mk X
-  | Cn y hy => rw [map_neg]; exact neg _ hy
-  | Cp y z hy hz => rw [map_add]; exact add _ _ hy hz
+  | zero => simpa using zero
+  | of X => exact mk X
+  | neg y hy => rw [map_neg]; exact neg _ hy
+  | add y z hy hz => rw [map_add]; exact add _ _ hy hz
 
 section lift
 
 variable {G : Type*} [AddCommGroup G]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Two homomorphisms out of `K₀(C)` which agree on the classes of objects are equal. -/
 @[ext]
 theorem addMonoidHom_ext ⦃f g : K0 C →+ G⦄ (h : ∀ X : C, f (mk X) = g (mk X)) : f = g := by
   apply QuotientAddGroup.addMonoidHom_ext
-  exact FreeAbelianGroup.lift.ext _ _ h
+  exact FreeAbelianGroup.lift_ext _ _ h
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The universal property of `K₀(C)`: a function `f : C → G` to an abelian group which satisfies
 `f T.obj₂ = f T.obj₁ + f T.obj₃` for every distinguished triangle `T` induces a homomorphism
 `K0 C →+ G` sending `[X]` to `f X`. -/
@@ -133,13 +136,15 @@ def lift (f : C → G) (hf : ∀ T ∈ distTriang C, f T.obj₂ = f T.obj₁ + f
   QuotientAddGroup.lift _ (FreeAbelianGroup.lift f) (by
     refine (AddSubgroup.closure_le _).2 ?_
     rintro x ⟨T, hT, rfl⟩
-    simp only [SetLike.mem_coe, AddMonoidHom.mem_ker, map_sub, FreeAbelianGroup.lift.of, hf T hT]
+    simp only [SetLike.mem_coe, AddMonoidHom.mem_ker, map_sub, FreeAbelianGroup.lift_apply_of]
+    rw [hf T hT]
     abel)
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem lift_mk (f : C → G) (hf) (X : C) : lift f hf (mk X) = f X :=
   (QuotientAddGroup.lift_mk' (relations C) _ (FreeAbelianGroup.of X)).trans
-    (FreeAbelianGroup.lift.of f X)
+    (FreeAbelianGroup.lift_apply_of f X)
 
 theorem lift_unique (f : C → G) (hf) (g : K0 C →+ G) (hg : ∀ X, g (mk X) = f X) :
     g = lift f hf := by
@@ -170,6 +175,7 @@ theorem mk_zero : mk (0 : C) = 0 := by
   dsimp at h
   exact right_eq_add.1 h
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Isomorphic objects have the same class in `K₀(C)`. -/
 theorem mk_eq_of_iso {X Y : C} (e : X ≅ Y) : mk X = mk Y := by
   have h := mk_obj₂ _ (isomorphic_distinguished _ (contractible_distinguished X) _
@@ -190,15 +196,16 @@ theorem mk_shift_one (X : C) : mk (X⟦(1 : ℤ)⟧) = -mk X := by
   rw [mk_zero] at h
   exact eq_neg_of_add_eq_zero_right h.symm
 
+set_option backward.isDefEq.respectTransparency false in
 /-- `[X⟦n⟧] = (-1)^n • [X]`, with the sign `Int.negOnePow n : ℤˣ`. -/
 theorem mk_shift (n : ℤ) (X : C) : mk (X⟦n⟧) = n.negOnePow • mk X := by
   induction n using Int.induction_on with
-  | hz => rw [mk_eq_of_iso ((shiftFunctorZero C ℤ).app X), Functor.id_obj, Int.negOnePow_zero,
+  | zero => rw [mk_eq_of_iso ((shiftFunctorZero C ℤ).app X), Functor.id_obj, Int.negOnePow_zero,
       one_smul]
-  | hp n hn =>
+  | succ n hn =>
     rw [mk_eq_of_iso ((shiftFunctorAdd C (n : ℤ) 1).app X), Functor.comp_obj, mk_shift_one, hn,
       Int.negOnePow_succ, Units.smul_def, Units.smul_def, Units.val_neg, neg_smul]
-  | hn n hn =>
+  | pred n hn =>
     rw [mk_eq_of_iso ((shiftFunctorAdd' C (-(n : ℤ) - 1) 1 (-(n : ℤ)) (by omega)).app X),
       Functor.comp_obj, mk_shift_one] at hn
     rw [Int.negOnePow_sub, Int.negOnePow_one, mul_neg, mul_one, Units.smul_def, Units.val_neg,

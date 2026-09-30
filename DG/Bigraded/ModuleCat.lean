@@ -257,6 +257,7 @@ variable (A) in
 /-- The internal shift, as a shift of `BigradedDGModuleCat A` by `ℤ`: `M⟦k⟧ = M⟨k⟩`. This is
 a definition, not an instance: the instance `HasShift (BigradedDGModuleCat A) ℤ` is the
 cohomological shift. -/
+@[instance_reducible]
 def internalHasShift : HasShift (BigradedDGModuleCat.{v} A) ℤ :=
   hasShiftMk _ ℤ (internalShiftMkCore A)
 
@@ -274,6 +275,7 @@ theorem internalShiftEquiv_functor (k : ℤ) :
     (internalShiftEquiv.{v} (A := A) k).functor = internalShiftFunctor k :=
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The internal shift is compatible with the forgetful functor: `M⟨k⟩` and `M` have the same
 underlying dg module. -/
 def internalShiftForgetIso (k : ℤ) :

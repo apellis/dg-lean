@@ -19,6 +19,8 @@ Let `C` be a dg category. This file shows that the shift of dg modules over `C`
   (`DG.CatModule.HomotopyCategory.commShiftQuotient`); the shift functors are additive.
 -/
 
+set_option backward.isDefEq.respectTransparency false
+
 open CategoryTheory CategoryTheory.Limits
 
 universe w v u

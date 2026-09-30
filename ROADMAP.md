@@ -154,13 +154,13 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `DG.DGModuleCat.δ_mk`, `DG.DGModuleCat.cohomology_exact₁`, `DG.DGModuleCat.cohomology_exact₂`,
     `DG.DGModuleCat.cohomology_exact₃`, `DG.DGModuleCat.cohomologyAddEquiv_δ`.
 2.6 Comparison with Mathlib's monoidal category: a `DGAlgebra R A` is the same as a monoid
-    object `Mon_ (CochainComplex (ModuleCat R) ℤ)` and a dg module is a `Mod_` object;
+    object `Mon (CochainComplex (ModuleCat R) ℤ)` and a dg module is a `Mod` object;
     equivalences of categories in both directions. Requires the monoidal structure of
     `Mathlib/Algebra/Homology/Monoidal.lean` with `ComplexShape.TensorSigns` for `ℤ`.
     **(Mathlib)**
     — done: `DG.DGAlgCat.monEquivalence`
-    (`DGAlgCat R ≌ Mon_ (CochainComplex (ModuleCat R) ℤ)`), `DG.DGModuleCat.modEquivalence`
-    (`DGModuleCat A ≌ Mod_` of the corresponding monoid object), `DG.ComplexTensor.d_tmul`
+    (`DGAlgCat R ≌ Mon (CochainComplex (ModuleCat R) ℤ)`), `DG.DGModuleCat.modEquivalence`
+    (`DGModuleCat A ≌ Mod` of the corresponding monoid object), `DG.ComplexTensor.d_tmul`
     (Mathlib's tensor product of complexes has the library's sign); the instances
     `CategoryTheory.MonoidalPreadditive.curriedTensor_additive`,
     `DG.ModuleCat.preservesColimits_curriedTensor_obj` needed for Mathlib's monoidal structure on

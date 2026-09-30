@@ -104,6 +104,7 @@ instance instSMulCommClass : SMulCommClass A Bᵐᵒᵖ φ.Bimodule where
 
 variable [DGRing A]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The right action `x • b = x * φ b` makes `A` a right dg `B`-module. -/
 instance instDGRightModule : DGRightModule B φ.Bimodule where
   op_smul_mem' {i j b x} hb hx := mul_mem_grading (A := A) hx (φ.map_mem hb)
@@ -212,8 +213,8 @@ def restrictScalarsCompForgetToAddCommGrp :
     (by
       rintro i _ rfl
       ext x
-      change (forget₂ (ModuleCat ℤ) AddCommGrp).map ((toComplex ℤ M).d i (i + 1)) x =
-        (forget₂ (ModuleCat ℤ) AddCommGrp).map
+      change (forget₂ (ModuleCat ℤ) AddCommGrpCat).map ((toComplex ℤ M).d i (i + 1)) x =
+        (forget₂ (ModuleCat ℤ) AddCommGrpCat).map
           ((toComplex ℤ ((restrictScalars φ).obj M)).d i (i + 1)) x
       rw [toComplex_d, toComplex_d]
       rfl)) (fun _ => by ext; rfl)
@@ -316,6 +317,7 @@ theorem d_one_tmul (n : N) :
     d_bimoduleEquiv, d_one, map_zero, zero_tmul, zero_add, koszulSign, Int.negOnePow_zero,
     one_smul]
 
+set_option backward.isDefEq.respectTransparency false in
 variable (φ) in
 /-- The restriction `n ↦ f (1 ⊗ n)` of a morphism `f : A ⊗_B N → M` of dg `A`-modules, a
 morphism of dg `B`-modules `N → RestrictScalars φ M`. -/
@@ -351,6 +353,7 @@ theorem homEquivInvFunAux_balanced (g : N →ᵈᵍ[B] RestrictScalars φ M) (b 
   rw [homEquivInvFunAux_apply, homEquivInvFunAux_apply, map_smul g b n]
   exact mul_smul (φ.bimoduleEquiv.symm x) (φ b) (RestrictScalars.addEquiv φ (g n))
 
+set_option backward.isDefEq.respectTransparency false in
 variable (φ) in
 /-- The morphism of dg `A`-modules `A ⊗_B N → M`, `x ⊗ n ↦ x • g n`, induced by a morphism of
 dg `B`-modules `g : N → RestrictScalars φ M`. -/
@@ -407,6 +410,7 @@ end ExtendScalars
 
 variable (φ)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Extension of scalars is left adjoint to restriction of scalars:
 `(A ⊗_B N ⟶ M) ≃ (N ⟶ RestrictScalars φ M)`, `f ↦ (n ↦ f (1 ⊗ n))`. -/
 def extendRestrictScalarsAdj :

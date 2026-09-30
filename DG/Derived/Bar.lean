@@ -81,6 +81,8 @@ The levels are bundled (`DG.Bar.Level`) so that `T (n + 1)` is definitionally `A
 * [B. Keller, *Deriving DG categories*, Ann. Sci. ÉNS 27 (1994), §3]
 -/
 
+set_option backward.isDefEq.respectTransparency false
+
 open DirectSum TensorProduct
 
 noncomputable section
@@ -137,16 +139,14 @@ theorem desusp_tmul (a : A) (x : X) : desusp A X (Shift.mk 1 a ⊗ₜ x) = a ⊗
 omit [DGAddCommGroup A] [DGRing A] [DGAddCommGroup X] in
 @[simp]
 theorem desusp_susp (y : A ⊗[ℤ] X) : desusp A X (susp A X y) = y := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
+  induction y using TensorProduct.inductionOn with
   | tmul a x => rfl
   | add y y' hy hy' => rw [map_add, map_add, hy, hy']
 
 omit [DGAddCommGroup A] [DGRing A] [DGAddCommGroup X] in
 @[simp]
 theorem susp_desusp (y : Shift 1 A ⊗[ℤ] X) : susp A X (desusp A X y) = y := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
+  induction y using TensorProduct.inductionOn with
   | tmul a x => rfl
   | add y y' hy hy' => rw [map_add, map_add, hy, hy']
 
@@ -188,8 +188,7 @@ theorem induction_on₃ {P : A ⊗[ℤ] (Shift 1 A ⊗[ℤ] X) → Prop} (y : A 
     (tmul : ∀ {i j l : ℤ} {a₀ a₁ : A} {x : X}, a₀ ∈ grading i → a₁ ∈ grading j →
       x ∈ grading l → P (a₀ ⊗ₜ (Shift.mk 1 a₁ ⊗ₜ x)))
     (add : ∀ y y', P y → P y' → P (y + y')) : P y := by
-  induction y using TensorProduct.induction_on with
-  | zero => exact zero
+  induction y using TensorProduct.inductionOn with
   | add y y' hy hy' => exact add y y' hy hy'
   | tmul a₀ z =>
     induction z using tensor_induction_on with
@@ -227,12 +226,12 @@ theorem IsAction.step_d {f : A ⊗[ℤ] X →+ X} (hf : IsAction A X f)
       Shift.d_mk, d_units_smul, d_sub, d_tmul_of_mem hs0, d_tmul_of_mem hs1, Shift.d_mk,
       Shift.d_mk, d_mul ha₀, ← hfd]
     simp only [Units.smul_def, tmul_add, tmul_smul, ← smul_tmul', map_add, map_zsmul,
-      Shift.mk_zsmul, mul_smul_comm, Shift.mk_add, add_tmul, stepHom_tmul f ha₀, smul_add, smul_sub]
-    simp only [smul_smul, koszulSign_add_one, koszulSign_sub_one, koszulSign_add, koszulSign_one]
+      add_tmul, stepHom_tmul f ha₀, smul_add, smul_sub]
+    simp only [smul_smul, koszulSign_sub_one, koszulSign_add, koszulSign_one]
     rcases Int.units_eq_one_or (koszulSign i) with hi | hi <;>
     rcases Int.units_eq_one_or (koszulSign j) with hj | hj <;>
-    simp only [hi, hj, Units.val_one, Units.val_neg, Units.val_mul, one_smul, neg_smul, mul_one,
-      one_mul, mul_neg, neg_mul, neg_neg] <;> abel
+    simp only [hi, hj, Units.val_one, Units.val_neg, one_smul, neg_smul, mul_one,
+      mul_neg, neg_neg] <;> abel
 
 theorem IsAction.step_mem {f : A ⊗[ℤ] X →+ X} (hf : IsAction A X f) {i k : ℤ} {a : A}
     {y : Shift 1 A ⊗[ℤ] X} (ha : a ∈ grading i) (hy : y ∈ grading k) :
@@ -264,8 +263,7 @@ theorem IsAction.step_assoc {f : A ⊗[ℤ] X →+ X} (hf : IsAction A X f) (a a
     | h_homogeneous a' =>
       obtain ⟨a', ha'⟩ := a'
       rename_i i'
-      induction z using TensorProduct.induction_on with
-      | zero => simp
+      induction z using TensorProduct.inductionOn with
       | add z z' hz hz' => rw [tmul_add, map_add, tmul_add, map_add, hz, hz', tmul_add, map_add]
       | tmul s x =>
         obtain ⟨a₁, rfl⟩ := Shift.mk_surjective s
@@ -313,8 +311,7 @@ omit [DGAddCommGroup X] in
 /-- The contracting homotopy: `s⁻¹ (stepHom f (1 ⊗ s y)) = y - 1 ⊗ f y`. -/
 theorem desusp_stepHom_one_tmul (f : A ⊗[ℤ] X →+ X) (y : A ⊗[ℤ] X) :
     desusp A X (stepHom f (1 ⊗ₜ susp A X y)) = y - 1 ⊗ₜ f y := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
+  induction y using TensorProduct.inductionOn with
   | add y y' hy hy' => rw [map_add, tmul_add, map_add, map_add, hy, hy', map_add, tmul_add]; abel
   | tmul a x =>
     rw [susp_tmul, stepHom_tmul f one_mem_grading, koszulSign_zero, one_smul, map_sub, desusp_tmul,
@@ -340,8 +337,7 @@ theorem act_tmul (a : A) (m : M) : act A M (a ⊗ₜ m) = a • m := rfl
 
 omit [DGAddCommGroup A] [DGRing A] [DGAddCommGroup M] [DGModule A M] in
 theorem act_smul (a : A) (y : A ⊗[ℤ] M) : act A M (a • y) = a • act A M y := by
-  induction y using TensorProduct.induction_on with
-  | zero => simp
+  induction y using TensorProduct.inductionOn with
   | add y y' hy hy' => rw [smul_add, map_add, map_add, hy, hy', smul_add]
   | tmul a₀ m => rw [smul_tmul', act_tmul, act_tmul, smul_eq_mul, mul_smul]
 
@@ -369,9 +365,10 @@ theorem desusp_mem {k : ℤ} {y : Shift 1 A ⊗[ℤ] X} (hy : y ∈ grading k) :
     desusp A X y ∈ grading (k + 1) :=
   map_mem_grading_of_tmul (desusp A X) 1 (fun {i j s x} hs hx => by
     obtain ⟨a, rfl⟩ := Shift.mk_surjective s
-    have := tmul_mem_grading (Shift.unmk_mem_grading hs) hx
+    have h := tmul_mem_grading (Shift.unmk_mem_grading hs) hx
+    change a ⊗ₜ[ℤ] x ∈ grading (i + 1 + j) at h
     rw [desusp_tmul]
-    convert this using 2; ring) hy
+    convert h using 2; ring) hy
 
 theorem susp_mem {k : ℤ} {y : A ⊗[ℤ] X} (hy : y ∈ grading k) :
     susp A X y ∈ grading (k - 1) :=
@@ -390,8 +387,8 @@ theorem desusp_d (y : Shift 1 A ⊗[ℤ] X) : desusp A X (d y) = -d (desusp A X 
     have ha : a ∈ grading (_ + 1) := Shift.unmk_mem_grading hs
     rw [d_tmul_of_mem hs, desusp_tmul, d_tmul_of_mem ha, Shift.d_mk, Shift.mk_units_smul,
       koszulSign_one]
-    simp only [Units.smul_def, map_add, map_zsmul, ← smul_tmul', desusp_tmul, Units.val_neg,
-      Units.val_one, neg_smul, one_smul, koszulSign_add_one, neg_tmul, map_neg, neg_neg]
+    simp only [Units.smul_def, map_add, map_zsmul, desusp_tmul, Units.val_neg,
+      Units.val_one, neg_smul, one_smul, koszulSign_add_one, neg_tmul, map_neg]
     abel
 
 theorem susp_d (y : A ⊗[ℤ] X) : susp A X (d y) = -d (susp A X y) := by
@@ -616,7 +613,7 @@ theorem coeff_of_same (n : ℕ) (y : Term A M n) : coeff n (of A M n y) = y :=
   DirectSum.of_eq_same n y
 
 theorem coeff_of_ne {m n : ℕ} (h : m ≠ n) (y : Term A M m) : coeff n (of A M m y) = 0 :=
-  DirectSum.of_eq_of_ne m n y h
+  DirectSum.of_eq_of_ne m n y h.symm
 
 theorem coeff_smul (n : ℕ) (a : A) (x : Bar A M) : coeff n (a • x) = a • coeff n x := rfl
 
@@ -797,7 +794,11 @@ theorem homotopy_mem {k : ℤ} {x : Bar A M} (hx : x ∈ grading k) :
   rcases n with _ | n
   · rw [coeff_homotopy_zero]; exact zero_mem _
   · rw [coeff_homotopy_succ]
-    simpa using tmul_mem_grading (one_mem_grading (A := A)) (susp_mem (hx n))
+    change (1 : A) ⊗ₜ[ℤ] susp A (T A M n) (coeff n x) ∈
+      grading (M := A ⊗[ℤ] (Shift 1 A ⊗[ℤ] T A M n)) (k - 1)
+    convert tmul_mem_grading (one_mem_grading (A := A)) (susp_mem (hx n)) using 1
+    · simp only [zero_add]
+    · rfl
 
 /-- The contracting homotopy identity `d h + h d = 1 - η ε` on `Bar(A, M)`, where `η` is
 `DG.Bar.unit` and `ε` the augmentation: the augmentation is a homotopy equivalence of the

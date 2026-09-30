@@ -39,7 +39,7 @@ theorem symm_mem_of_map_mem (e : M ≃+ N) (he : ∀ {n : ℤ} {m : M}, m ∈ gr
     by_cases hn : n ∈ DFinsupp.support (decompose (grading (M := M)) m)
     · exact Finset.sum_eq_single_of_mem n hn fun i _ hi => hcomp i hi
     · rw [Finset.sum_eq_zero fun i hi => hcomp i fun h => hn (h ▸ hi)]
-      rw [DFinsupp.not_mem_support_iff] at hn
+      rw [DFinsupp.notMem_support_iff] at hn
       rw [hn, ZeroMemClass.coe_zero]
   rw [this]
   exact (decompose (grading (M := M)) m n).2

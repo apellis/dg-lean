@@ -9,7 +9,6 @@ The mapping cone of a morphism `f : M →ᵈᵍ[A] N` is the dg module
 componentwise action, where the action on `M⟦1⟧` is the twisted one) with the differential
 
   `d (x, y) = (d_{M⟦1⟧} x, f x + d_N y) = (-d_M x, f x + d_N y)`,
-
 i.e. the matrix `(-d_M, 0; f, d_N)` with respect to the decomposition `M⟦1⟧ ⊕ N`. This is
 the differential of Mathlib's `CochainComplex.mappingCone` (whose degree-`i` piece is
 `F.X (i + 1) ⊞ G.X i`), so the order of the factors follows Mathlib. It is also the mapping
@@ -156,7 +155,7 @@ theorem sndLinear_d (p : Cone f) :
 
 theorem d_inlLinear (x : Shift 1 M) :
     d (inlLinear f x) = inlLinear f (d x) + inr f (f (unmk 1 x)) :=
-  ext (by simp [fstHom_d]) (by simp [sndLinear_d])
+  ext (by simp) (by simp [sndLinear_d])
 
 /-- `inlLinear` is a chain map up to the homotopy `f`:
 `d ∘ inlLinear - inlLinear ∘ d = inr ∘ f`. -/
@@ -166,7 +165,7 @@ theorem d_inlLinear_sub_inlLinear_d (x : Shift 1 M) :
 
 theorem d_inlLinear_add_inr (x : Shift 1 M) (y : N) :
     d (inlLinear f x + inr f y) = inlLinear f (d x) + inr f (f (unmk 1 x) + d y) :=
-  ext (by simp [fstHom_d]) (by simp [sndLinear_d])
+  ext (by simp) (by simp [sndLinear_d])
 
 /-! ### The dg module structure -/
 
@@ -207,8 +206,8 @@ theorem contraction_apply (p : Cone (DGModuleHom.id : M →ᵈᵍ[A] M)) :
 theorem d_contraction_add_contraction_d (p : Cone (DGModuleHom.id : M →ᵈᵍ[A] M)) :
     d (contraction M p) + contraction M (d p) = p := by
   refine ext ?_ ?_
-  · simp only [contraction_apply, map_add, fstHom_d, fstHom_inlLinear, sndLinear_d, d_mk, unmk_mk,
-      DGModuleHom.id_apply, mk_add, koszulSign, Int.negOnePow_one, Units.neg_smul, one_smul,
+  · simp only [contraction_apply, map_add, fstHom_d, fstHom_inlLinear, sndLinear_d, d_mk,
+      DGModuleHom.id_apply, koszulSign, Int.negOnePow_one, Units.neg_smul, one_smul,
       mk_neg, mk_unmk]
     abel
   · simp [contraction_apply, sndLinear_d]

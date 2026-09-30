@@ -101,7 +101,7 @@ theorem decompose_decompose_coeAddMonoidHom_inf
     by_cases h : q = p
     · subst h
       rw [of_eq_same, decompose_of_mem_same ℳ hx₁, decompose_of_mem_same 𝒩 hx₂]
-    · rw [of_eq_of_ne _ _ _ h, ZeroMemClass.coe_zero]
+    · rw [of_eq_of_ne _ _ _ (Ne.symm h), ZeroMemClass.coe_zero]
       by_cases h₁ : q.1 = p.1
       · have h₂ : q.2 ≠ p.2 := fun h₂ => h (Prod.ext h₁ h₂)
         rw [← h₁, decompose_of_mem_same ℳ hx₁, decompose_of_mem_ne 𝒩 hx₂ h₂]
@@ -150,12 +150,13 @@ section Comap
 variable {M : Type*} [AddCommGroup M] {ι : Type*} [DecidableEq ι] (ℳ : ι → AddSubgroup M)
   [Decomposition ℳ] {T : Type*} [AddCommGroup T] (f : T →+ M)
 
+set_option backward.isDefEq.respectTransparency false in
 theorem isInternal_comap (hf : Function.Injective f)
     (hhom : ∀ (i : ι) (t : T), (decompose ℳ (f t) i : M) ∈ f.range) :
     DirectSum.IsInternal fun i => (ℳ i).comap f := by
   classical
   let r : (⨁ i, (ℳ i).comap f) →+ ⨁ i, ℳ i :=
-    DirectSum.map fun i => (f.restrict ((ℳ i).comap f)).codRestrict (ℳ i) fun t => t.2
+    DirectSum.map fun i => (f.domRestrict ((ℳ i).comap f)).codRestrict (ℳ i) fun t => t.2
   have key : ∀ x, DirectSum.coeAddMonoidHom ℳ (r x) =
       f (DirectSum.coeAddMonoidHom (fun i => (ℳ i).comap f) x) := by
     intro x
@@ -212,11 +213,12 @@ class InternalGrading (M : Type*) [AddCommGroup M] [DGAddCommGroup M] where
   isHomogeneous_grading' : ∀ n : ℤ, SetLike.IsHomogeneous wgrading (grading (M := M) n)
   d_mem_wgrading' : ∀ {k : ℤ} {m : M}, m ∈ wgrading k → d m ∈ wgrading k
 
-attribute [instance] InternalGrading.wdecomposition
+attribute [instance_reducible, instance] InternalGrading.wdecomposition
 
 /-- An internal grading from a weight decomposition `𝒩` such that `(n, k) ↦ Mⁿ ∩ 𝒩 k` is a
 decomposition of `M` (a `ℤ × ℤ`-grading) and `d (𝒩 k) ⊆ 𝒩 k`. By `DG.isInternal_inf_iff`, the
 first condition is equivalent to the compatibility required in `DG.InternalGrading`. -/
+@[instance_reducible]
 def InternalGrading.ofIsInternal {M : Type*} [AddCommGroup M] [DGAddCommGroup M]
     (𝒩 : ℤ → AddSubgroup M) [Decomposition 𝒩]
     (h : DirectSum.IsInternal fun p : ℤ × ℤ => grading (M := M) p.1 ⊓ 𝒩 p.2)

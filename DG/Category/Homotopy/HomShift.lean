@@ -446,7 +446,7 @@ theorem δ_leftShift (a n' m' : ℤ) (hn' : n + a = n') (m : ℤ) (hm' : m + a =
   · have hnm' : n' + 1 = m' := by omega
     ext X x
     simp only [δ_apply _ _ hnm', δ_apply _ _ hnm, leftShift_apply, units_smul_apply,
-      shift.unmk_d, d_units_smul, map_units_smul, map_sub, _root_.smul_sub, smul_smul,
+      shift.unmk_d, d_units_smul, map_units_smul, _root_.smul_sub, smul_smul,
       leftShiftSign, ← koszulSign_add]
     congr 2
     all_goals rw [← hnm', ← hn']
@@ -469,7 +469,7 @@ theorem δ_shift (a m : ℤ) : δ n m (z.shift a) = koszulSign a • (δ n m z).
   · ext X x
     apply (shift.unmk a).injective
     simp only [δ_apply _ _ hnm, shift_apply, units_smul_apply, map_sub, shift.unmk_d,
-      shift.unmk_units_smul, shift.unmk_mk, d_units_smul, map_units_smul, _root_.smul_sub,
+      shift.unmk_units_smul, shift.unmk_mk, map_units_smul, _root_.smul_sub,
       smul_smul]
     rw [mul_comm]
   · rw [δ_shape _ _ hnm, δ_shape _ _ hnm, shift_zero, _root_.smul_zero]
@@ -508,7 +508,7 @@ end Cochain
 
 namespace Cocycle
 
-open Cochain
+open DG.CatModule.Cochain
 
 variable {M N : CatModule.{w} C} {n : ℤ}
 

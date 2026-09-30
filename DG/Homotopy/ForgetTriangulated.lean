@@ -41,6 +41,8 @@ open CategoryTheory Category Limits Pretriangulated
 
 universe v u w
 
+set_option backward.isDefEq.respectTransparency false
+
 namespace DG
 
 open DGModuleCat DGModuleCat.Algebra
@@ -135,9 +137,8 @@ theorem toHomComplex_δ (m : ℤ) (z : Cochain A M N n) :
   by_cases hnm : n + 1 = m
   · refine toHomComplex_ext R fun p q hpq x => ?_
     rw [CochainComplex.HomComplex.δ_v n m hnm _ p q hpq (q - 1) (p + 1) rfl rfl]
-    simp only [ModuleCat.hom_add, LinearMap.add_apply, Submodule.coe_add, ModuleCat.hom_comp,
-      LinearMap.comp_apply, ModuleCat.units_smul_apply, toHomComplex_v_apply, forget_obj_d_apply,
-      Submodule.coe_units_smul]
+    simp only [ModuleCat.hom_add, LinearMap.add_apply, ModuleCat.hom_comp,
+      LinearMap.comp_apply, ModuleCat.units_smul_apply, toHomComplex_v_apply]
     rw [δ_apply' n m hnm]
     erw [Submodule.coe_add, Submodule.coe_units_smul, forget_obj_d_apply, toHomComplex_v_apply,
       toHomComplex_v_apply, forget_obj_d_apply]

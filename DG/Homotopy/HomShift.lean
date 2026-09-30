@@ -61,6 +61,8 @@ private def compIsoAddEquiv {X Y Z : HomotopyCategory.{v} A} (e : Y ≅ Z) :
   right_inv g := by simp
   map_add' f g := Preadditive.add_comp _ _ _ _ _ _
 
+-- Unfolding the shift on `DGModuleCat` in the instance arguments of `HOM` is slow.
+set_option maxHeartbeats 400000 in
 /-- `Hom_{H(A)}(M, N⟦n⟧) ≃+ Hⁿ(HOM_A(M, N))`: morphisms into a shift in the homotopy category
 are the cohomology of the Hom complex. -/
 noncomputable def homShiftAddEquivCohomology (n : ℤ) :
@@ -78,9 +80,12 @@ theorem homShiftAddEquivCohomology_quotient_map (n : ℤ)
       cohomology.mk _ n (DGModule.HOM.homShiftAddEquivCocycles M N n f.hom) := by
   have h : (compIsoAddEquiv (((quotient A).commShiftIso n).app N)).symm
       ((quotient A).map f ≫ ((quotient A).commShiftIso n).hom.app N) = (quotient A).map f := by
-    simp [compIsoAddEquiv]
-  rw [homShiftAddEquivCohomology, AddEquiv.trans_apply, AddEquiv.trans_apply]
-  erw [h]
+    change ((quotient A).map f ≫ ((quotient A).commShiftIso n).hom.app N) ≫
+      ((quotient A).commShiftIso n).inv.app N = _
+    exact (Category.assoc _ _ _).trans
+      ((congrArg _ (Iso.hom_inv_id_app _ _)).trans (Category.comp_id _))
+  rw [homShiftAddEquivCohomology, AddEquiv.trans_apply]
+  erw [AddEquiv.trans_apply, h]
   refine (congrArg (DGModule.HOM.cohomologyRightShiftAddEquiv A M N n 0 n (zero_add n))
     (homAddEquivCohomology_quotient_map M ((shiftFunctor (DGModuleCat.{v} A) n).obj N) f)).trans
     ?_

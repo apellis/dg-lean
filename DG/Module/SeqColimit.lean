@@ -38,7 +38,7 @@ namespace SeqColimit
 
 /-- The morphism `⨁ n, S n → ⨁ n, S n` given on `S n` by `x ↦ x - ι n x`; the colimit of the
 sequence is its cokernel. -/
-def relHom : (⨁ n, S n) →ᵈᵍ[A] ⨁ n, S n :=
+noncomputable def relHom : (⨁ n, S n) →ᵈᵍ[A] ⨁ n, S n :=
   DGModuleHom.toModule fun n =>
     DGModuleHom.lof A S n - (DGModuleHom.lof A S (n + 1)).comp (ι n)
 
@@ -52,7 +52,7 @@ theorem relHom_apply_zero (y : ⨁ n, S n) : relHom S ι y 0 = y 0 := by
   induction y using DirectSum.induction_on with
   | zero => rw [map_zero]
   | of n x =>
-    rw [relHom_of, DirectSum.sub_apply, of_eq_of_ne _ _ _ (Nat.succ_ne_zero n), sub_zero]
+    rw [relHom_of, DirectSum.sub_apply, of_eq_of_ne _ _ _ (Nat.succ_ne_zero n).symm, sub_zero]
   | add x y hx hy => rw [map_add, DirectSum.add_apply, DirectSum.add_apply, hx, hy]
 
 theorem relHom_apply_succ (y : ⨁ n, S n) (k : ℕ) :
@@ -65,7 +65,7 @@ theorem relHom_apply_succ (y : ⨁ n, S n) (k : ℕ) :
     by_cases h : n = k
     · subst h
       rw [of_eq_same, of_eq_same]
-    · rw [of_eq_of_ne _ _ _ (by omega), of_eq_of_ne _ _ _ h, map_zero]
+    · rw [of_eq_of_ne _ _ _ (by omega), of_eq_of_ne _ _ _ (Ne.symm h), map_zero]
   | add x y hx hy =>
     rw [map_add, DirectSum.add_apply, hx, hy, DirectSum.add_apply, DirectSum.add_apply, map_add]
     abel
@@ -80,7 +80,7 @@ abbrev SeqColimit : Type _ :=
 namespace SeqColimit
 
 /-- The canonical morphism `S n → SeqColimit S ι`. -/
-def of (n : ℕ) : S n →ᵈᵍ[A] SeqColimit S ι :=
+noncomputable def of (n : ℕ) : S n →ᵈᵍ[A] SeqColimit S ι :=
   (relHom S ι).range.mkQ.comp (DGModuleHom.lof A S n)
 
 variable {S ι}
@@ -143,7 +143,7 @@ theorem of_injective (hι : ∀ n, Function.Injective (ι n)) (n : ℕ) :
     (DFinsupp.finite_support y)
 
 /-- The filtration of the colimit by the images of the `S n`. -/
-def filtration (n : ℕ) : DGSubmodule A (SeqColimit S ι) :=
+noncomputable def filtration (n : ℕ) : DGSubmodule A (SeqColimit S ι) :=
   (of S ι n).range
 
 theorem mem_filtration_iff {n : ℕ} {x : SeqColimit S ι} :
@@ -191,7 +191,7 @@ theorem toModule_relHom (y : ⨁ n, S n) : DGModuleHom.toModule g (relHom S ι y
 
 /-- The morphism out of the colimit determined by a compatible family of morphisms
 `g n : S n → N`. -/
-def desc : SeqColimit S ι →ᵈᵍ[A] N :=
+noncomputable def desc : SeqColimit S ι →ᵈᵍ[A] N :=
   DGSubmodule.liftQ (DGModuleHom.toModule g) fun x hx => by
     obtain ⟨y, rfl⟩ := hx
     exact toModule_relHom g hg y

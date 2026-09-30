@@ -105,7 +105,7 @@ theorem DGModule.ofGround
   smul_mem i j r c hr hc := by
     rcases (mem_degreeZeroGrading_iff R).mp hr with rfl | rfl
     · simpa using hmem r hc
-    · simpa using zero_mem (grading (M := C) (i + j))
+    · simp
   d_smul' {n r} hr c := by
     change d (r • c) = (0 : R →+ R) r • c + koszulSign n • (r • d c)
     rcases (mem_degreeZeroGrading_iff R).mp hr with rfl | rfl

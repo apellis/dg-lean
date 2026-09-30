@@ -51,7 +51,7 @@ namespace CatModule
 variable {C : Type u} [Category.{v} C] [Preadditive C] [∀ X Y : C, DGAddCommGroup (X ⟶ Y)]
   {M N P Q : CatModule.{w} C}
 
-open Cochain
+open DG.CatModule.Cochain
 
 /-- The differential of a `(-1)`-cochain: `δ h = d ∘ h + h ∘ d`. -/
 theorem δ_neg_one_apply (z : Cochain M N (-1)) {X : C} (x : M.obj X) :

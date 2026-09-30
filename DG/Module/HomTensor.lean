@@ -152,8 +152,8 @@ variable [DGModule A P] {p : ℤ} (g : Cochain B N (HOM A M P) p)
 cochain of degree `j + p`. -/
 def uncurryAux (j : ℤ) : grading (M := N) j →+ (M →+ P) where
   toFun n := ((g n (j + p) : Cochain A M P (j + p)) : M →+ P).comp (gradeSign M j)
-  map_zero' := by ext m; simp [Cochain.zero_apply]
-  map_add' n n' := by ext m; simp [Cochain.add_apply]
+  map_zero' := by ext m; simp
+  map_add' n n' := by ext m; simp
 
 /-- The bi-additive map `N →+ M →+ P` underlying the uncurrying of `g`. -/
 def uncurryBil : N →+ M →+ P :=
@@ -199,6 +199,7 @@ theorem uncurryBil_balanced (b : B) (m : M) (n : N) :
   | h_add b b' hb hb' => rw [op_add, add_smul, map_add, hb, hb', add_smul, map_add,
       AddMonoidHom.add_apply]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The uncurrying of a cochain `g` of degree `p` on `N` with values in `HOM_A(M, P)`: the
 cochain of degree `p` on `M ⊗_B N` sending `m ⊗ n`, for `m ∈ Mⁱ` and `n ∈ Nʲ`, to
 `(-1)^{i j} • g n m`. It is inverse to `DG.TensorProductOver.curry`. -/
@@ -328,7 +329,7 @@ theorem δ_curry (q : ℤ) (f : Cochain A (TensorProductOver B M N) P p) :
         δ_apply _ _ (by ring), curryApply_apply_of_mem _ _ _ m.2,
         curryApply_apply_of_mem _ _ _ (d_mem m.2), curryApply_apply_of_mem _ _ _ m.2,
         curryApply_apply_of_mem _ _ _ m.2, δ_apply _ _ rfl, d_tmul_of_mem m.2]
-      simp only [map_add, map_sub, Cochain.map_units_smul, d_units_smul, smul_sub, smul_add,
+      simp only [map_add, Cochain.map_units_smul, smul_sub, smul_add,
         smul_smul, mul_add, add_mul, mul_one, one_mul, koszulSign_add, map_units_zsmul]
       rcases Int.units_eq_one_or (koszulSign (j * i)) with h₁ | h₁ <;>
       rcases Int.units_eq_one_or (koszulSign j) with h₂ | h₂ <;>

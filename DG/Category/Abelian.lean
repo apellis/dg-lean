@@ -21,7 +21,7 @@ kernels, cokernels and exactness computed objectwise.
   faithful (`DG.CatModule.eval_jointly_faithful`) and jointly reflect isomorphisms, and each of
   them preserves kernels and cokernels, hence finite limits and colimits (it is exact). Composed
   with `DG.DGModuleCat.forgetToAddCommGrp (End X)` they give the jointly faithful additive
-  functors `DG.CatModule.evalComplex X : CatModule C ⥤ CochainComplex AddCommGrp ℤ` to the
+  functors `DG.CatModule.evalComplex X : CatModule C ⥤ CochainComplex AddCommGrpCat ℤ` to the
   underlying cochain complexes of abelian groups.
 * `DG.CatModule.abelian`: the coimage-image comparison is an isomorphism, since it is so after
   every evaluation.
@@ -245,8 +245,8 @@ instance eval_preservesFiniteColimits (X : C) : PreservesFiniteColimits (eval.{w
   Functor.preservesFiniteColimits_of_preservesCokernels _
 
 /-- The underlying cochain complex of abelian groups of the value at `X`, as an additive functor
-`CatModule C ⥤ CochainComplex AddCommGrp ℤ`. -/
-def evalComplex (X : C) : CatModule.{w} C ⥤ CochainComplex AddCommGrp.{w} ℤ :=
+`CatModule C ⥤ CochainComplex AddCommGrpCat ℤ`. -/
+def evalComplex (X : C) : CatModule.{w} C ⥤ CochainComplex AddCommGrpCat.{w} ℤ :=
   eval X ⋙ DGModuleCat.forgetToAddCommGrp (End X)
 
 instance (X : C) : (evalComplex.{w} X).Additive := by

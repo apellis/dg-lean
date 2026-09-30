@@ -12,7 +12,7 @@ This file proves Neeman's form of the Brown representability theorem
 ([Ne96, Thm. 3.1]; see also [Kr, §5.1]):
 
 * `DG.CompactlyGenerates.exists_iso_preadditiveYoneda`: a homological functor
-  `H : Cᵒᵖ ⥤ AddCommGrp` (Mathlib's `Functor.IsHomological`, for the pretriangulated structure
+  `H : Cᵒᵖ ⥤ AddCommGrpCat` (Mathlib's `Functor.IsHomological`, for the pretriangulated structure
   on `Cᵒᵖ`) which sends coproducts to products (`DG.SendsCoproductsToProducts`) is
   representable: `H ≅ C(-, X)` (`preadditiveYoneda.obj X`) for some object `X`. Equivalent
   forms are `DG.CompactlyGenerates.exists_bijective` (there are `X` and `u ∈ H(X)` such that
@@ -28,7 +28,7 @@ On the way we prove:
   extensions and coproducts) holds for every object. That is, `C` is the smallest localizing
   subcategory of itself containing `G`.
 * `DG.CompactlyGenerates.isIso_of_bijective`: a natural transformation between homological
-  functors `Cᵒᵖ ⥤ AddCommGrp` sending coproducts to products is an isomorphism as soon as it is
+  functors `Cᵒᵖ ⥤ AddCommGrpCat` sending coproducts to products is an isomorphism as soon as it is
   bijective on all shifts `G i⟦n⟧` of the generators.
 
 ## Proof
@@ -70,7 +70,7 @@ triangle `X₁ ⟶ X₂ ⟶ X₃ ⟶ X₁⟦1⟧` of `C`.
 
 As in `DG.Compact.Generation`, with `C : Type u`, `[Category.{v} C]` and `ι : Type w`,
 coproducts, compactness and the coproduct condition on `H` are taken relative to
-`Type (max w v)`; `H` takes values in `AddCommGrp.{v}`, the universe of the morphism groups.
+`Type (max w v)`; `H` takes values in `AddCommGrpCat.{v}`, the universe of the morphism groups.
 
 ## References
 
@@ -99,23 +99,23 @@ abbrev cofanULift (c : Cofan Y) : Cofan fun j : ULift.{w'} J => Y j.down :=
 /-- Reindexing a colimit cofan along `ULift.down` gives a colimit cofan. -/
 def isColimitCofanULift {c : Cofan Y} (hc : IsColimit c) :
     IsColimit (cofanULift c : Cofan fun j : ULift.{w'} J => Y j.down) :=
-  mkCofanColimit _ (fun s => Cofan.IsColimit.desc hc fun j => s.inj ⟨j⟩)
+  Cofan.IsColimit.mk _ (fun s => Cofan.IsColimit.desc hc fun j => s.inj ⟨j⟩)
     (fun s j => Cofan.IsColimit.fac hc _ j.down)
     (fun s m hm => Cofan.IsColimit.hom_ext hc _ _ fun j => by
       rw [Cofan.IsColimit.fac]; exact hm ⟨j⟩)
 
 end Cofan
 
-/-- A functor `H : Cᵒᵖ ⥤ AddCommGrp` *sends coproducts to products* (for coproducts indexed by
+/-- A functor `H : Cᵒᵖ ⥤ AddCommGrpCat` *sends coproducts to products* (for coproducts indexed by
 types in `Type w`) if for every colimit cofan `c` of a family `Y : J → C`, `J : Type w`, the
 canonical map `H(c.pt) → ∏ⱼ H(Y j)`, `x ↦ (H(c.inj j)(x))ⱼ`, is bijective. -/
-def SendsCoproductsToProducts (H : Cᵒᵖ ⥤ AddCommGrp.{v'}) : Prop :=
+def SendsCoproductsToProducts (H : Cᵒᵖ ⥤ AddCommGrpCat.{v'}) : Prop :=
   ∀ (J : Type w) (Y : J → C) (c : Cofan Y), IsColimit c →
     Function.Bijective fun (x : H.obj (op c.pt)) (j : J) => H.map (c.inj j).op x
 
 namespace SendsCoproductsToProducts
 
-variable {H : Cᵒᵖ ⥤ AddCommGrp.{v'}}
+variable {H : Cᵒᵖ ⥤ AddCommGrpCat.{v'}}
 
 /-- Sending coproducts to products relative to a universe implies the same for any smaller
 universe. -/
@@ -157,11 +157,11 @@ theorem sendsCoproductsToProducts_preadditiveYoneda [Preadditive C] (X : C) :
   · intro g
     exact ⟨Cofan.IsColimit.desc hc g, funext fun j => Cofan.IsColimit.fac hc g j⟩
 
-/-- A homological functor `H : Cᵒᵖ ⥤ AddCommGrp` sends a distinguished triangle
+/-- A homological functor `H : Cᵒᵖ ⥤ AddCommGrpCat` sends a distinguished triangle
 `X₁ ⟶ X₂ ⟶ X₃ ⟶ X₁⟦1⟧` of `C` to an exact sequence `H(X₃) → H(X₂) → H(X₁)`. -/
 theorem exact_map_op [Preadditive C] [HasZeroObject C] [HasShift C ℤ]
     [∀ n : ℤ, (shiftFunctor C n).Additive] [Pretriangulated C]
-    (H : Cᵒᵖ ⥤ AddCommGrp.{v'}) [H.IsHomological] (T : Triangle C) (hT : T ∈ distTriang C) :
+    (H : Cᵒᵖ ⥤ AddCommGrpCat.{v'}) [H.IsHomological] (T : Triangle C) (hT : T ∈ distTriang C) :
     Function.Exact (H.map T.mor₂.op) (H.map T.mor₁.op) :=
   (ShortComplex.ab_exact_iff_function_exact _).1 (H.map_distinguished_op_exact T hT)
 
@@ -214,7 +214,7 @@ end Localizing
 
 section NatTrans
 
-variable {F H : Cᵒᵖ ⥤ AddCommGrp.{v'}} (η : F ⟶ H)
+variable {F H : Cᵒᵖ ⥤ AddCommGrpCat.{v'}} (η : F ⟶ H)
 
 /-- Bijectivity of the components of a natural transformation is invariant under
 isomorphism. -/
@@ -233,7 +233,7 @@ theorem bijective_app_of_iso {A B : C} (e : A ≅ B) (h : Function.Bijective (η
 /-- Naturality of `η`, as an equality of additive maps. -/
 theorem map_op_hom_comp_app_hom {A B : C} (f : A ⟶ B) :
     (H.map f.op).hom.comp (η.app (op B)).hom = (η.app (op A)).hom.comp (F.map f.op).hom := by
-  rw [← AddCommGrp.hom_comp, ← AddCommGrp.hom_comp, η.naturality]
+  rw [← AddCommGrpCat.hom_comp, ← AddCommGrpCat.hom_comp, η.naturality]
 
 /-- If `F` and `H` send coproducts to products and `η` is bijective at every `Y j`, then `η`
 is bijective at the point of a colimit cofan of `Y`. -/
@@ -278,7 +278,7 @@ theorem bijective_app_obj₃ (T : Triangle C) (hT : T ∈ distTriang C)
     (exact_map_op H _ (rot_of_distTriang T hT)) (exact_map_op H T hT)
     h₁ h₂ h₄ h₅
 
-/-- For a natural transformation `η` between homological functors `Cᵒᵖ ⥤ AddCommGrp` sending
+/-- For a natural transformation `η` between homological functors `Cᵒᵖ ⥤ AddCommGrpCat` sending
 coproducts to products, the objects `Y` such that `η` is bijective at every shift `Y⟦n⟧` form a
 localizing subcategory. -/
 theorem isLocalizing_bijective [HasCoproducts.{w} C] (hF : SendsCoproductsToProducts.{w} F)
@@ -320,7 +320,7 @@ theorem isIso_of_comp_hocolimι [HasCoproducts.{max w v} C] (hG : CompactlyGener
     [HasCoproduct fun n => (tower G X n).left]
     (h : hocolim (fun n => (tower G X n).left) (towerMap G X) ⟶ X)
     (hh : ∀ n, hocolimι _ (towerMap G X) n ≫ h = (tower G X n).hom) : IsIso h := by
-  haveI : HasCoproducts.{0} C := hasCoproducts_shrink.{0, max w v}
+  have : HasCoproducts.{0} C := hasCoproducts_shrink.{0, max w v}
   let P : ℕ → C := fun n => (tower G X n).left
   let H := hocolim P (towerMap G X)
   have hcpt : ∀ (i : ι) (m : ℤ), IsCompact.{0} ((G i)⟦m⟧) :=
@@ -366,7 +366,7 @@ holds for all objects of `C`. -/
 theorem CompactlyGenerates.forall_of_isLocalizing [HasCoproducts.{max w v} C]
     (hG : CompactlyGenerates G) {P : ObjectProperty C} (hP : IsLocalizing.{max w v} P)
     (hGP : ∀ i, P (G i)) (X : C) : P X := by
-  haveI : HasCoproducts.{0} C := hasCoproducts_shrink.{0, max w v}
+  have : HasCoproducts.{0} C := hasCoproducts_shrink.{0, max w v}
   have hP₀ : IsLocalizing.{0} P := hP.down
   have hGn : ∀ (i : ι) (n : ℤ), P ((G i)⟦n⟧) := fun i n => hP.shift _ n (hGP i)
   have htower : ∀ n, P (tower G X n).left := by
@@ -382,10 +382,10 @@ theorem CompactlyGenerates.forall_of_isLocalizing [HasCoproducts.{max w v} C]
     (hP₀.sigma _ htower) (hP₀.sigma _ htower))
 
 /-- If `G` compactly generates `C`, a natural transformation `η : F ⟶ H` between homological
-functors `Cᵒᵖ ⥤ AddCommGrp` which send coproducts to products is an isomorphism if it is
+functors `Cᵒᵖ ⥤ AddCommGrpCat` which send coproducts to products is an isomorphism if it is
 bijective at every shift `G i⟦n⟧` of a generator. -/
 theorem CompactlyGenerates.isIso_of_bijective [HasCoproducts.{max w v} C]
-    (hG : CompactlyGenerates G) {F H : Cᵒᵖ ⥤ AddCommGrp.{v'}} [F.IsHomological]
+    (hG : CompactlyGenerates G) {F H : Cᵒᵖ ⥤ AddCommGrpCat.{v'}} [F.IsHomological]
     [H.IsHomological] (hF : SendsCoproductsToProducts.{max w v} F)
     (hH : SendsCoproductsToProducts.{max w v} H) (η : F ⟶ H)
     (h : ∀ (i : ι) (n : ℤ), Function.Bijective (η.app (op ((G i)⟦n⟧)))) : IsIso η := by
@@ -399,16 +399,20 @@ end Generation
 
 section Yoneda
 
-variable [Preadditive C] (H : Cᵒᵖ ⥤ AddCommGrp.{v}) [H.Additive]
+variable [Preadditive C] (H : Cᵒᵖ ⥤ AddCommGrpCat.{v}) [H.Additive]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The natural transformation `C(-, X) ⟶ H` corresponding to an element `u ∈ H(X)` by the
 Yoneda lemma: `φ ↦ H(φ)(u)`. -/
 noncomputable def preadditiveYonedaNatTrans {X : C} (u : H.obj (op X)) :
     preadditiveYoneda.obj X ⟶ H where
-  app Y := AddCommGrp.ofHom
+  app Y := AddCommGrpCat.ofHom
     { toFun := fun φ : Y.unop ⟶ X => H.map φ.op u
       map_zero' := by simp
-      map_add' := fun φ ψ => by simp [H.map_add] }
+      map_add' := fun (φ ψ : Y.unop ⟶ X) => by
+        change H.map (φ + ψ).op u = _
+        rw [op_add, H.map_add]
+        rfl }
   naturality Y Y' f := by
     ext φ
     change H.map (f.unop ≫ φ).op u = H.map f (H.map φ.op u)
@@ -424,7 +428,7 @@ end Yoneda
 
 section Brown
 
-variable [HasShift C ℤ] {ι : Type w} (G : ι → C) (H : Cᵒᵖ ⥤ AddCommGrp.{v})
+variable [HasShift C ℤ] {ι : Type w} (G : ι → C) (H : Cᵒᵖ ⥤ AddCommGrpCat.{v})
 
 namespace BrownTower
 
@@ -467,7 +471,7 @@ include hH in
 theorem map_kerMap_elt (A : Stage H) : H.map (kerMap G A).op A.elt = 0 := by
   apply hH.ext_sigma
   intro c
-  rw [← ConcreteCategory.comp_apply, ← H.map_comp, ← op_comp, kerMap, Sigma.ι_desc, map_zero]
+  rw [← ConcreteCategory.comp_apply, ← H.map_comp, ← op_comp, kerMap, Sigma.ι_comp_desc, map_zero]
   exact c.2.2.2
 
 variable [Preadditive C] [HasZeroObject C] [∀ n : ℤ, (shiftFunctor C n).Additive]
@@ -510,6 +514,7 @@ theorem map_towerMap_elt (n : ℕ) :
     H.map (towerMap G hH n).op (tower G hH (n + 1)).elt = (tower G hH n).elt :=
   map_mor₂_next_elt G hH _
 
+set_option backward.isDefEq.respectTransparency false in
 /-- A morphism `G i⟦m⟧ ⟶ Xₖ` killing the element `uₖ` vanishes in `Xₖ₊₁`. -/
 theorem comp_towerMap_eq_zero {n : ℕ} {i : ι} {m : ℤ} (ψ : (G i)⟦m⟧ ⟶ (tower G hH n).obj)
     (hψ : H.map ψ.op (tower G hH n).elt = 0) : ψ ≫ towerMap G hH n = 0 := by
@@ -525,17 +530,18 @@ end BrownTower
 variable [Preadditive C] [HasZeroObject C] [∀ n : ℤ, (shiftFunctor C n).Additive]
   [Pretriangulated C] {G}
 
+set_option backward.isDefEq.respectTransparency false in
 open BrownTower in
 /-- **Brown representability** [Ne96, Thm. 3.1], element form. Let `C` be a pretriangulated
-category with coproducts, compactly generated by `G`, and `H : Cᵒᵖ ⥤ AddCommGrp` a homological
+category with coproducts, compactly generated by `G`, and `H : Cᵒᵖ ⥤ AddCommGrpCat` a homological
 functor sending coproducts to products. There are an object `X` and an element `u ∈ H(X)` such
 that `φ ↦ H(φ)(u)` is a bijection `C(Y, X) → H(Y)` for every object `Y`. -/
 theorem CompactlyGenerates.exists_bijective [HasCoproducts.{max w v} C]
-    (hG : CompactlyGenerates G) {H : Cᵒᵖ ⥤ AddCommGrp.{v}} [H.IsHomological]
+    (hG : CompactlyGenerates G) {H : Cᵒᵖ ⥤ AddCommGrpCat.{v}} [H.IsHomological]
     (hH : SendsCoproductsToProducts.{max w v} H) :
     ∃ (X : C) (u : H.obj (op X)), ∀ Y : C,
       Function.Bijective fun φ : Y ⟶ X => H.map φ.op u := by
-  haveI : HasCoproducts.{0} C := hasCoproducts_shrink.{0, max w v}
+  have : HasCoproducts.{0} C := hasCoproducts_shrink.{0, max w v}
   have hH₀ : SendsCoproductsToProducts.{0} H := hH.down
   let P : ℕ → C := fun n => (tower G hH n).obj
   let f := towerMap G hH
@@ -549,7 +555,7 @@ theorem CompactlyGenerates.exists_bijective [HasCoproducts.{max w v} C]
       show ∀ {A B : C} (a b : A ⟶ B), (a - b).op = a.op - b.op from fun _ _ => rfl,
       H.map_sub, map_zero]
     change (H.map _).hom v - (H.map _).hom v = 0
-    rw [op_comp, H.map_comp, AddCommGrp.hom_comp, AddMonoidHom.comp_apply, sub_eq_zero]
+    rw [op_comp, H.map_comp, AddCommGrpCat.hom_comp, AddMonoidHom.comp_apply, sub_eq_zero]
     erw [hv, hv]
     exact (map_towerMap_elt G hH n).symm
   -- Hence it lifts to `u ∈ H(hocolim)`, which restricts to every `uₖ`.
@@ -584,10 +590,10 @@ theorem CompactlyGenerates.exists_bijective [HasCoproducts.{max w v} C]
 
 /-- **Brown representability** [Ne96, Thm. 3.1]. Let `C` be a pretriangulated category with
 coproducts, compactly generated by a family `G` indexed by a small type. A homological functor
-`H : Cᵒᵖ ⥤ AddCommGrp` which sends coproducts to products is representable: `H ≅ C(-, X)` for
+`H : Cᵒᵖ ⥤ AddCommGrpCat` which sends coproducts to products is representable: `H ≅ C(-, X)` for
 some object `X`. -/
 theorem CompactlyGenerates.exists_iso_preadditiveYoneda [HasCoproducts.{max w v} C]
-    (hG : CompactlyGenerates G) {H : Cᵒᵖ ⥤ AddCommGrp.{v}} [H.IsHomological]
+    (hG : CompactlyGenerates G) {H : Cᵒᵖ ⥤ AddCommGrpCat.{v}} [H.IsHomological]
     (hH : SendsCoproductsToProducts.{max w v} H) :
     ∃ X : C, Nonempty (preadditiveYoneda.obj X ≅ H) := by
   obtain ⟨X, u, hu⟩ := hG.exists_bijective hH
@@ -597,12 +603,12 @@ theorem CompactlyGenerates.exists_iso_preadditiveYoneda [HasCoproducts.{max w v}
   exact ⟨X, ⟨asIso (preadditiveYonedaNatTrans H u)⟩⟩
 
 /-- **Brown representability** [Ne96, Thm. 3.1], in terms of `Functor.IsRepresentable`: the
-functor `Cᵒᵖ ⥤ Type` underlying a homological functor `H : Cᵒᵖ ⥤ AddCommGrp` sending coproducts
+functor `Cᵒᵖ ⥤ Type` underlying a homological functor `H : Cᵒᵖ ⥤ AddCommGrpCat` sending coproducts
 to products is representable. -/
 theorem CompactlyGenerates.isRepresentable [HasCoproducts.{max w v} C]
-    (hG : CompactlyGenerates G) {H : Cᵒᵖ ⥤ AddCommGrp.{v}} [H.IsHomological]
+    (hG : CompactlyGenerates G) {H : Cᵒᵖ ⥤ AddCommGrpCat.{v}} [H.IsHomological]
     (hH : SendsCoproductsToProducts.{max w v} H) :
-    (H ⋙ forget AddCommGrp).IsRepresentable := by
+    (H ⋙ forget AddCommGrpCat).IsRepresentable := by
   obtain ⟨X, u, hu⟩ := hG.exists_bijective hH
   exact Functor.RepresentableBy.isRepresentable
     { homEquiv := Equiv.ofBijective _ (hu _)

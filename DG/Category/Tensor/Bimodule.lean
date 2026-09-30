@@ -1,5 +1,7 @@
 import DG.Category.Tensor.Basic
 
+set_option backward.isDefEq.respectTransparency false
+
 /-!
 # Dg bimodules over dg categories
 
@@ -174,10 +176,10 @@ theorem d_tensorAct {X X' : C} {i : ℤ} {f : X ⟶ X'} (hf : f ∈ grading i)
   | tmul Y x m =>
     induction x using DG.induction_on with
     | h_zero =>
-      simp only [CatTensorProduct.zero_tmul, map_zero, d_zero, _root_.smul_zero, add_zero]
+      simp only [CatTensorProduct.zero_tmul, map_zero, _root_.smul_zero, add_zero]
     | h_add x x' hx hx' =>
       rw [CatTensorProduct.add_tmul]
-      simp only [map_add, d_add, hx, hx', _root_.smul_add]
+      simp only [map_add, hx, hx', _root_.smul_add]
       abel
     | h_homogeneous x =>
       rename_i j
@@ -244,12 +246,12 @@ def tensorFunctor : CatModule.{max u₂ w w'} D ⥤ CatModule.{max u₂ w w'} C 
   map ψ := B.tensorMap ψ
   map_id M := CatModule.hom_ext fun X y => by
     induction y using CatTensorProduct.induction_on with
-    | zero => simp
+    | zero => exact (map_zero _).trans (map_zero _).symm
     | tmul Y x m => rw [tensorMap_tmul, CatModule.id_app, CatModule.id_app]
     | add x y hx hy => rw [map_add, hx, hy, map_add]
   map_comp ψ ψ' := CatModule.hom_ext fun X y => by
     induction y using CatTensorProduct.induction_on with
-    | zero => simp
+    | zero => exact (map_zero _).trans (map_zero _).symm
     | tmul Y x m =>
       rw [CatModule.comp_app, tensorMap_tmul, tensorMap_tmul, tensorMap_tmul, CatModule.comp_app]
     | add x y hx hy => rw [map_add, hx, hy, map_add]

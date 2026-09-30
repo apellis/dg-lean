@@ -51,7 +51,7 @@ theorem coproductCocone_inj (j : J) :
 
 /-- The direct sum is the coproduct in `DGModuleCat A`. -/
 def coproductCoconeIsColimit : IsColimit (coproductCocone F) :=
-  mkCofanColimit _ (fun t => ofHom (DGModuleHom.toModule fun j => (t.inj j).hom))
+  Cofan.IsColimit.mk _ (fun t => ofHom (DGModuleHom.toModule fun j => (t.inj j).hom))
     (fun t j => hom_ext (DGModuleHom.toModule_comp_lof _ j))
     fun t m hm => hom_ext (DGModuleHom.directSum_ext fun j => by
       change m.hom.comp _ = (DGModuleHom.toModule fun j => (t.inj j).hom).comp _
@@ -65,9 +65,9 @@ end Coproducts
 
 instance hasCoproducts : HasCoproducts.{w} (DGModuleCat.{max v w} A) := fun J =>
   { has_colimit := fun K => by
-      letI := Classical.decEq J
+      let := Classical.decEq J
       exact HasColimit.mk
-        ⟨(Cocones.precompose Discrete.natIsoFunctor.hom).obj
+        ⟨(Cocone.precompose Discrete.natIsoFunctor.hom).obj
           (coproductCocone (K.obj ∘ Discrete.mk)),
           (IsColimit.precomposeHomEquiv _ _).symm (coproductCoconeIsColimit _)⟩ }
 
@@ -96,7 +96,7 @@ theorem productCone_proj (j : J) :
 
 /-- The graded product is the product in `DGModuleCat A`. -/
 def productConeIsLimit : IsLimit (productCone F) :=
-  mkFanLimit _ (fun s => ofHom (DGModuleHom.pi fun j => (s.proj j).hom)) (fun _ _ => rfl)
+  Fan.IsLimit.mk _ (fun s => ofHom (DGModuleHom.pi fun j => (s.proj j).hom)) (fun _ _ => rfl)
     fun _ _ hm => hom_ext (DGModuleHom.gradedPi_ext fun j => congrArg Hom.hom (hm j))
 
 instance hasProduct : HasProduct F :=
@@ -149,8 +149,8 @@ theorem toFamily_gradingDirectSum (n : ℤ) (y : ⨁ j, DGModule.gradingSubmodul
     by_cases h : k = j
     · subst h
       rw [DirectSum.of_eq_same, DirectSum.lof_eq_of, DirectSum.of_eq_same]
-    · rw [DirectSum.of_eq_of_ne _ _ _ h, DirectSum.lof_eq_of, DirectSum.of_eq_of_ne _ _ _ h,
-        ZeroMemClass.coe_zero]
+    · rw [DirectSum.of_eq_of_ne _ _ _ (Ne.symm h), DirectSum.lof_eq_of,
+        DirectSum.of_eq_of_ne _ _ _ (Ne.symm h), ZeroMemClass.coe_zero]
   | add x y hx hy =>
     rw [map_add, DirectSum.add_apply]
     change toFamily R F _ j + toFamily R F _ j = _
@@ -169,9 +169,8 @@ theorem gradingDirectSum_bijective (n : ℤ) : Function.Bijective (gradingDirect
       DirectSum.lof R J (fun j => DGModule.gradingSubmodule R A (F j) n) j
         ⟨toFamily R F x j, x.2 j⟩, ?_⟩
     apply Subtype.ext
-    rw [map_sum, AddSubmonoidClass.coe_finset_sum]
-    simp only [gradingDirectSum_lof, coe_homRestrict_apply, coproductCocone_inj, ofHom_apply,
-      DGModuleHom.lof_apply]
+    rw [map_sum, AddSubmonoidClass.coe_finsetSum]
+    simp only [gradingDirectSum_lof, coproductCocone_inj]
     exact DirectSum.sum_support_of (toFamily R F x)
 
 /-- The comparison map `⨁ j, (M j)ⁿ ≃ (⨁ j, M j)ⁿ` as a linear equivalence. -/
@@ -195,6 +194,7 @@ def descEval {n : ℤ}
   ModuleCat.ofHom ((DirectSum.toModule R J s.pt fun j => (s.ι.app ⟨j⟩).hom) ∘ₗ
     (gradingDirectSumEquiv R F n).symm.toLinearMap)
 
+set_option backward.isDefEq.respectTransparency false in
 theorem descEval_fac {n : ℤ}
     (s : Cocone ((Discrete.functor F) ⋙ forget R A ⋙ HomologicalComplex.eval _ _ n)) (j : J) :
     ((forget R A ⋙ HomologicalComplex.eval _ _ n).mapCocone (coproductCocone F)).ι.app ⟨j⟩ ≫
@@ -250,7 +250,7 @@ omit [DecidableEq J] in
 instance forget_preservesColimitsOfShape_discrete :
     PreservesColimitsOfShape (Discrete J) (forget.{max v w} R A) where
   preservesColimit {K} := by
-    letI := Classical.decEq J
+    let := Classical.decEq J
     exact preservesColimit_of_iso_diagram (forget R A) (Discrete.natIsoFunctor (F := K)).symm
 
 end Forget

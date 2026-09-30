@@ -2,7 +2,7 @@ import Mathlib.Algebra.Category.ModuleCat.Colimits
 import Mathlib.Algebra.Category.ModuleCat.Monoidal.Closed
 import Mathlib.Algebra.Category.ModuleCat.Monoidal.Symmetric
 import Mathlib.Algebra.Homology.Monoidal
-import Mathlib.CategoryTheory.Closed.Monoidal
+import Mathlib.CategoryTheory.Monoidal.Closed.Basic
 
 /-!
 # The monoidal category of cochain complexes of modules
@@ -153,7 +153,7 @@ variable {K' L' M : CochainComplex (ModuleCat.{u} R) ℤ}
 
 /-- The tensor product of morphisms sends `x ⊗ y` to `f x ⊗ g y`. -/
 theorem tensorHom_f_tmul (f : K ⟶ K') (g : L ⟶ L') {p q n : ℤ} (h : p + q = n) (x : K.X p)
-    (y : L.X q) : (f ⊗ g).f n (tmul K L h x y) = tmul K' L' h (f.f p x) (g.f q y) := by
+    (y : L.X q) : (f ⊗ₘ g).f n (tmul K L h x y) = tmul K' L' h (f.f p x) (g.f q y) := by
   have e := congrArg (fun φ => φ.hom (x ⊗ₜ y))
     (ι_mapBifunctorMap f g (curriedTensor (ModuleCat.{u} R)) (ComplexShape.up ℤ) p q n h)
   exact e

@@ -50,8 +50,11 @@ regrading, see the conventions.
 
 ## Building
 
-Requires [elan](https://github.com/leanprover/elan). Toolchain `leanprover/lean4:v4.19.0` and
-Mathlib `c44e0c8ee63ca166450922a373c7409c5d26b00b` are pinned.
+The default branch is `master`. This package depends only on Mathlib (and its
+transitive dependencies); it does not depend on the other formalization repositories.
+
+Requires [elan](https://github.com/leanprover/elan). Toolchain `leanprover/lean4:v4.34.1` and
+Mathlib `v4.34.1` (`d13f23b723b8a846827a245b89c10fc7d3f11612`) are pinned.
 
 ```sh
 lake exe cache get

@@ -36,7 +36,7 @@ construct the derived category `D(A) = H(A)[qis⁻¹]` (`DG/Derived/Basic.lean`)
   `DG.HomotopyCategory.quotient_map_mem_quasiIso_iff_isAcyclic_cone`.
 * Instances: `quasiIso A` is multiplicative, compatible with the shift and with the
   triangulation, and has a calculus of left and right fractions (from Mathlib's results on
-  `Triangulated.Subcategory.W`).
+  `ObjectProperty.trW`).
 
 ## Implementation notes
 
@@ -66,10 +66,14 @@ def quasiIso : MorphismProperty (HomotopyCategory.{v} A) := fun _ _ f =>
 
 /-- The triangulated subcategory of acyclic objects of the homotopy category of dg modules: the
 kernel of the homological functor `H⁰` (`X` is acyclic iff `H⁰(X⟦n⟧) = 0` for all `n`). -/
-def subcategoryAcyclic : Triangulated.Subcategory (HomotopyCategory.{v} A) :=
+def subcategoryAcyclic : ObjectProperty (HomotopyCategory.{v} A) :=
   (homologyFunctor ℤ A 0).homologicalKernel
 
-instance : (subcategoryAcyclic.{v} A).P.IsClosedUnderIsomorphisms := by
+instance : (subcategoryAcyclic.{v} A).IsTriangulated := by
+  dsimp only [subcategoryAcyclic]
+  infer_instance
+
+instance : (subcategoryAcyclic.{v} A).IsClosedUnderIsomorphisms := by
   dsimp only [subcategoryAcyclic]
   infer_instance
 
@@ -80,15 +84,15 @@ theorem mem_quasiIso_iff {X Y : HomotopyCategory.{v} A} (f : X ⟶ Y) :
 
 /-- An object is acyclic iff its underlying complex is acyclic. -/
 theorem mem_subcategoryAcyclic_iff_forget (X : HomotopyCategory.{v} A) :
-    (subcategoryAcyclic A).P X ↔
-      (_root_.HomotopyCategory.subcategoryAcyclic (ModuleCat.{v} ℤ)).P ((forget ℤ A).obj X) :=
+    (subcategoryAcyclic A) X ↔
+      (_root_.HomotopyCategory.subcategoryAcyclic (ModuleCat.{v} ℤ)) ((forget ℤ A).obj X) :=
   forall_congr' fun n =>
     ((_root_.HomotopyCategory.homologyFunctor _ _ 0).mapIso
       (((forget ℤ A).commShiftIso n).app X)).isZero_iff
 
 /-- An object is acyclic iff all its cohomology groups vanish. -/
 theorem mem_subcategoryAcyclic_iff (X : HomotopyCategory.{v} A) :
-    (subcategoryAcyclic A).P X ↔ ∀ n : ℤ, IsZero ((homologyFunctor ℤ A n).obj X) :=
+    (subcategoryAcyclic A) X ↔ ∀ n : ℤ, IsZero ((homologyFunctor ℤ A n).obj X) :=
   (mem_subcategoryAcyclic_iff_forget X).trans
     (_root_.HomotopyCategory.mem_subcategoryAcyclic_iff _)
 
@@ -97,22 +101,22 @@ variable (A)
 /-- A morphism of the homotopy category is a quasi-isomorphism iff its cone is acyclic, i.e.
 the quasi-isomorphisms are the class of morphisms `W` attached to the triangulated subcategory
 of acyclic objects. -/
-theorem quasiIso_eq_subcategoryAcyclic_W : quasiIso.{v} A = (subcategoryAcyclic A).W := by
+theorem quasiIso_eq_subcategoryAcyclic_W : quasiIso.{v} A = (subcategoryAcyclic A).trW := by
   ext X Y f
   obtain ⟨Z, g, h, hT⟩ := distinguished_cocone_triangle f
-  refine Iff.trans ?_ ((subcategoryAcyclic A).mem_W_iff_of_distinguished _ hT).symm
+  refine Iff.trans ?_ ((subcategoryAcyclic A).trW_iff_of_distinguished _ hT).symm
   rw [mem_subcategoryAcyclic_iff_forget]
   change _root_.HomotopyCategory.quasiIso _ _ ((forget ℤ A).map f) ↔ _
-  rw [_root_.HomotopyCategory.quasiIso_eq_subcategoryAcyclic_W]
-  exact (_root_.HomotopyCategory.subcategoryAcyclic _).mem_W_iff_of_distinguished _
+  rw [_root_.HomotopyCategory.quasiIso_eq_trW_subcategoryAcyclic]
+  exact (_root_.HomotopyCategory.subcategoryAcyclic _).trW_iff_of_distinguished _
     ((forget ℤ A).map_distinguished _ hT)
 
 /-- The acyclic objects form a thick subcategory: it is triangulated and closed under direct
 summands (retracts). -/
-theorem isThick_subcategoryAcyclic : IsThick (subcategoryAcyclic.{v} A).P where
-  zero := (subcategoryAcyclic A).zero
-  shift := (subcategoryAcyclic A).shift
-  ext₂ := (subcategoryAcyclic A).ext₂
+theorem isThick_subcategoryAcyclic : IsThick (subcategoryAcyclic.{v} A) where
+  zero := (subcategoryAcyclic A).prop_zero
+  shift X n := (subcategoryAcyclic A).le_shift n X
+  ext₂ := (subcategoryAcyclic A).ext_of_isTriangulatedClosed₂
   retract {X Y} e hY n := by
     have e' := e.map (shiftFunctor _ n ⋙ homologyFunctor ℤ A 0)
     rw [IsZero.iff_id_eq_zero]
@@ -153,6 +157,7 @@ variable {A : Type u} [Ring A] [DGAddCommGroup A] [DGRing A]
 
 variable (R : Type w) [CommRing R] [Algebra R A] [DGAlgebra R A]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- For a dg `R`-algebra `A`, a morphism of dg modules is a quasi-isomorphism iff its underlying
 morphism of complexes of `R`-modules is a quasi-isomorphism. -/
 theorem forget_map_quotient_map_mem_quasiIso_iff {M N : DGModuleCat.{v} A} (f : M ⟶ N) :
@@ -194,7 +199,7 @@ theorem homologyFunctor_inverts_quasiIso (n : ℤ) :
 
 /-- A dg module is in the subcategory of acyclic objects iff it is acyclic. -/
 theorem quotient_obj_mem_subcategoryAcyclic_iff (M : DGModuleCat.{v} A) :
-    (subcategoryAcyclic A).P ((quotient A).obj M) ↔ IsAcyclic M := by
+    (subcategoryAcyclic A) ((quotient A).obj M) ↔ IsAcyclic M := by
   rw [mem_subcategoryAcyclic_iff, isAcyclic_iff_isZero_homologyFunctor_obj (R := ℤ)]
 
 /-- A morphism of dg modules becomes a quasi-isomorphism in the homotopy category iff its
@@ -221,6 +226,7 @@ theorem homotopyEquivalences_le_quasiIso : homotopyEquivalences.{v} A ≤ quasiI
   rw [quasiIso, ← he]
   exact e.isQuasiIso_hom
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The quasi-isomorphisms of the homotopy category are the images of the quasi-isomorphisms of
 dg modules. -/
 theorem _root_.DG.HomotopyCategory.quasiIso_eq_quasiIso_map_quotient :

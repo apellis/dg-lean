@@ -90,7 +90,7 @@ theorem HasDegree.zsmul {n : ι} {f : M →+ N} (hf : HasDegree ℳ 𝒩 n f) (k
 
 theorem HasDegree.sum {α : Type*} (s : Finset α) {n : ι} {f : α → M →+ N}
     (hf : ∀ a ∈ s, HasDegree ℳ 𝒩 n (f a)) : HasDegree ℳ 𝒩 n (∑ a ∈ s, f a) := fun i m hm => by
-  rw [AddMonoidHom.finset_sum_apply]
+  rw [AddMonoidHom.finsetSum_apply]
   exact sum_mem fun a ha => hf a ha i m hm
 
 end HasDegree
@@ -124,9 +124,10 @@ section Basic
 
 variable [Add ι] {ℳ 𝒩} {n : ι}
 
+set_option backward.isDefEq.respectTransparency false in
 instance : FunLike (GradedHom ℳ 𝒩 n) M N where
   coe f := f.toFun
-  coe_injective' := by
+  coe_injective := by
     rintro ⟨_, _⟩ ⟨_, _⟩ h
     congr 1
     exact DFunLike.coe_injective h
@@ -612,6 +613,7 @@ theorem eval_mul_apply (f g : GradedEND ℳ) (x : M) :
     GradedHOM.eval ℳ ℳ (f * g) x = GradedHOM.eval ℳ ℳ g (GradedHOM.eval ℳ ℳ f x) := by
   rw [eval_mul]; rfl
 
+set_option backward.isDefEq.respectTransparency false in
 variable (ℳ) in
 /-- Evaluation as a ring homomorphism from `GradedEND ℳ` to the multiplicative opposite of the
 endomorphism ring `AddMonoid.End M`: the graded endomorphism ring acts on `M` on the right. -/

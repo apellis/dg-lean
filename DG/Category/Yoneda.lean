@@ -58,7 +58,7 @@ variable {X : C} {M : CatModule.{v} C}
 def yonedaHom (m : cocycles (M.obj X) 0) : representable X ⟶ M where
   app Y := (M.act (X := X) (Y := Y)).flip (m : M.obj X)
   map_mem' {Y n h} hh := by
-    simpa using smul_mem_grading (M := M) hh m.2.1
+    simpa using! smul_mem_grading (M := M) hh m.2.1
   map_d' h := (d_smul_of_d_eq_zero_right (M := M) m.2.2 h).symm
   map_smul' f h := comp_smul (M := M) h f m
 
@@ -67,8 +67,8 @@ cocycles of `M.obj X`, by evaluation at `𝟙 X`. -/
 def yonedaEquiv : (representable X ⟶ M) ≃+ cocycles (M.obj X) 0 where
   toFun φ := ⟨φ.app X (𝟙 X), φ.map_mem (id_mem_grading X),
     show d (φ.app X (𝟙 X)) = 0 by
-      rw [← φ.map_d]
-      exact (congrArg (φ.app X) (d_id X)).trans (map_zero _)⟩
+      exact (φ.map_d (𝟙 X)).symm.trans
+        ((congrArg (φ.app X) (d_id X)).trans (map_zero _))⟩
   invFun m := yonedaHom m
   left_inv φ := hom_ext fun Y h =>
     (φ.map_smul h (𝟙 X)).symm.trans (congrArg (φ.app Y) (Category.id_comp h))

@@ -80,13 +80,13 @@ theorem coproductCofan_inj (j : J) :
     (coproductCofan X).inj j = (quotient A).map (DGModuleCat.ofHom
       (DGModuleHom.lof A (fun j => ((X j).as : Type (max v w))) j)) := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The direct sum is a coproduct in the homotopy category. -/
 noncomputable def isColimitCoproductCofan : IsColimit (coproductCofan X) :=
-  mkCofanColimit _
+  Cofan.IsColimit.mk _
     (fun t => (quotient A).map (DGModuleCat.ofHom
       (DGModuleHom.toModule fun j => (Quot.out (t.inj j)).hom)))
     (fun t j => by
-      dsimp only
       rw [coproductCofan_inj, ← Functor.map_comp, ← DGModuleCat.ofHom_comp,
         DGModuleHom.toModule_comp_lof, DGModuleCat.ofHom_hom, quotient_map_out])
     (fun t m hm => by
@@ -116,7 +116,7 @@ variable (A)
 /-- The homotopy category of dg modules has arbitrary coproducts. -/
 instance hasCoproducts : HasCoproducts.{w} (HomotopyCategory.{max v w} A) := fun J =>
   { has_colimit := fun K => by
-      letI := Classical.decEq J
+      let := Classical.decEq J
       exact hasColimit_of_iso (Discrete.natIsoFunctor (F := K)) }
 
 instance hasCoproducts' : HasCoproducts.{v} (HomotopyCategory.{v} A) :=
@@ -126,7 +126,7 @@ instance hasCoproducts' : HasCoproducts.{v} (HomotopyCategory.{v} A) :=
 instance quotient_preservesColimitsOfShape_discrete (J : Type w) :
     PreservesColimitsOfShape (Discrete J) (quotient.{max v w} A) where
   preservesColimit {K} := by
-    letI := Classical.decEq J
+    let := Classical.decEq J
     exact preservesColimit_of_iso_diagram (quotient A) (Discrete.natIsoFunctor (F := K)).symm
 
 end HomotopyCategory

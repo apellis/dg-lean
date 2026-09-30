@@ -60,6 +60,7 @@ instance isDGAddSubgroup (X : C) : IsDGAddSubgroup (S.carrier X) where
 /-! ### The submodule as a dg module -/
 
 /-- The dg abelian group structure on `S.carrier X`, restricted from `M.obj X`. -/
+@[instance_reducible]
 noncomputable def dgAddCommGroup (X : C) : DGAddCommGroup (S.carrier X) :=
   DGAddCommGroup.ofInjective (AddSubgroupClass.subtype (S.carrier X)) Subtype.val_injective
     (((d : M.obj X →+ M.obj X).comp (AddSubgroupClass.subtype _)).codRestrict _

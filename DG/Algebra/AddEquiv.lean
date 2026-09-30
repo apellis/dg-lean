@@ -33,7 +33,7 @@ theorem coe_decompose_map_of_map_mem (f : M →+ N)
     by_cases hij : i = j
     · subst hij
       simp
-    · simp [of_eq_of_ne _ _ _ hij]
+    · simp [of_eq_of_ne _ _ _ (Ne.symm hij)]
   | h_add m m' hm hm' => simp [decompose_add, hm, hm']
 
 /-- An injective additive map of degree `0` reflects the grading: if `f m` is homogeneous of
@@ -47,11 +47,11 @@ theorem mem_grading_of_injective (f : M →+ N)
     rw [← coe_decompose_map_of_map_mem f hf, decompose_of_mem_ne _ hm (Ne.symm hj),
       ZeroMemClass.coe_zero, map_zero]
   have h : decompose ℳ m = DirectSum.of (fun i => ℳ i) k (decompose ℳ m k) := by
-    refine DirectSum.ext _ fun j => ?_
+    refine DirectSum.ext fun j => ?_
     by_cases hjk : j = k
     · subst hjk
       rw [of_eq_same]
-    · rw [of_eq_of_ne _ _ _ (Ne.symm hjk), key j hjk]
+    · rw [of_eq_of_ne _ _ _ hjk, key j hjk]
   have h' := congrArg (decompose ℳ).symm h
   rw [Equiv.symm_apply_apply, decompose_symm_of] at h'
   rw [h']

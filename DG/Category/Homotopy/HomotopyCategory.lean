@@ -49,8 +49,8 @@ instance homotopic_congruence : Congruence (homotopic.{w} C) where
     { refl := fun f => Homotopic.refl f
       symm := Homotopic.symm
       trans := Homotopic.trans }
-  compLeft f _ _ h := Homotopic.comp_left h f
-  compRight g h := Homotopic.comp_right h g
+  comp_left f _ _ h := Homotopic.comp_left h f
+  comp_right g h := Homotopic.comp_right h g
 
 /-- The homotopy category of dg modules over `C`: the quotient of `CatModule C` by the homotopy
 relation. -/

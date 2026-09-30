@@ -75,8 +75,8 @@ instance homotopic_congruence : Congruence (homotopic.{v} A) where
     { refl := fun f => Homotopic.refl f.hom
       symm := Homotopic.symm
       trans := Homotopic.trans }
-  compLeft f _ _ h := Homotopic.comp_left h f.hom
-  compRight g h := Homotopic.comp_right h g.hom
+  comp_left f _ _ h := Homotopic.comp_left h f.hom
+  comp_right g h := Homotopic.comp_right h g.hom
 
 end DGModuleCat
 

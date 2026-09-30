@@ -46,6 +46,7 @@ theorem toComplex_d_apply {i j : ℤ} (h : i + 1 = j) (x : DGModule.gradingSubmo
   rw [toComplex_d]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The cocycles of degree `n` of `M` are the kernel of the differential of the short complex
 `(toComplex R M).sc n`. -/
 def cocyclesAddEquiv (n : ℤ) :
@@ -90,6 +91,7 @@ def cohomologyAddEquiv (n : ℤ) : cohomology M n ≃+ ((forget R A).obj M).homo
       (mem_map_cocyclesAddEquiv_iff R M n y).trans Iff.rfl)).trans
     (((toComplex R M).sc n).moduleCatHomologyIso.symm.toLinearEquiv.toAddEquiv)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- `DG.DGModuleCat.cohomologyAddEquiv` sends the class of a cocycle to the homology class of
 the corresponding cycle of the underlying cochain complex. -/
 theorem cohomologyAddEquiv_mk (n : ℤ) (z : cocycles M n) :
@@ -100,7 +102,7 @@ theorem cohomologyAddEquiv_mk (n : ℤ) (z : cocycles M n) :
           (CochainComplex.next ℤ n)
           (Subtype.ext ((toComplex_d_apply R M rfl _).trans (cocycles.d_eq_zero z)))) := by
   change ((toComplex R M).sc n).moduleCatHomologyIso.inv
-    (Submodule.Quotient.mk (cocyclesAddEquiv R M n z)) = _
+    (((toComplex R M).sc n).moduleCatLeftHomologyData.π (cocyclesAddEquiv R M n z)) = _
   rw [← ShortComplex.moduleCatCyclesIso_inv_π_apply]
   change ((toComplex R M).sc n).homologyπ _ = ((toComplex R M).sc n).homologyπ _
   congr 1
@@ -115,6 +117,7 @@ section Naturality
 
 variable {M N : DGModuleCat.{v} A} (f : M ⟶ N)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The comparison `Hⁿ(M) ≃+ Hⁿ(toComplex R M)` is natural in `M`. -/
 theorem cohomologyAddEquiv_naturality (n : ℤ) (x : cohomology M n) :
     cohomologyAddEquiv R N n (cohomology.map f.hom n x) =

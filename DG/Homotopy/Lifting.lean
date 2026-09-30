@@ -168,6 +168,7 @@ theorem HasLiftingProperty.isKProjective (h : HasLiftingProperty.{w} A P) :
   exact ((hC.homotopic_zero_of_right g).comp_right p).trans
     (Homotopic.of_eq (DGModuleHom.comp_zero p))
 
+set_option backward.isDefEq.respectTransparency false in
 /-- A dg module with the lifting property against surjective quasi-isomorphisms is
 graded-projective: a graded map `f : P → N` of degree `0` is the second component of the
 morphism `P → Cone (id_N)` with components `(-δ f, f)`, and `Cone (id_M) → Cone (id_N)` is a

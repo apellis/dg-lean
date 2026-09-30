@@ -145,7 +145,7 @@ variable {A : Type*} {M N P : Type*} [Ring A] [DGAddCommGroup A]
 
 instance : FunLike (M →ᵈᵍ[A] N) M N where
   coe f := f.toFun
-  coe_injective' f g h := by
+  coe_injective f g h := by
     obtain ⟨⟨⟨_, _⟩, _⟩, _, _⟩ := f
     obtain ⟨⟨⟨_, _⟩, _⟩, _, _⟩ := g
     congr

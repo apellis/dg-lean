@@ -21,6 +21,8 @@ because `cone g` is homotopy equivalent to the cone of `cone f ⟶ cone (f ≫ g
 * the instance `DG.CatModule.HomotopyCategory.isTriangulated`.
 -/
 
+set_option backward.isDefEq.respectTransparency false
+
 open CategoryTheory Category Limits Pretriangulated
 
 universe w v u
@@ -57,7 +59,7 @@ theorem mappingConeCompTriangleh_comm₁ :
       (quotient C).map (mappingConeCompHomotopyEquiv f g).hom =
     (quotient C).map (inr (compMor₁ f g)) := by
   rw [← cancel_mono (isoOfHomotopyEquiv (mappingConeCompHomotopyEquiv f g)).inv, assoc]
-  dsimp [mappingConeCompTriangleh]
+  dsimp [mappingConeCompTriangleh, mappingConeCompTriangle, isoOfHomotopyEquiv, triangle]
   rw [← Functor.map_comp, ← Functor.map_comp, ← Functor.map_comp,
     mappingConeCompHomotopyEquiv_hom_comp_inv, comp_id]
   congr 1
@@ -73,8 +75,8 @@ theorem mappingConeCompTriangleh_distinguished {X₁ X₂ X₃ : CatModule.{w} C
     (g : X₂ ⟶ X₃) : mappingConeCompTriangleh f g ∈ distTriang (HomotopyCategory.{w} C) := by
   refine ⟨_, _, (mappingConeCompTriangle f g).mor₁, ⟨?_⟩⟩
   refine Triangle.isoMk _ _ (Iso.refl _) (Iso.refl _)
-    (isoOfHomotopyEquiv (mappingConeCompHomotopyEquiv f g)) (by aesop_cat) (by simp) ?_
-  dsimp [mappingConeCompTriangleh]
+    (isoOfHomotopyEquiv (mappingConeCompHomotopyEquiv f g)) (by aesop_cat) (by simp; rfl) ?_
+  dsimp [mappingConeCompTriangleh, mappingConeCompTriangle, isoOfHomotopyEquiv, triangle]
   rw [CategoryTheory.Functor.map_id, comp_id, ← Functor.map_comp_assoc]
   congr 2
   exact (mappingConeCompHomotopyEquiv_comm₂ f g).symm
@@ -102,7 +104,7 @@ noncomputable instance isTriangulated : IsTriangulated (HomotopyCategory.{w} C) 
       exact Triangle.isoMk _ _ (Iso.refl _) (Iso.refl _) (Iso.refl _)
         (by dsimp [α, mappingConeCompTriangleh]; simp; rfl)
         (by dsimp [β, mappingConeCompTriangleh]; simp; rfl)
-        (by dsimp [mappingConeCompTriangleh]; simp))
+        (by dsimp [mappingConeCompTriangleh, mappingConeCompTriangle, isoOfHomotopyEquiv, triangle]; simp))
 
 end HomotopyCategory
 

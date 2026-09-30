@@ -76,28 +76,28 @@ theorem merge_update_of_lt {n : ℕ} (i : Fin n) (a : Fin (n + 1) → A) (p : Fi
     (h : (p : ℕ) < i) :
     merge i (Function.update a p x) = Function.update (merge i a) ⟨p, by omega⟩ x := by
   ext k
-  simp only [merge_apply, Function.update_apply, Fin.ext_iff, Fin.coe_castSucc, Fin.val_succ]
+  simp only [merge_apply, Function.update_apply, Fin.ext_iff, Fin.val_castSucc, Fin.val_succ]
   split_ifs <;> first | rfl | omega
 
 theorem merge_update_of_gt {n : ℕ} (i : Fin n) (a : Fin (n + 1) → A) (p : Fin (n + 1)) (x : A)
     (h : (i : ℕ) + 1 < p) :
     merge i (Function.update a p x) = Function.update (merge i a) ⟨p - 1, by omega⟩ x := by
   ext k
-  simp only [merge_apply, Function.update_apply, Fin.ext_iff, Fin.coe_castSucc, Fin.val_succ]
+  simp only [merge_apply, Function.update_apply, Fin.ext_iff, Fin.val_castSucc, Fin.val_succ]
   split_ifs <;> first | rfl | omega
 
 theorem merge_update_castSucc {n : ℕ} (i : Fin n) (a : Fin (n + 1) → A) (x : A) :
     merge i (Function.update a i.castSucc x) =
       Function.update (merge i a) i (x * a i.succ) := by
   ext k
-  simp only [merge_apply, Function.update_apply, Fin.ext_iff, Fin.coe_castSucc, Fin.val_succ]
+  simp only [merge_apply, Function.update_apply, Fin.ext_iff, Fin.val_castSucc, Fin.val_succ]
   split_ifs <;> first | rfl | omega | (obtain rfl : k = i := Fin.ext (by omega); rfl)
 
 theorem merge_update_succ {n : ℕ} (i : Fin n) (a : Fin (n + 1) → A) (x : A) :
     merge i (Function.update a i.succ x) =
       Function.update (merge i a) i (a i.castSucc * x) := by
   ext k
-  simp only [merge_apply, Function.update_apply, Fin.ext_iff, Fin.coe_castSucc, Fin.val_succ]
+  simp only [merge_apply, Function.update_apply, Fin.ext_iff, Fin.val_castSucc, Fin.val_succ]
   split_ifs <;> first | rfl | omega | (obtain rfl : k = i := Fin.ext (by omega); rfl)
 
 /-- The simplicial identity for merges: for `i < j`, merging at `j` and then at `i` is the same
@@ -106,7 +106,7 @@ theorem merge_merge {m : ℕ} (a : Fin (m + 3) → A) (i : Fin (m + 1)) (j : Fin
     (h : (i : ℕ) < j) :
     merge i (merge j a) = merge ⟨j - 1, by omega⟩ (merge i.castSucc a) := by
   ext k
-  simp only [merge_apply, Fin.coe_castSucc, Fin.val_succ]
+  simp only [merge_apply, Fin.val_castSucc, Fin.val_succ]
   split_ifs <;> first | rfl | omega | (rw [mul_assoc]; rfl)
 
 /-! Merges and the outer entries of a tuple. -/
@@ -118,40 +118,40 @@ variable {n : ℕ} (a : Fin (n + 3) → A)
 theorem merge_zero_apply_zero : merge 0 a 0 = a 0 * a 1 := rfl
 
 theorem merge_zero_apply_last : merge 0 a (Fin.last (n + 1)) = a (Fin.last (n + 2)) := by
-  rw [merge_apply, if_neg (by simp), if_neg (by simp)]; rfl
+  rw [merge_apply, ite_eq_right (by simp), ite_eq_right (by simp)]; rfl
 
 theorem init_tail_merge_zero :
     Fin.init (Fin.tail (merge 0 a)) = Fin.tail (Fin.init (Fin.tail a)) := by
   ext k
   simp only [Fin.init, Fin.tail, merge_apply]
-  rw [if_neg (by simp), if_neg (by simp)]; rfl
+  rw [ite_eq_right (by simp), ite_eq_right (by simp)]; rfl
 
 theorem merge_succ_apply_zero (i : Fin n) : merge i.castSucc.succ a 0 = a 0 := by
-  rw [merge_apply, if_pos (by simp)]; rfl
+  rw [merge_apply, ite_eq_left (by simp)]; rfl
 
 theorem merge_succ_apply_last (i : Fin n) :
     merge i.castSucc.succ a (Fin.last (n + 1)) = a (Fin.last (n + 2)) := by
-  rw [merge_apply, if_neg (by simp), if_neg (by simp; omega)]; rfl
+  rw [merge_apply, ite_eq_right (by simp), ite_eq_right (by simp; omega)]; rfl
 
 theorem init_tail_merge_succ (i : Fin n) :
     Fin.init (Fin.tail (merge i.castSucc.succ a)) = merge i (Fin.init (Fin.tail a)) := by
   ext k
-  simp only [Fin.init, Fin.tail, merge_apply, Fin.val_succ, Fin.coe_castSucc]
+  simp only [Fin.init, Fin.tail, merge_apply, Fin.val_succ, Fin.val_castSucc]
   split_ifs <;> first | rfl | omega
 
 theorem merge_last_apply_zero : merge (Fin.last n).succ a 0 = a 0 := by
-  rw [merge_apply, if_pos (by simp)]; rfl
+  rw [merge_apply, ite_eq_left (by simp)]; rfl
 
 theorem merge_last_apply_last :
     merge (Fin.last n).succ a (Fin.last (n + 1)) =
       a (Fin.last (n + 1)).castSucc * a (Fin.last (n + 2)) := by
-  rw [merge_apply, if_neg (by simp), if_pos (by simp)]; rfl
+  rw [merge_apply, ite_eq_right (by simp), ite_eq_left (by simp)]; rfl
 
 theorem init_tail_merge_last :
     Fin.init (Fin.tail (merge (Fin.last n).succ a)) = Fin.init (Fin.init (Fin.tail a)) := by
   ext k
-  simp only [Fin.init, Fin.tail, merge_apply, Fin.val_succ, Fin.coe_castSucc, Fin.val_last]
-  rw [if_pos (by omega)]; rfl
+  simp only [Fin.init, Fin.tail, merge_apply, Fin.val_succ, Fin.val_castSucc, Fin.val_last]
+  rw [ite_eq_left (by omega)]; rfl
 
 end Outer
 
@@ -168,14 +168,14 @@ theorem sum_contractNth_add {n : ℕ} (i : Fin n) (p : Fin (n + 1) → ℤ) :
     | zero =>
       rw [Fin.sum_univ_succ (f := fun k => p k.succ)]
       simp only [Fin.contractNth, Fin.castSucc_zero, Fin.val_zero, Fin.val_succ,
-        lt_self_iff_false, if_false, if_true, Nat.not_lt_zero, add_assoc, Nat.add_one_ne_zero]
+        lt_self_iff_false, ite_false, ite_true, Nat.not_lt_zero, add_assoc, Nat.add_one_ne_zero]
     | succ i =>
       have h0 : Fin.contractNth i.succ.castSucc (· + ·) p 0 = p 0 := by
-        rw [Fin.contractNth, if_pos (by simp)]; rfl
+        rw [Fin.contractNth, ite_eq_left (by simp)]; rfl
       rw [h0, ← ih i (fun k => p k.succ)]
       congr 1
       refine Finset.sum_congr rfl fun k _ => ?_
-      simp only [Fin.contractNth, Fin.val_succ, Fin.coe_castSucc]
+      simp only [Fin.contractNth, Fin.val_succ, Fin.val_castSucc]
       split_ifs <;> first | rfl | omega
 
 variable {M : Type*} [AddCommGroup M]
@@ -196,25 +196,25 @@ theorem barD_barD {m : ℕ} (g : (Fin (m + 1) → A) → M) : barD (barD g) = 0 
     (fun p => (⟨p.2 + 1, by omega⟩, ⟨min p.1 m, by omega⟩)) ?_ ?_ ?_ ?_ ?_
   · rintro ⟨j, i⟩ h
     simp only [S, Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_compl] at h ⊢
-    simp only [Fin.coe_castSucc]
+    simp only [Fin.val_castSucc]
     omega
   · rintro ⟨j, i⟩ h
     simp only [S, Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_compl] at h ⊢
-    simp only [Finset.mem_coe, Finset.mem_compl, Finset.mem_filter, Finset.mem_univ, true_and,
+    simp only [
       not_lt] at h
-    omega
-  · rintro ⟨j, i⟩ h
-    simp only [S, Finset.mem_coe, Finset.mem_filter, Finset.mem_univ, true_and] at h
-    simp only [Fin.coe_castSucc, Prod.mk.injEq, Fin.ext_iff]
-    omega
-  · rintro ⟨j, i⟩ h
-    simp only [S, Finset.mem_coe, Finset.mem_compl, Finset.mem_filter, Finset.mem_univ, true_and,
-      not_lt] at h
-    simp only [Fin.coe_castSucc, Prod.mk.injEq, Fin.ext_iff]
     omega
   · rintro ⟨j, i⟩ h
     simp only [S, Finset.mem_filter, Finset.mem_univ, true_and] at h
-    simp only [Fin.coe_castSucc]
+    simp only [Fin.val_castSucc, Prod.mk.injEq, Fin.ext_iff]
+    omega
+  · rintro ⟨j, i⟩ h
+    simp only [S, Finset.mem_compl, Finset.mem_filter, Finset.mem_univ, true_and,
+      not_lt] at h
+    simp only [Fin.val_castSucc, Prod.mk.injEq, Fin.ext_iff]
+    omega
+  · rintro ⟨j, i⟩ h
+    simp only [S, Finset.mem_filter, Finset.mem_univ, true_and] at h
+    simp only [Fin.val_castSucc]
     rw [merge_merge a i j h, ← Units.neg_smul]
     congr 1
     have hj : ((j : ℕ) : ℤ) = ((j - 1 : ℕ) : ℤ) + 1 := by omega
@@ -328,8 +328,8 @@ variable (k : ℤ)
 def leftTerm {n : ℕ} (f : HochschildCochain R A M n) : HochschildCochain R A M (n + 1) :=
   LinearMap.uncurryLeft
     { toFun := fun a => (leftAct R A M (DGAlgebra.twist R A k a)).compMultilinearMap f
-      map_add' := fun a b => by ext; simp [leftAct, add_smul]
-      map_smul' := fun r a => by ext; simp [leftAct, smul_assoc] }
+      map_add' := fun a b => by ext; simp [leftAct]
+      map_smul' := fun r a => by ext; simp [leftAct] }
 
 @[simp]
 theorem leftTerm_apply {n : ℕ} (f : HochschildCochain R A M n) (a : Fin (n + 1) → A) :
@@ -378,7 +378,7 @@ theorem hochschildDiff_apply (k : ℤ) {n : ℕ} (f : HochschildCochain R A M n)
     hochschildDiff k f a = DGAlgebra.twist R A k (a 0) • f (Fin.tail a) +
       ∑ i : Fin n, koszulSign ((i : ℕ) + 1 : ℤ) • f (merge i a) +
         koszulSign ((n : ℤ) + 1) • (op (a (Fin.last n)) • f (Fin.init a)) := by
-  simp [hochschildDiff, MultilinearMap.sum_apply, Units.smul_def]
+  simp [hochschildDiff, _root_.sum_apply, Units.smul_def]
 
 section Square
 
@@ -407,7 +407,7 @@ theorem extend_hochschildDiff {n : ℕ} (f : HochschildCochain R A M n) :
     merge_succ_apply_zero, merge_succ_apply_last, init_tail_merge_succ, merge_last_apply_zero,
     merge_last_apply_last, init_tail_merge_last, DGAlgebra.twist_mul, op_mul, mul_smul,
     smul_add, Finset.smul_sum, units_smul_comm, Fin.val_zero, Nat.cast_zero, koszulSign_zero,
-    one_smul, Fin.val_succ, Fin.coe_castSucc, Fin.val_last, Nat.cast_add, Nat.cast_one,
+    one_smul, Fin.val_succ, Fin.val_castSucc, Fin.val_last, Nat.cast_add, Nat.cast_one,
     add_assoc]
   rw [← smul_comm (DGAlgebra.twist R A k (Fin.init (Fin.tail a) 0)) (op (a (Fin.last (n + 1 + 1))))]
   rfl
@@ -437,11 +437,11 @@ def hochschildD (k : ℤ) (n : ℕ) :
   toFun := hochschildDiff k
   map_add' f g := by
     ext a
-    simp only [hochschildDiff_apply, MultilinearMap.add_apply, smul_add, Finset.sum_add_distrib]
+    simp only [hochschildDiff_apply, _root_.add_apply, smul_add, Finset.sum_add_distrib]
     abel
   map_smul' r f := by
     ext a
-    simp only [hochschildDiff_apply, MultilinearMap.smul_apply, RingHom.id_apply, smul_add,
+    simp only [hochschildDiff_apply, _root_.smul_apply, RingHom.id_apply, smul_add,
       Finset.smul_sum, Units.smul_def, smul_comm r]
 
 theorem hochschildD_apply (k : ℤ) {n : ℕ} (f : HochschildCochain R A M n) :
@@ -491,7 +491,7 @@ private theorem mem_grading_of_eq {X : Type*} [AddCommGroup X] [DGAddCommGroup X
 theorem Hochschild.merge_mem_grading {n : ℕ} (i : Fin n) {p : Fin (n + 1) → ℤ}
     {a : Fin (n + 1) → A} (ha : ∀ j, a j ∈ grading (p j)) (k : Fin n) :
     Hochschild.merge i a k ∈ grading (Fin.contractNth i.castSucc (· + ·) p k) := by
-  simp only [Hochschild.merge_apply, Fin.contractNth, Fin.coe_castSucc]
+  simp only [Hochschild.merge_apply, Fin.contractNth, Fin.val_castSucc]
   split_ifs
   · exact ha _
   · exact mul_mem_grading (ha _) (ha _)
@@ -598,7 +598,7 @@ theorem constOfIsEmpty_mem_hochschildCocycles_zero_iff (k : ℤ) (m : M) :
   · rintro ⟨hdeg, hker⟩
     refine ⟨by simpa using hdeg 0 0 fun i => i.elim0, fun p a ha => ?_⟩
     have h := congrArg (fun g : HochschildCochain R A M 1 => g fun _ => a) hker
-    simp only [hochschildD_zero_apply, MultilinearMap.zero_apply] at h
+    simp only [hochschildD_zero_apply, _root_.zero_apply] at h
     change DGAlgebra.twist R A k a • m - op a • m = 0 at h
     rw [← sub_eq_zero.mp h, DGAlgebra.twist_of_mem k ha, Units.smul_def, Units.smul_def,
       smul_assoc]
@@ -613,7 +613,7 @@ theorem constOfIsEmpty_mem_hochschildCocycles_zero_iff (k : ℤ) (m : M) :
         rw [DGAlgebra.twist_of_mem k x.2, hc _ _ x.2, Units.smul_def, Units.smul_def,
           smul_assoc]
     ext a
-    rw [hochschildD_zero_apply, MultilinearMap.zero_apply]
+    rw [hochschildD_zero_apply, _root_.zero_apply]
     exact sub_eq_zero.mpr (key (a 0))
 
 /-- The Hochschild `0`-cocycles of internal degree `k` are the degree-`k` graded center. -/
@@ -757,6 +757,7 @@ theorem dHom_of (N : ℤ) (f : HochschildTotalDeg R A M N) :
 
 variable (R A M)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The total Hochschild complex is a dg abelian group, graded by total degree, with the Hochschild
 differential. -/
 instance instDGAddCommGroup : DGAddCommGroup (HochschildTotal R A M) where
@@ -782,6 +783,7 @@ theorem d_of (N : ℤ) (f : HochschildTotalDeg R A M N) :
       DirectSum.of (fun N => HochschildTotalDeg R A M N) (N + 1) (hochschildTotalD R A M N f) :=
   dHom_of N f
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The differential of the total Hochschild complex is `R`-linear. -/
 theorem d_smul (r : R) (x : HochschildTotal R A M) : d (r • x) = r • d x := by
   induction x using DirectSum.induction_on with

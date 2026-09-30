@@ -82,7 +82,7 @@ the data in one class and compatibilities as `Prop`-valued mixins (as `Ring A` /
 
 Categorical packagings (`DGModuleCat A`, the homotopy category, the derived category) are
 built on top, together with the comparisons to monoid and module objects in Mathlib's
-monoidal category `CochainComplex (ModuleCat R) ℤ` (`Mon_`, `Mod_`). Prefer bundled
+monoidal category `CochainComplex (ModuleCat R) ℤ` (`Mon`, `Mod`). Prefer bundled
 categorical statements for theorems about categories and concrete statements for
 computations. Do not duplicate Mathlib: reuse `GradedRing`, `GradedAlgebra`, `DirectSum`,
 `HomologicalComplex`, `Homotopy`, `HomotopyCategory`, `CategoryTheory.Quotient`,

@@ -1,4 +1,4 @@
-import Mathlib.CategoryTheory.Monoidal.Mon_
+import Mathlib.CategoryTheory.Monoidal.Mon
 import DG.Algebra.Category
 import DG.Monoidal.MonObj
 
@@ -12,15 +12,15 @@ proves that a dg `R`-algebra is the same as a monoid object in it.
 
 ## Main definitions
 
-* `DG.DGAlgCat.toMon R : DGAlgCat R ⥤ Mon_ (CochainComplex (ModuleCat R) ℤ)`: a dg algebra `A`
+* `DG.DGAlgCat.toMon R : DGAlgCat R ⥤ Mon (CochainComplex (ModuleCat R) ℤ)`: a dg algebra `A`
   goes to its underlying complex `DG.DGAlgCat.complex A` (the complex
   `DG.DGModuleCat.toComplex R A` of `A` as a dg module over itself, with `Aⁿ` in degree `n`),
   with multiplication `μ : A ⊗ A ⟶ A` given by `Aⁱ ⊗ Aʲ → Aⁱ⁺ʲ, a ⊗ b ↦ a * b`
   (`DG.DGAlgCat.mul`; that it is a morphism of complexes is the graded Leibniz rule) and unit
   `η : 𝟙_ ⟶ A`, `r ↦ r • 1` (`DG.DGAlgCat.one`);
-* `DG.DGAlgCat.ofMon R : Mon_ (CochainComplex (ModuleCat R) ℤ) ⥤ DGAlgCat R`: a monoid object
+* `DG.DGAlgCat.ofMon R : Mon (CochainComplex (ModuleCat R) ℤ) ⥤ DGAlgCat R`: a monoid object
   `M` goes to the dg algebra `⨁ n, Mⁿ` of `DG.MonObj`;
-* `DG.DGAlgCat.monEquivalence R : DGAlgCat R ≌ Mon_ (CochainComplex (ModuleCat R) ℤ)`, with unit
+* `DG.DGAlgCat.monEquivalence R : DGAlgCat R ≌ Mon (CochainComplex (ModuleCat R) ℤ)`, with unit
   the decomposition `A ≅ ⨁ n, Aⁿ` (`DG.DGAlgCat.unitIso`) and counit the identification of the
   underlying complex of `⨁ n, Mⁿ` with `M` (`DG.DGAlgCat.counitIso`).
 
@@ -31,6 +31,7 @@ is stated for `DGAlgCat.{u, u} R`, dg `R`-algebras with carriers in `Type u`.
 -/
 
 open CategoryTheory MonoidalCategory HomologicalComplex DirectSum
+open scoped CategoryTheory.MonObj
 
 universe u
 
@@ -100,17 +101,15 @@ def one : 𝟙_ (CochainComplex (ModuleCat.{u} R) ℤ) ⟶ complex A :=
     change d (algebraMap R A r * 1) = 0
     rw [mul_one, d_algebraMap])
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem one_f_unitOne : (one A).f 0 (unitOne R) = oneX A := by
   rw [one, mkHomFromSingle_f, ModuleCat.comp_apply, unitOne]
   erw [Iso.inv_hom_id_apply]
   exact one_smul R (oneX A)
 
-/-- A dg `R`-algebra as a monoid object in the monoidal category of cochain complexes of
-`R`-modules. -/
-@[simps]
-def toMonObj : Mon_ (CochainComplex (ModuleCat.{u} R) ℤ) where
-  X := complex A
+/-- The monoid object structure `(μ, η)` on the underlying complex of a dg `R`-algebra. -/
+instance monObjComplex : CategoryTheory.MonObj (complex A) where
   one := one A
   mul := mul A
   one_mul := by
@@ -132,13 +131,23 @@ def toMonObj : Mon_ (CochainComplex (ModuleCat.{u} R) ℤ) where
       whiskerLeft_f_tmul, coe_mul_f_tmul]
     exact mul_assoc x.1 y.1 z.1
 
+/-- A dg `R`-algebra as a monoid object in the monoidal category of cochain complexes of
+`R`-modules. -/
+@[simps]
+def toMonObj : Mon (CochainComplex (ModuleCat.{u} R) ℤ) where
+  X := complex A
+
+theorem toMonObj_one : η[(toMonObj A).X] = one A := rfl
+
+theorem toMonObj_mul : μ[(toMonObj A).X] = mul A := rfl
+
 @[simp]
 theorem coe_toMonObj_mul_f_tmul {p q n : ℤ} (h : p + q = n) (x : (toMonObj A).X.X p)
     (y : (toMonObj A).X.X q) :
-    ((toMonObj A).mul.f n (tmul (toMonObj A).X (toMonObj A).X h x y)).1 = x.1 * y.1 :=
+    ((μ[(toMonObj A).X]).f n (tmul (toMonObj A).X (toMonObj A).X h x y)).1 = x.1 * y.1 :=
   coe_mul_f_tmul A h x y
 
-theorem toMonObj_one_f_unitOne : (toMonObj A).one.f 0 (unitOne R) = oneX A :=
+theorem toMonObj_one_f_unitOne : (η[(toMonObj A).X]).f 0 (unitOne R) = oneX A :=
   one_f_unitOne A
 
 /-- The differential of the complex of `A` is the differential of `A`. -/
@@ -163,34 +172,37 @@ theorem coe_restrictX_apply (f : A ⟶ B) (n : ℤ) (x : (complex A).X n) :
 
 /-- The morphism of underlying complexes induced by a morphism of dg algebras. -/
 def complexMap (f : A ⟶ B) : complex A ⟶ complex B :=
-  CochainComplex.ofHom _ _ _ _ _ _ (fun n => ModuleCat.ofHom (restrictX f n)) fun n => by
+  CochainComplex.ofHom (fun n => ModuleCat.ofHom (restrictX f n)) fun n => by
+    rw [DGModuleCat.toComplex_d, DGModuleCat.toComplex_d]
     ext x
-    exact (f.hom.map_d x.1).symm
+    exact Subtype.ext (f.hom.map_d x.1).symm
 
 @[simp]
 theorem coe_complexMap_f_apply (f : A ⟶ B) (n : ℤ) (x : (complex A).X n) :
     ((complexMap f).f n x).1 = f.hom x.1 :=
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- A morphism of dg algebras as a morphism of monoid objects. -/
 @[simps]
 def toMonMap (f : A ⟶ B) : toMonObj A ⟶ toMonObj B where
   hom := complexMap f
-  one_hom := unit_hom_ext (Subtype.ext (by
-    simp only [toMonObj_one, toMonObj_X, comp_f, ModuleCat.comp_apply, one_f_unitOne,
-      coe_complexMap_f_apply]
+  isMonHom_hom.one_hom := unit_hom_ext (Subtype.ext (by
+    change f.hom ((one A).f 0 (unitOne R)).1 = ((one B).f 0 (unitOne R)).1
+    rw [one_f_unitOne, one_f_unitOne]
     exact map_one f.hom))
-  mul_hom := by
+  isMonHom_hom.mul_hom := by
     ext n : 1
     refine ComplexTensor.hom_ext fun p q h x y => Subtype.ext ?_
-    simp only [toMonObj_X, toMonObj_mul, comp_f, ModuleCat.comp_apply, coe_complexMap_f_apply,
-      coe_mul_f_tmul, tensorHom_f_tmul]
+    change f.hom ((mul A).f n (tmul _ _ h x y)).1 =
+      ((mul B).f n ((complexMap f ⊗ₘ complexMap f).f n (tmul _ _ h x y))).1
+    rw [tensorHom_f_tmul, coe_mul_f_tmul, coe_mul_f_tmul]
     exact map_mul f.hom x.1 y.1
 
 variable (R) in
 /-- The functor from dg `R`-algebras to monoid objects in cochain complexes of `R`-modules. -/
 @[simps]
-def toMon : DGAlgCat.{u, u} R ⥤ Mon_ (CochainComplex (ModuleCat.{u} R) ℤ) where
+def toMon : DGAlgCat.{u, u} R ⥤ Mon (CochainComplex (ModuleCat.{u} R) ℤ) where
   obj := toMonObj
   map := toMonMap
   map_id _ := by
@@ -211,23 +223,24 @@ open ComplexTensor
 
 /-- The dg `R`-algebra `⨁ n, Mⁿ` associated to a monoid object `M` in cochain complexes of
 `R`-modules. -/
-abbrev ofMonObj (M : Mon_ (CochainComplex (ModuleCat.{u} R) ℤ)) : DGAlgCat.{u, u} R :=
+abbrev ofMonObj (M : Mon (CochainComplex (ModuleCat.{u} R) ℤ)) : DGAlgCat.{u, u} R :=
   of R (ComplexSum M.X)
 
-variable {M N P : Mon_ (CochainComplex (ModuleCat.{u} R) ℤ)}
+variable {M N P : Mon (CochainComplex (ModuleCat.{u} R) ℤ)}
 
 /-- The morphism of dg algebras induced by a morphism of monoid objects. -/
 def ofMonMap (f : M ⟶ N) : ofMonObj M ⟶ ofMonObj N :=
   ofHom
     { toAlgHom := DirectSum.toAlgebra R (fun n : ℤ => (M.X.X n : Type u))
         (fun n => (ComplexSum.of N.X n).comp (f.hom.f n).hom) (by
-          change ComplexSum.of N.X 0 (f.hom.f 0 (M.one.f 0 (unitOne R))) =
-            ComplexSum.of N.X 0 (N.one.f 0 (unitOne R))
-          rw [← ModuleCat.comp_apply, ← comp_f, f.one_hom]) (by
+          change ComplexSum.of N.X 0 (f.hom.f 0 ((η[M.X]).f 0 (unitOne R))) =
+            ComplexSum.of N.X 0 ((η[N.X]).f 0 (unitOne R))
+          rw [← ModuleCat.comp_apply, ← comp_f, IsMonHom.one_hom f.hom]) (by
           intro i j x y
-          change ComplexSum.of N.X (i + j) (f.hom.f (i + j) (M.mul.f (i + j) (tmul _ _ rfl x y))) =
+          change ComplexSum.of N.X (i + j)
+              (f.hom.f (i + j) ((μ[M.X]).f (i + j) (tmul _ _ rfl x y))) =
             ComplexSum.of N.X i (f.hom.f i x) * ComplexSum.of N.X j (f.hom.f j y)
-          rw [MonObj.of_mul_of, ← ModuleCat.comp_apply, ← comp_f, f.mul_hom, comp_f,
+          rw [MonObj.of_mul_of, ← ModuleCat.comp_apply, ← comp_f, IsMonHom.mul_hom f.hom, comp_f,
             ModuleCat.comp_apply, tensorHom_f_tmul])
       map_mem' := ComplexSum.map_mem f.hom
       map_d' := ComplexSum.map_d f.hom }
@@ -241,7 +254,7 @@ variable (R) in
 /-- The functor from monoid objects in cochain complexes of `R`-modules to dg `R`-algebras,
 `M ↦ ⨁ n, Mⁿ`. -/
 @[simps]
-def ofMon : Mon_ (CochainComplex (ModuleCat.{u} R) ℤ) ⥤ DGAlgCat.{u, u} R where
+def ofMon : Mon (CochainComplex (ModuleCat.{u} R) ℤ) ⥤ DGAlgCat.{u, u} R where
   obj := ofMonObj
   map := ofMonMap
   map_id M := hom_ext fun z => by
@@ -282,6 +295,7 @@ theorem counitFun_of (n : ℤ) (x : ((toMonObj A).X).X n) :
     counitFun A (ComplexSum.of ((toMonObj A).X) n x) = x.1 :=
   DirectSum.toAddMonoid_of (β := fun n => ((toMonObj A).X).X n) _ n x
 
+set_option backward.isDefEq.respectTransparency false in
 theorem counitFun_unitFun (a : A) : counitFun A (unitFun A a) = a := by
   induction a using DG.induction_on with
   | h_zero => simp
@@ -296,6 +310,7 @@ theorem unitFun_counitFun (z : ComplexSum (toMonObj A).X) : unitFun A (counitFun
     rfl
   | add z z' hz hz' => rw [map_add, map_add, hz, hz']
 
+set_option backward.isDefEq.respectTransparency false in
 theorem unitFun_mul (a b : A) : unitFun A (a * b) = unitFun A a * unitFun A b := by
   induction a using DG.induction_on with
   | h_zero => rw [zero_mul, map_zero, zero_mul]
@@ -323,6 +338,7 @@ theorem unitFun_algebraMap (r : R) :
   change algebraMap R A r = algebraMap R A r * ((one A).f 0 (unitOne R)).1
   rw [one_f_unitOne, oneX, mul_one]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem unitFun_d (a : A) : unitFun A (d a) = d (unitFun A a) := by
   induction a using DG.induction_on with
   | h_zero => simp
@@ -392,11 +408,11 @@ def unitNatIso : 𝟭 (DGAlgCat.{u, u} R) ≅ toMon R ⋙ ofMon R :=
 
 section Counit
 
-variable (M : Mon_ (CochainComplex (ModuleCat.{u} R) ℤ))
+variable (M : Mon (CochainComplex (ModuleCat.{u} R) ℤ))
 
 theorem algebraMap_smul_of (r : R) (n : ℤ) (x : M.X.X n) :
     algebraMap R (ComplexSum M.X) r • ComplexSum.of M.X n x = ComplexSum.of M.X n (r • x) := by
-  rw [smul_eq_mul, MonObj.algebraMap_apply, MonObj.of_mul_of, of_f_tmul M.mul rfl (zero_add n),
+  rw [smul_eq_mul, MonObj.algebraMap_apply, MonObj.of_mul_of, of_f_tmul μ[M.X] rfl (zero_add n),
     tmul_smul_left, map_smul, MonObj.one_mul_apply]
 
 /-- The underlying complex of `⨁ n, Mⁿ` is `M`. -/
@@ -407,9 +423,10 @@ theorem counitIsoX_hom_f_apply (n : ℤ) (z : (toMonObj (ofMonObj M)).X.X n) :
     (counitIsoX M).hom.f n z = ComplexSum.component M.X n z.1 :=
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The monoid object of the dg algebra `⨁ n, Mⁿ` is isomorphic to `M`. -/
 def counitIso : toMonObj (ofMonObj M) ≅ M :=
-  Mon_.mkIso (counitIsoX M)
+  Mon.mkIso (counitIsoX M)
     (unit_hom_ext (by
       rw [comp_f, ModuleCat.comp_apply]
       erw [one_f_unitOne]
@@ -424,27 +441,27 @@ def counitIso : toMonObj (ofMonObj M) ≅ M :=
       simp only [comp_f, ModuleCat.comp_apply, tensorHom_f_tmul, counitIsoX_hom_f_apply]
       erw [coe_mul_f_tmul]
       change ComplexSum.component M.X n (ComplexSum.of M.X p x * ComplexSum.of M.X q y) =
-        M.mul.f n (tmul M.X M.X h (ComplexSum.component M.X p (ComplexSum.of M.X p x))
+        (μ[M.X]).f n (tmul M.X M.X h (ComplexSum.component M.X p (ComplexSum.of M.X p x))
           (ComplexSum.component M.X q (ComplexSum.of M.X q y)))
-      rw [MonObj.of_mul_of, of_f_tmul M.mul rfl h, ComplexSum.component_of_same,
+      rw [MonObj.of_mul_of, of_f_tmul μ[M.X] rfl h, ComplexSum.component_of_same,
         ComplexSum.component_of_same, ComplexSum.component_of_same])
 
 end Counit
 
-theorem counitIso_hom_hom_f_apply (M : Mon_ (CochainComplex (ModuleCat.{u} R) ℤ)) (n : ℤ)
+theorem counitIso_hom_hom_f_apply (M : Mon (CochainComplex (ModuleCat.{u} R) ℤ)) (n : ℤ)
     (z : (toMonObj (ofMonObj M)).X.X n) :
     (counitIso M).hom.hom.f n z = ComplexSum.component M.X n z.1 :=
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 theorem counitIso_naturality (f : M ⟶ N) :
     toMonMap (ofMonMap f) ≫ (counitIso N).hom = (counitIso M).hom ≫ f := by
-  refine Mon_.Hom.ext (HomologicalComplex.hom_ext _ _ fun n =>
+  refine Mon.Hom.ext (HomologicalComplex.hom_ext _ _ fun n =>
     ModuleCat.hom_ext (LinearMap.ext fun z => ?_))
   obtain ⟨z, hz⟩ := z
   obtain ⟨x, rfl⟩ := ComplexSum.mem_grading_iff.mp hz
-  simp only [Mon_.comp_hom', comp_f, ModuleCat.comp_apply, toMonMap_hom,
-    counitIso_hom_hom_f_apply, coe_complexMap_f_apply, ofMonMap_hom_apply, ComplexSum.map_of,
-    ComplexSum.component_of_same]
+  simp only [Mon.comp_hom', comp_f, ModuleCat.comp_apply, toMonMap_hom,
+    counitIso_hom_hom_f_apply, ComplexSum.component_of_same]
   exact (congrArg (ComplexSum.component N.X n)
     (coe_complexMap_f_apply (ofMonMap f) n ⟨_, hz⟩)).trans
     (by rw [ofMonMap_hom_apply, ComplexSum.map_of, ComplexSum.component_of_same])
@@ -452,7 +469,7 @@ theorem counitIso_naturality (f : M ⟶ N) :
 variable (R) in
 /-- The counit of the equivalence between dg algebras and monoid objects: every monoid object
 `M` is isomorphic to the monoid object of `⨁ n, Mⁿ`, naturally in `M`. -/
-def counitNatIso : ofMon R ⋙ toMon R ≅ 𝟭 (Mon_ (CochainComplex (ModuleCat.{u} R) ℤ)) :=
+def counitNatIso : ofMon R ⋙ toMon R ≅ 𝟭 (Mon (CochainComplex (ModuleCat.{u} R) ℤ)) :=
   NatIso.ofComponents counitIso fun f => counitIso_naturality f
 
 variable (R) in
@@ -461,7 +478,7 @@ equivalent to the category of monoid objects in the monoidal category of cochain
 `R`-modules, via `A ↦ (A, μ, η)` (`DG.DGAlgCat.toMon`) and `M ↦ ⨁ n, Mⁿ`
 (`DG.DGAlgCat.ofMon`). -/
 def monEquivalence :
-    DGAlgCat.{u, u} R ≌ Mon_ (CochainComplex (ModuleCat.{u} R) ℤ) :=
+    DGAlgCat.{u, u} R ≌ Mon (CochainComplex (ModuleCat.{u} R) ℤ) :=
   CategoryTheory.Equivalence.mk (toMon R) (ofMon R) (unitNatIso R) (counitNatIso R)
 
 end DGAlgCat

@@ -458,7 +458,7 @@ theorem δ_shift (a m : ℤ) : δ n m (z.shift a) = koszulSign a • (δ n m z).
   · ext x
     apply (unmk a).injective
     simp only [δ_apply _ _ hnm, shift_apply, units_smul_apply, unmk_sub, unmk_d,
-      unmk_units_smul, unmk_mk, d_units_smul, map_units_smul, smul_sub, smul_smul]
+      unmk_units_smul, unmk_mk, map_units_smul, smul_sub, smul_smul]
     rw [mul_comm]
   · rw [δ_shape _ _ hnm, δ_shape _ _ hnm, shift_zero, smul_zero]
 

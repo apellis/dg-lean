@@ -132,7 +132,7 @@ theorem coproductCocone_inj (j : J) : (coproductCocone F).inj j = directSumι F 
 
 /-- The objectwise direct sum is the coproduct in `CatModule C`. -/
 def coproductCoconeIsColimit : IsColimit (coproductCocone F) :=
-  mkCofanColimit _ (fun t => directSumDesc t.inj) (fun t j => directSumι_desc F t.inj j)
+  Cofan.IsColimit.mk _ (fun t => directSumDesc t.inj) (fun t j => directSumι_desc F t.inj j)
     fun t m hm => directSum_hom_ext F fun j => by rw [directSumι_desc]; exact hm j
 
 instance hasCoproduct : HasCoproduct F :=
@@ -142,9 +142,9 @@ omit [DecidableEq J] F
 
 instance hasCoproducts : HasCoproducts.{w'} (CatModule.{max w w'} C) := fun J =>
   { has_colimit := fun K => by
-      letI := Classical.decEq J
+      let := Classical.decEq J
       exact HasColimit.mk
-        ⟨(Cocones.precompose Discrete.natIsoFunctor.hom).obj
+        ⟨(Cocone.precompose Discrete.natIsoFunctor.hom).obj
           (coproductCocone (K.obj ∘ Discrete.mk)),
           (IsColimit.precomposeHomEquiv _ _).symm (coproductCoconeIsColimit _)⟩ }
 

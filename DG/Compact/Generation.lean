@@ -242,6 +242,7 @@ theorem exists_lift_base {i : ι} {m : ℤ} (φ : (G i)⟦m⟧ ⟶ X) :
     ∃ ψ : (G i)⟦m⟧ ⟶ (tower G X 0).left, ψ ≫ (tower G X 0).hom = φ :=
   ⟨Sigma.ι (fun c : Cells G X => (G c.1)⟦c.2.1⟧) ⟨i, m, φ⟩, by simp [tower, base]⟩
 
+set_option backward.isDefEq.respectTransparency false in
 /-- A morphism `G i⟦m⟧ ⟶ P n` which vanishes in `X` vanishes in `P (n + 1)`. -/
 theorem comp_towerMap_eq_zero {n : ℕ} {i : ι} {m : ℤ} (ψ : (G i)⟦m⟧ ⟶ (tower G X n).left)
     (hψ : ψ ≫ (tower G X n).hom = 0) : ψ ≫ towerMap G X n = 0 := by
@@ -277,7 +278,7 @@ by a small type. Then every compact object of `C` lies in the thick closure of `
 theorem thickClosure_of_isCompact [IsTriangulated C] [HasCoproducts.{max w v} C]
     (hG : CompactlyGenerates G) {X : C} (hX : IsCompact.{max w v} X) :
     ThickClosure (fun Y => ∃ i, G i = Y) X := by
-  haveI : HasCoproducts.{0} C := hasCoproducts_shrink.{0, max w v}
+  have : HasCoproducts.{0} C := hasCoproducts_shrink.{0, max w v}
   let P : ℕ → C := fun n => (tower G X n).left
   let H := hocolim P (towerMap G X)
   -- The compatible morphisms `P n ⟶ X` induce `h : hocolim P ⟶ X`.

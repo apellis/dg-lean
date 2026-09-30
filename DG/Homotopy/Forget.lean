@@ -17,7 +17,7 @@ object map of the forgetful functor
 
 which is additive, `R`-linear, faithful and reflects isomorphisms. The forgetful functor to
 cochain complexes of abelian groups, `DG.DGModuleCat.forgetToAddCommGrp A`, is the case `R = ℤ`
-composed with the forgetful functor `ModuleCat ℤ ⥤ AddCommGrp`.
+composed with the forgetful functor `ModuleCat ℤ ⥤ AddCommGrpCat`.
 
 ## Implementation notes
 
@@ -57,7 +57,7 @@ scoped instance instIsScalarTower (M : DGModuleCat.{v} A) : IsScalarTower R A M 
 
 end Algebra
 
-open Algebra
+open DG.DGModuleCat.Algebra
 
 variable [DGRing A] [DGAlgebra R A]
 
@@ -88,7 +88,8 @@ theorem toComplex_X (n : ℤ) :
 @[simp]
 theorem toComplex_d (n : ℤ) :
     (toComplex R M).d n (n + 1) = ModuleCat.ofHom (dRestrict R M n) :=
-  CochainComplex.of_d _ _ _ n
+  CochainComplex.of_d (fun n => ModuleCat.of R (DGModule.gradingSubmodule R A M n))
+    (fun n => ModuleCat.ofHom (dRestrict R M n)) n
 
 end Object
 
@@ -108,9 +109,10 @@ theorem coe_homRestrict_apply (f : M ⟶ N) (n : ℤ) (m : DGModule.gradingSubmo
 
 /-- The morphism of cochain complexes underlying a morphism of dg modules. -/
 def toComplexMap (f : M ⟶ N) : toComplex R M ⟶ toComplex R N :=
-  CochainComplex.ofHom _ _ _ _ _ _ (fun n => ModuleCat.ofHom (homRestrict R f n)) fun n => by
+  CochainComplex.ofHom (fun n => ModuleCat.ofHom (homRestrict R f n)) fun n => by
+    rw [toComplex_d, toComplex_d]
     ext m
-    exact (f.hom.map_d (m : M)).symm
+    exact Subtype.ext (f.hom.map_d m.1).symm
 
 @[simp]
 theorem toComplexMap_f (f : M ⟶ N) (n : ℤ) :
@@ -149,7 +151,7 @@ instance forget_faithful : (forget R A).Faithful where
 theorem bijective_of_forget_map_isIso (f : M ⟶ N) [IsIso ((forget R A).map f)] :
     Function.Bijective f := by
   have hn : ∀ n : ℤ, Function.Bijective (homRestrict R f n) := fun n => by
-    haveI : IsIso (((forget R A).map f).f n) :=
+    have : IsIso (((forget R A).map f).f n) :=
       inferInstanceAs (IsIso ((HomologicalComplex.eval _ _ n).map ((forget R A).map f)))
     exact ConcreteCategory.bijective_of_isIso (((forget R A).map f).f n)
   constructor
@@ -168,7 +170,7 @@ theorem bijective_of_forget_map_isIso (f : M ⟶ N) [IsIso ((forget R A).map f)]
       rw [← map_zero (homRestrict R f n)] at h2
       exact congrArg Subtype.val ((hn n).injective h2)
     rw [← (DirectSum.decompose (grading (M := M))).symm_apply_apply x]
-    have : DirectSum.decompose (grading (M := M)) x = 0 := DirectSum.ext _ fun n =>
+    have : DirectSum.decompose (grading (M := M)) x = 0 := DirectSum.ext fun n =>
       Subtype.ext ((h n).trans (ZeroMemClass.coe_zero _).symm)
     rw [this, DirectSum.decompose_symm_zero]
   · intro y
@@ -188,13 +190,13 @@ instance forget_reflectsIsomorphisms : (forget R A).ReflectsIsomorphisms where
 
 end Morphism
 
-section AddCommGrp
+section AddCommGrpCat
 
 variable (A)
 
 /-- The forgetful functor from dg `A`-modules to cochain complexes of abelian groups. -/
-noncomputable def forgetToAddCommGrp : DGModuleCat.{v} A ⥤ CochainComplex AddCommGrp.{v} ℤ :=
-  forget ℤ A ⋙ (forget₂ (ModuleCat.{v} ℤ) AddCommGrp.{v}).mapHomologicalComplex _
+noncomputable def forgetToAddCommGrp : DGModuleCat.{v} A ⥤ CochainComplex AddCommGrpCat.{v} ℤ :=
+  forget ℤ A ⋙ (forget₂ (ModuleCat.{v} ℤ) AddCommGrpCat.{v}).mapHomologicalComplex _
 
 instance forgetToAddCommGrp_additive : (forgetToAddCommGrp A).Additive := by
   unfold forgetToAddCommGrp
@@ -204,7 +206,7 @@ instance forgetToAddCommGrp_faithful : (forgetToAddCommGrp A).Faithful := by
   unfold forgetToAddCommGrp
   infer_instance
 
-end AddCommGrp
+end AddCommGrpCat
 
 end DGModuleCat
 

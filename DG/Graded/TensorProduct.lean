@@ -45,9 +45,9 @@ variable (R A : Type*) [CommRing R] [Ring A] [Algebra R A]
 /-- The grading of an `R`-algebra `A` concentrated in degree `0`. -/
 def trivialGrading : ℤ → Submodule R A := fun n => if n = 0 then ⊤ else ⊥
 
-theorem trivialGrading_zero : trivialGrading R A 0 = ⊤ := if_pos rfl
+theorem trivialGrading_zero : trivialGrading R A 0 = ⊤ := ite_eq_left rfl
 
-theorem trivialGrading_of_ne {n : ℤ} (h : n ≠ 0) : trivialGrading R A n = ⊥ := if_neg h
+theorem trivialGrading_of_ne {n : ℤ} (h : n ≠ 0) : trivialGrading R A n = ⊥ := ite_eq_right h
 
 theorem mem_trivialGrading_zero (a : A) : a ∈ trivialGrading R A 0 := by
   rw [trivialGrading_zero]; exact Submodule.mem_top
@@ -207,22 +207,22 @@ theorem grading_induction {n : ℤ} {motive : (𝒜 ᵍ⊗[R] ℬ) → Prop} {x 
     (add : ∀ x y, motive x → motive y → motive (x + y)) : motive x := by
   refine Submodule.iSup_induction _ (motive := motive) hx ?_ zero add
   rintro ⟨⟨i, j⟩, hij⟩ x ⟨z, rfl⟩
-  induction z using TensorProduct.induction_on with
-  | zero => rw [map_zero]; exact zero
+  induction z using TensorProduct.inductionOn with
   | tmul a b => exact tmul a b hij
   | add z z' hz hz' => rw [map_add]; exact add _ _ hz hz'
 
+set_option backward.isDefEq.respectTransparency false in
 instance instGradedMonoid : SetLike.GradedMonoid (grading 𝒜 ℬ) where
   one_mem := by
     rw [one_def]
     exact tmul_mem_of_eq 𝒜 ℬ (add_zero 0) (SetLike.one_mem_graded 𝒜) (SetLike.one_mem_graded ℬ)
   mul_mem {m n} x y hx hy := by
     refine grading_induction 𝒜 ℬ hx (motive := fun x => x * y ∈ grading 𝒜 ℬ (m + n)) ?_ ?_ ?_
-    · dsimp only; rw [zero_mul]; exact zero_mem _
+    · rw [zero_mul]; exact zero_mem _
     · intro i j a b hij
       refine grading_induction 𝒜 ℬ hy
         (motive := fun y => ((a : A) ᵍ⊗ₜ[R] (b : B)) * y ∈ grading 𝒜 ℬ (m + n)) ?_ ?_ ?_
-      · dsimp only; rw [mul_zero]; exact zero_mem _
+      · rw [mul_zero]; exact zero_mem _
       · intro i' j' a' b' hij'
         rw [tmul_mul_tmul 𝒜 ℬ _ b.2 a'.2, Units.smul_def]
         refine zsmul_mem ?_ _
@@ -230,9 +230,9 @@ instance instGradedMonoid : SetLike.GradedMonoid (grading 𝒜 ℬ) where
         rw [← h]
         exact tmul_mem 𝒜 ℬ (SetLike.mul_mem_graded a.2 a'.2) (SetLike.mul_mem_graded b.2 b'.2)
       · intro y y' hy hy'
-        dsimp only; rw [mul_add]; exact add_mem hy hy'
+        rw [mul_add]; exact add_mem hy hy'
     · intro x x' hx hx'
-      dsimp only; rw [add_mul]; exact add_mem hx hx'
+      rw [add_mul]; exact add_mem hx hx'
 
 /-- The linear equivalence of `𝒜 ᵍ⊗[R] ℬ` with the external direct sum of the
 `𝒜 i ⊗[R] ℬ j`. -/
@@ -329,16 +329,16 @@ theorem comm_tmul {i j : ℤ} {a : A} (ha : a ∈ 𝒜 i) {b : B} (hb : b ∈ �
   rw [mul_comm j i] at h
   exact h
 
+set_option backward.isDefEq.respectTransparency false in
 theorem comm_mem {n : ℤ} {x : 𝒜 ᵍ⊗[R] ℬ} (hx : x ∈ grading 𝒜 ℬ n) :
     comm 𝒜 ℬ x ∈ grading ℬ 𝒜 n := by
   refine grading_induction 𝒜 ℬ hx (motive := fun x => comm 𝒜 ℬ x ∈ grading ℬ 𝒜 n) ?_ ?_ ?_
-  · dsimp only; rw [map_zero]; exact zero_mem _
+  · rw [map_zero]; exact zero_mem _
   · intro i j a b hij
-    dsimp only
     rw [comm_tmul 𝒜 ℬ a.2 b.2, Units.smul_def]
     exact zsmul_mem (tmul_mem_of_eq ℬ 𝒜 (by rw [add_comm]; exact hij) b.2 a.2) _
   · intro x y hx hy
-    dsimp only; rw [map_add]; exact add_mem hx hy
+    rw [map_add]; exact add_mem hx hy
 
 theorem comm_tmul_one (a : A) : comm 𝒜 ℬ (a ᵍ⊗ₜ[R] (1 : B)) = (1 : B) ᵍ⊗ₜ[R] a := by
   refine DirectSum.Decomposition.inductionOn 𝒜
@@ -365,10 +365,10 @@ theorem comm_one_tmul (b : B) : comm 𝒜 ℬ ((1 : A) ᵍ⊗ₜ[R] b) = b ᵍ�
 theorem comm_comp_comm :
     (comm ℬ 𝒜).toAlgHom.comp (comm 𝒜 ℬ).toAlgHom = AlgHom.id R (𝒜 ᵍ⊗[R] ℬ) := by
   refine algHom_ext 𝒜 ℬ (AlgHom.ext fun a => ?_) (AlgHom.ext fun b => ?_)
-  · simp only [AlgHom.comp_apply, AlgHom.id_apply, includeLeft_apply, AlgEquiv.coe_algHom,
-      AlgHom.coe_coe, comm_tmul_one, comm_one_tmul]
-  · simp only [AlgHom.comp_apply, AlgHom.id_apply, includeRight_apply, AlgEquiv.coe_algHom,
-      AlgHom.coe_coe, comm_one_tmul, comm_tmul_one]
+  · simp only [AlgHom.comp_apply, AlgHom.id_apply, includeLeft_apply, AlgEquiv.coe_toAlgHom,
+      comm_tmul_one, comm_one_tmul]
+  · simp only [AlgHom.comp_apply, AlgHom.id_apply, includeRight_apply, AlgEquiv.coe_toAlgHom,
+      comm_one_tmul, comm_tmul_one]
 
 theorem comm_comm (x : 𝒜 ᵍ⊗[R] ℬ) : comm ℬ 𝒜 (comm 𝒜 ℬ x) = x :=
   AlgHom.congr_fun (comm_comp_comm 𝒜 ℬ) x
@@ -399,6 +399,7 @@ theorem assocAuxLeft_tmul (a : A) (b : B) :
   rw [assocAuxLeft, lift_tmul, AlgHom.comp_apply, includeLeft_apply, includeRight_apply,
     includeLeft_apply, tmul_one_mul_one_tmul]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The algebra map `(𝒜 ᵍ⊗ ℬ) ᵍ⊗ 𝒞 →ₐ 𝒜 ᵍ⊗ (ℬ ᵍ⊗ 𝒞)`, `(a ⊗ b) ⊗ c ↦ a ⊗ (b ⊗ c)`. -/
 def assocHom :
     GradedTensorProduct R (grading 𝒜 ℬ) 𝒞 →ₐ[R] GradedTensorProduct R 𝒜 (grading ℬ 𝒞) :=
@@ -410,10 +411,8 @@ def assocHom :
           (-1 : ℤˣ) ^ (k * n) •
             (((includeRight 𝒜 (grading ℬ 𝒞)).comp (includeRight ℬ 𝒞)) c *
               assocAuxLeft 𝒜 ℬ 𝒞 x)) ?_ ?_ ?_
-      · dsimp only
-        rw [map_zero, zero_mul, mul_zero, smul_zero]
+      · rw [map_zero, zero_mul, mul_zero, smul_zero]
       · intro i j a b hij
-        dsimp only
         subst hij
         rw [assocAuxLeft_tmul, AlgHom.comp_apply, includeRight_apply, includeRight_apply,
           tmul_mul_tmul 𝒜 (grading ℬ 𝒞) _
@@ -427,9 +426,9 @@ def assocHom :
           show k * (i + j) + k * i + k * j = 2 * (k * (i + j)) by ring,
           koszulSign_even (even_two_mul _), one_smul]
       · intro x y hx hy
-        dsimp only
         rw [map_add, add_mul, mul_add, hx, hy, smul_add]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem assocHom_tmul_tmul (a : A) (b : B) (c : C) :
     assocHom 𝒜 ℬ 𝒞 ((a ᵍ⊗ₜ[R] b : 𝒜 ᵍ⊗[R] ℬ) ᵍ⊗ₜ[R] c) =
       a ᵍ⊗ₜ[R] (b ᵍ⊗ₜ[R] c : ℬ ᵍ⊗[R] 𝒞) := by
@@ -451,6 +450,7 @@ theorem assocInvAux_tmul (b : B) (c : C) :
   rw [assocInvAux, lift_tmul, AlgHom.comp_apply, includeRight_apply, includeLeft_apply,
     includeRight_apply, tmul_one_mul_one_tmul]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The algebra map `𝒜 ᵍ⊗ (ℬ ᵍ⊗ 𝒞) →ₐ (𝒜 ᵍ⊗ ℬ) ᵍ⊗ 𝒞`, `a ⊗ (b ⊗ c) ↦ (a ⊗ b) ⊗ c`. -/
 def assocInv :
     GradedTensorProduct R 𝒜 (grading ℬ 𝒞) →ₐ[R] GradedTensorProduct R (grading 𝒜 ℬ) 𝒞 :=
@@ -462,10 +462,8 @@ def assocInv :
           (-1 : ℤˣ) ^ (n * i) •
             (assocInvAux 𝒜 ℬ 𝒞 y *
               ((includeLeft (grading 𝒜 ℬ) 𝒞).comp (includeLeft 𝒜 ℬ)) a)) ?_ ?_ ?_
-      · dsimp only
-        rw [map_zero, mul_zero, zero_mul, smul_zero]
+      · rw [map_zero, mul_zero, zero_mul, smul_zero]
       · intro j k b c hjk
-        dsimp only
         subst hjk
         rw [assocInvAux_tmul, AlgHom.comp_apply, includeLeft_apply, includeLeft_apply,
           tmul_one_mul_tmul, tmul_one_mul_one_tmul,
@@ -476,9 +474,9 @@ def assocInv :
           show (j + k) * i + k * i + j * i = 2 * ((j + k) * i) by ring,
           koszulSign_even (even_two_mul _), one_smul]
       · intro y y' hy hy'
-        dsimp only
         rw [map_add, mul_add, add_mul, hy, hy', smul_add]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem assocInv_tmul_tmul (a : A) (b : B) (c : C) :
     assocInv 𝒜 ℬ 𝒞 (a ᵍ⊗ₜ[R] (b ᵍ⊗ₜ[R] c : ℬ ᵍ⊗[R] 𝒞)) =
       (a ᵍ⊗ₜ[R] b : 𝒜 ᵍ⊗[R] ℬ) ᵍ⊗ₜ[R] c := by
@@ -527,24 +525,18 @@ theorem assoc_mem {n : ℤ} {x : GradedTensorProduct R (grading 𝒜 ℬ) 𝒞}
     (hx : x ∈ grading (grading 𝒜 ℬ) 𝒞 n) : assoc 𝒜 ℬ 𝒞 x ∈ grading 𝒜 (grading ℬ 𝒞) n := by
   refine grading_induction (grading 𝒜 ℬ) 𝒞 hx
     (motive := fun x => assoc 𝒜 ℬ 𝒞 x ∈ grading 𝒜 (grading ℬ 𝒞) n) ?_ ?_ ?_
-  · dsimp only
-    rw [map_zero]; exact zero_mem _
+  · rw [map_zero]; exact zero_mem _
   · intro m k x c hmk
-    dsimp only
     obtain ⟨x, hx⟩ := x
     refine grading_induction 𝒜 ℬ hx
       (motive := fun x => assoc 𝒜 ℬ 𝒞 (x ᵍ⊗ₜ[R] (c : C)) ∈ grading 𝒜 (grading ℬ 𝒞) n) ?_ ?_ ?_
-    · dsimp only
-      rw [zero_tmul, map_zero]; exact zero_mem _
+    · rw [zero_tmul, map_zero]; exact zero_mem _
     · intro i j a b hij
-      dsimp only
       rw [assoc_tmul_tmul]
       exact tmul_mem_of_eq 𝒜 (grading ℬ 𝒞) (by omega) a.2 (tmul_mem ℬ 𝒞 b.2 c.2)
     · intro x y hx hy
-      dsimp only
       rw [add_tmul, map_add]; exact add_mem hx hy
   · intro x y hx hy
-    dsimp only
     rw [map_add]; exact add_mem hx hy
 
 theorem assoc_symm_mem {n : ℤ} {y : GradedTensorProduct R 𝒜 (grading ℬ 𝒞)}
@@ -552,25 +544,19 @@ theorem assoc_symm_mem {n : ℤ} {y : GradedTensorProduct R 𝒜 (grading ℬ �
     (assoc 𝒜 ℬ 𝒞).symm y ∈ grading (grading 𝒜 ℬ) 𝒞 n := by
   refine grading_induction 𝒜 (grading ℬ 𝒞) hy
     (motive := fun y => (assoc 𝒜 ℬ 𝒞).symm y ∈ grading (grading 𝒜 ℬ) 𝒞 n) ?_ ?_ ?_
-  · dsimp only
-    rw [map_zero]; exact zero_mem _
+  · rw [map_zero]; exact zero_mem _
   · intro i m a y him
-    dsimp only
     obtain ⟨y, hy⟩ := y
     refine grading_induction ℬ 𝒞 hy
       (motive := fun y => (assoc 𝒜 ℬ 𝒞).symm ((a : A) ᵍ⊗ₜ[R] y) ∈ grading (grading 𝒜 ℬ) 𝒞 n)
       ?_ ?_ ?_
-    · dsimp only
-      rw [tmul_zero, map_zero]; exact zero_mem _
+    · rw [tmul_zero, map_zero]; exact zero_mem _
     · intro j k b c hjk
-      dsimp only
       rw [assoc_symm_tmul_tmul]
       exact tmul_mem_of_eq (grading 𝒜 ℬ) 𝒞 (by omega) (tmul_mem 𝒜 ℬ a.2 b.2) c.2
     · intro y y' hy hy'
-      dsimp only
       rw [tmul_add, map_add]; exact add_mem hy hy'
   · intro y y' hy hy'
-    dsimp only
     rw [map_add]; exact add_mem hy hy'
 
 /-- The associativity isomorphism preserves degrees. -/
@@ -613,13 +599,12 @@ def lid : GradedTensorProduct R (trivialGrading R R) ℬ ≃ₐ[R] B :=
 @[simp] theorem lid_symm_apply (b : B) :
     (lid ℬ).symm b = ((1 : R) ᵍ⊗ₜ[R] b : GradedTensorProduct R (trivialGrading R R) ℬ) := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 theorem lid_mem {n : ℤ} {x : GradedTensorProduct R (trivialGrading R R) ℬ}
     (hx : x ∈ grading (trivialGrading R R) ℬ n) : lid ℬ x ∈ ℬ n := by
   refine grading_induction _ ℬ hx (motive := fun x => lid ℬ x ∈ ℬ n) ?_ ?_ ?_
-  · dsimp only
-    rw [map_zero]; exact zero_mem _
+  · rw [map_zero]; exact zero_mem _
   · intro i j r b hij
-    dsimp only
     rw [lid_tmul]
     by_cases hi : i = 0
     · subst hi
@@ -628,7 +613,6 @@ theorem lid_mem {n : ℤ} {x : GradedTensorProduct R (trivialGrading R R) ℬ}
       exact Submodule.smul_mem _ _ b.2
     · rw [eq_zero_of_mem_trivialGrading R R hi r.2, zero_smul]; exact zero_mem _
   · intro x y hx hy
-    dsimp only
     rw [map_add]; exact add_mem hx hy
 
 theorem lid_symm_mem {n : ℤ} {b : B} (hb : b ∈ ℬ n) :

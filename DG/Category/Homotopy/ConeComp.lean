@@ -29,7 +29,7 @@ namespace CatModule
 
 namespace cone
 
-open Cochain
+open DG.CatModule.Cochain
 
 variable {C : Type u} [Category.{v} C] [Preadditive C] [∀ X Y : C, DGAddCommGroup (X ⟶ Y)]
   [DGCategory C] {X₁ X₂ X₃ : CatModule.{w} C} (f : X₁ ⟶ X₂) (g : X₂ ⟶ X₃)
@@ -88,8 +88,8 @@ def inv : cone (compMor₁ f g) ⟶ cone g :=
     (desc _ ((inl g).comp (ofHom f) (zero_add (-1))) (inr g) (by
       rw [δ_ofHom_comp, δ_inl]; rfl)) (by
       refine Cochain.ext fun X p => ext_to ?_ ?_
-      · simp [desc_apply, descCochain_apply, δ_neg_one_apply, inl_d_apply, d_snd_apply]
-      · simp [desc_apply, descCochain_apply, δ_neg_one_apply, inl_d_apply, d_snd_apply])
+      · simp [descCochain_apply, δ_neg_one_apply, inl_d_apply, d_snd_apply]
+      · simp [descCochain_apply, δ_neg_one_apply, inl_d_apply, d_snd_apply])
 
 @[simp]
 theorem hom_comp_inv : hom f g ≫ inv f g = 𝟙 _ := by

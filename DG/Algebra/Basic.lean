@@ -45,7 +45,7 @@ class DGAddCommGroup (M : Type*) [AddCommGroup M] where
   d_mem' : ∀ {n : ℤ} {m : M}, m ∈ grading n → d m ∈ grading (n + 1)
   d_d' : ∀ m : M, d (d m) = 0
 
-attribute [instance] DGAddCommGroup.decomposition
+attribute [instance_reducible, instance] DGAddCommGroup.decomposition
 
 export DGAddCommGroup (grading d)
 
@@ -306,6 +306,7 @@ theorem d_pow_of_mem_zero_of_commute {a : A} (ha : a ∈ grading 0) (hc : Commut
     (k : ℕ) : d (a ^ k) = k • (a ^ (k - 1) * d a) :=
   d_pow_of_even_of_commute ha Even.zero hc k
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The graded Leibniz rule for `n`-fold products. For a list `l` of homogeneous elements
 (each given with its degree), `d (l₁ ⋯ lₙ) = ∑ᵢ (-1)^{|l₁| + ⋯ + |lᵢ₋₁|} • (l₁ ⋯ d lᵢ ⋯ lₙ)`. -/
 theorem d_list_prod (l : List (Σ n : ℤ, grading (M := A) n)) :
@@ -323,7 +324,7 @@ theorem d_list_prod (l : List (Σ n : ℤ, grading (M := A) n)) :
     · simp
     · refine Finset.sum_congr rfl fun i _ => ?_
       simp only [Fin.val_succ, List.take_succ_cons, List.map_cons, List.sum_cons, List.prod_cons,
-        List.drop_succ_cons, Fin.getElem_fin, List.getElem_cons_succ, koszulSign_add, mul_smul,
+        List.drop_succ_cons, Fin.getElem_fin, koszulSign_add, mul_smul,
         mul_assoc, mul_smul_comm]
       rfl
 

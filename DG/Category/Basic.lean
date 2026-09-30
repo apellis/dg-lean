@@ -304,10 +304,10 @@ instance : Congruence (homotopic C) where
       trans := fun {f g h} h₁ h₂ => by
         rw [homotopic_iff, ← sub_add_sub_cancel]
         exact add_mem h₁ h₂ }
-  compLeft f g g' h := by
+  comp_left f g g' h := by
     rw [homotopic_iff, comp_hom, comp_hom, ← Preadditive.comp_sub]
     simpa using comp_mem_coboundaries_right f.mem_cocycles h
-  compRight g h := by
+  comp_right g h := by
     rw [homotopic_iff, comp_hom, comp_hom, ← Preadditive.sub_comp]
     simpa using comp_mem_coboundaries_left h g.mem_cocycles
 

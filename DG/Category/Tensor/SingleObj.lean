@@ -2,6 +2,8 @@ import DG.Category.Tensor.Basic
 import DG.Category.Comparison
 import DG.Module.TensorProductOver
 
+set_option backward.isDefEq.respectTransparency false
+
 /-!
 # The tensor product over a one-object dg category
 

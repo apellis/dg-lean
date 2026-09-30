@@ -26,6 +26,8 @@ rings. This file shows:
   (`DG.CatModule.HomotopyCategory.singleObjEquivalence A`).
 -/
 
+set_option backward.isDefEq.respectTransparency false
+
 open CategoryTheory Category Limits Pretriangulated
 
 universe w u
@@ -210,13 +212,13 @@ theorem toDGModuleCatShiftIso_hom_apply (n : ℤ) (M : CatModule.{w} (SingleObj 
 
 /-- Evaluation at the unique object commutes with the shifts. -/
 instance toDGModuleCatCommShift : (toDGModuleCat.{w} A).CommShift ℤ where
-  iso n := NatIso.ofComponents (fun M => toDGModuleCatShiftIso n M) fun _ => rfl
-  zero := by
+  commShiftIso n := NatIso.ofComponents (fun M => toDGModuleCatShiftIso n M) fun _ => rfl
+  commShiftIso_zero := by
     ext M : 3
     refine DGModuleCat.hom_ext_apply fun m => ?_
     rw [Functor.CommShift.isoZero_hom_app]
     rfl
-  add a b := by
+  commShiftIso_add a b := by
     ext M : 3
     refine DGModuleCat.hom_ext_apply fun m => ?_
     rw [Functor.CommShift.isoAdd_hom_app]

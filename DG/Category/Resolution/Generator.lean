@@ -43,6 +43,8 @@ open CategoryTheory DirectSum
 
 universe w' w v u
 
+set_option backward.isDefEq.respectTransparency false
+
 namespace DG
 
 variable {C : Type u} [Category.{v} C] [Preadditive C] [∀ X Y : C, DGAddCommGroup (X ⟶ Y)]

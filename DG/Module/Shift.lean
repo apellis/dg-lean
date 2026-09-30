@@ -35,6 +35,7 @@ variable {ι κ M σ : Type*} [DecidableEq ι] [DecidableEq κ] [AddCommMonoid M
 
 /-- A decomposition `M = ⨁ i, ℳ i` reindexed along an equivalence `e : κ ≃ ι` of index types:
 `M = ⨁ k, ℳ (e k)`. -/
+@[instance_reducible]
 def reindex : Decomposition fun k => ℳ (e k) where
   decompose' m :=
     DirectSum.toAddMonoid (fun i => (DirectSum.of (fun k => ℳ (e k)) (e.symm i)).comp
@@ -76,7 +77,7 @@ variable (A : Type*) [Ring A] [DGAddCommGroup A] [DGRing A] (n : ℤ)
 /-- The additive map `a ↦ (-1)^{n |a|} a` on a dg ring, `a` homogeneous of degree `|a|`. -/
 def twistAddHom : A →+ A :=
   (DirectSum.toAddMonoid fun i : ℤ =>
-    (DistribMulAction.toAddMonoidHom A (koszulSign (n * i))).comp (grading (M := A) i).subtype).comp
+    (DistribSMul.toAddMonoidHom A (koszulSign (n * i))).comp (grading (M := A) i).subtype).comp
     (decomposeAddEquiv (grading (M := A))).toAddMonoidHom
 
 variable {A} {n}
@@ -194,7 +195,7 @@ variable {n} [AddCommGroup M] [DGAddCommGroup M]
 instance : DGAddCommGroup (Shift n M) where
   grading k := grading (M := M) (k + n)
   decomposition := Decomposition.reindex (grading (M := M)) (Equiv.addRight n)
-  d := (DistribMulAction.toAddMonoidHom M (koszulSign n)).comp (d : M →+ M)
+  d := (DistribSMul.toAddMonoidHom M (koszulSign n)).comp (d : M →+ M)
   d_mem' {k m} hm := by
     have hm' : unmk n m ∈ grading (M := M) (k + n) := hm
     change koszulSign n • d (unmk n m) ∈ grading (M := M) (k + 1 + n)

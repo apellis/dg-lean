@@ -49,7 +49,7 @@ variable (n : ℤ) {X Y : C}
 `|f|`. -/
 def twist : (X ⟶ Y) →+ (X ⟶ Y) :=
   (DirectSum.toAddMonoid fun i : ℤ =>
-    (DistribMulAction.toAddMonoidHom (X ⟶ Y) (koszulSign (n * i))).comp
+    (DistribSMul.toAddMonoidHom (X ⟶ Y) (koszulSign (n * i))).comp
       (grading (M := X ⟶ Y) i).subtype).comp
     (decomposeAddEquiv (grading (M := X ⟶ Y))).toAddMonoidHom
 
@@ -340,6 +340,7 @@ theorem eqToHom_shift_app {a b : ℤ} (h : a = b) (M : CatModule.{w} C)
   subst h
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The shift on dg modules over `C`: `M⟦n⟧ = shift n M`. -/
 instance hasShift : HasShift (CatModule.{w} C) ℤ :=
   hasShiftMk _ _
@@ -389,6 +390,7 @@ theorem shiftFunctorAdd'_inv_app_app (a b c : ℤ) (h : a + b = c) (M : CatModul
   subst h
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 theorem shiftFunctorComm_hom_app_app (a b : ℤ) (M : CatModule.{w} C) {X : C}
     (x : (shift b (shift a M)).obj X) :
     ((shiftFunctorComm (CatModule.{w} C) a b).hom.app M).app X x =

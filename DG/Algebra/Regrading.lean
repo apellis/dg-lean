@@ -132,6 +132,7 @@ variable (ℳ)
 /-- The periodization of a `ℤ/2`-graded abelian group with an odd differential, as a dg abelian
 group: `Periodize ℳ` with its `ℤ`-grading and the differential `DG.Periodize.dHom`. Not an
 instance, since it depends on the choice of `d`. -/
+@[instance_reducible]
 def dgAddCommGroup (hd : IsOddDifferential ℳ d) : DGAddCommGroup (Periodize ℳ) where
   grading := periodizeGrading ℳ
   d := dHom ℳ hd
@@ -148,6 +149,7 @@ section Ring
 variable {A τ : Type*} [Ring A] [SetLike τ A] [AddSubgroupClass τ A] {𝒜 : ZMod 2 → τ}
   [SetLike.GradedMonoid 𝒜] {d : A →+ A}
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Periodization of a `ℤ/2`-graded dg ring.** The periodization `Periodize 𝒜` of a
 `ℤ/2`-graded dg ring, with the differential acting componentwise, is a dg ring. -/
 theorem dgRing (hd : IsZMod2DGRing 𝒜 d) :
@@ -215,6 +217,7 @@ namespace IsPeriodicDGModule
 variable {hA : IsZMod2DGRing ℬ dA} {𝒩 : ℤ → AddSubgroup N} {dN : N →+ N}
 
 /-- The dg abelian group structure on `N` given by its grading and `dN`. -/
+@[instance_reducible]
 def dgAddCommGroup (hN : IsPeriodicDGModule hA 𝒩 dN) [Decomposition 𝒩] : DGAddCommGroup N where
   grading := 𝒩
   d := dN
@@ -253,6 +256,7 @@ namespace Periodize
 variable {M σ : Type*} [AddCommGroup M] [Module B M] [SetLike σ M] [AddSubgroupClass σ M]
   {ℳ : ZMod 2 → σ} [SetLike.GradedSMul ℬ ℳ] {dM : M →+ M}
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The periodization of a `ℤ/2`-graded dg module is a dg module over the periodization. -/
 theorem isPeriodicDGModule (hA : IsZMod2DGRing ℬ dA) (hM : IsZMod2DGModule ℬ dA ℳ dM) :
     IsPeriodicDGModule hA (periodizeGrading ℳ) (dHom ℳ hM.toIsOddDifferential) where
@@ -378,6 +382,7 @@ variable (ℳ k r)
 
 /-- `RegradeByDivision ℳ k r` as a dg abelian group, for a differential of degree `k` on `ℳ`.
 Not an instance, since it depends on the choice of `d`. -/
+@[instance_reducible]
 def dgAddCommGroup (hd : IsDifferentialOfDegree ℳ k d) :
     DGAddCommGroup (RegradeByDivision ℳ k r) where
   grading := regradeGrading ℳ k r
@@ -426,6 +431,7 @@ omit [Ring A] [AddSubgroupClass τ A] [SetLike.GradedMonoid 𝒜] in
 theorem mem_of_mem_mul_add_zero {q : ℤ} {a : A} (ha : a ∈ 𝒜 (q * k + 0)) : a ∈ 𝒜 (q * k) := by
   rwa [add_zero] at ha
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **The residue-`0` part is a dg ring.** For a differential `d` of degree `k` on a `ℤ`-graded
 ring `A` satisfying the Leibniz rule with the sign `(-1)^{|a| / k}` on elements of degree
 divisible by `k`, `⨁ q, A^{q k}` is a dg ring for the induced differential of degree `1`. -/
@@ -454,6 +460,7 @@ section Module
 variable {𝒜 : ℤ → τ} [SetLike.GradedMonoid 𝒜] {k : ℤ} {dA : A →+ A}
 variable [Module A M] {ℳ : ℤ → σ} [SetLike.GradedSMul 𝒜 ℳ] {dM : M →+ M}
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Each residue class is a dg module.** For `ℳ` a `ℤ`-graded `A`-module with a differential of
 degree `k` satisfying the Leibniz rule with the sign `(-1)^{|a| / k}` for `a` of degree divisible by
 `k`, each residue class `⨁ q, ℳ (q k + r)` is a dg module over the dg ring `⨁ q, A^{q k}`. -/

@@ -85,8 +85,8 @@ def inv : Cone (compMor₁ f g) →ᵈᵍ[A] Cone g :=
     (desc _ ((inl g).comp (ofHom f) (zero_add (-1))) (inr g) (by
       rw [δ_ofHom_comp, δ_inl]; rfl)) (by
       refine Cochain.ext fun p => ext_to ?_ ?_
-      · simp [desc_apply, descCochain_apply, δ_neg_one_apply, inl_d_apply, d_snd_apply]
-      · simp [desc_apply, descCochain_apply, δ_neg_one_apply, inl_d_apply, d_snd_apply])
+      · simp [descCochain_apply, δ_neg_one_apply, inl_d_apply, d_snd_apply]
+      · simp [descCochain_apply, δ_neg_one_apply, inl_d_apply, d_snd_apply])
 
 @[simp]
 theorem inv_comp_hom : (inv f g).comp (hom f g) = DGModuleHom.id := by
@@ -125,6 +125,7 @@ theorem mappingConeCompHomotopyEquiv_inv_comp_hom :
       DGModuleHom.id :=
   MappingConeCompHomotopyEquiv.inv_comp_hom f g
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Mathlib's `mappingConeCompHomotopyEquiv_comm₁`. -/
 theorem mappingConeCompHomotopyEquiv_comm₁ :
     (mappingConeCompHomotopyEquiv f g).inv.comp (inr (compMor₁ f g)) = compMor₂ f g := by

@@ -5,7 +5,7 @@ public. Keep it mathematical and technical.
 
 ## Ground rules
 
-- Lean `v4.19.0` and Mathlib `c44e0c8ee63ca166450922a373c7409c5d26b00b` are pinned in
+- Lean `v4.34.1` and Mathlib `v4.34.1` (`d13f23b723b8a846827a245b89c10fc7d3f11612`) are pinned in
   `lean-toolchain`, `lakefile.lean` and `lake-manifest.json`. Do not run `lake update`. To build
   for the first time: `lake exe cache get` then `lake build`.
 - The build treats warnings as errors (`-DwarningAsError=true`). Every file under `DG/` is
@@ -24,7 +24,7 @@ public. Keep it mathematical and technical.
   special case proved in a replacement model is not the item.
 - Reuse Mathlib. Before defining anything, search Mathlib for it (`HomologicalComplex`,
   `Homotopy`, `HomotopyCategory`, `CategoryTheory.Localization`, `Pretriangulated`,
-  `GradedRing`, `DirectSum`, `Mon_`, `Mod_`, `Int.negOnePow`, ...). If Mathlib has a result
+  `GradedRing`, `DirectSum`, `Mon`, `Mod`, `Int.negOnePow`, ...). If Mathlib has a result
   for cochain complexes, the dg-module version should be proved by reduction to it whenever
   the forgetful functor allows, and otherwise by the same proof.
 - Universe levels: the derived category is a localization and may live in a larger universe.
@@ -38,6 +38,14 @@ public. Keep it mathematical and technical.
   overrides where possible, and keep files under about 1500 lines.
 
 ## Workflow
+
+The default branch is `master`. Keep DG independent: its only direct Lake dependency
+is Mathlib. Do not introduce sibling-library dependencies.
+
+Reuse the pinned dependency cache for builds. Keep verification logs and scratch
+checks outside tracked sources; `.lake/build` is regenerable, while source, manifests
+and verification evidence must be retained. Never delete shared `.lake/packages`
+when cleaning local build products.
 
 1. Pick the first roadmap item not yet done whose dependencies are done. Write the statements
    first, check them against the source reference, then prove.

@@ -43,7 +43,7 @@ scoped instance instModuleCohomology (M : DGModuleCat.{v} A) (n : ℤ) :
 
 end Algebra
 
-open Algebra
+open DG.DGModuleCat.Algebra
 
 variable (M : DGModuleCat.{v} A)
 
@@ -57,7 +57,7 @@ def cohomologyLinearEquiv (n : ℤ) : cohomology M n ≃ₗ[R] ((forget R A).obj
       | h z =>
         change ((toComplex R M).sc n).moduleCatHomologyIso.symm.toLinearEquiv _ =
           r • ((toComplex R M).sc n).moduleCatHomologyIso.symm.toLinearEquiv _
-        rw [← LinearEquiv.map_smul]
+        erw [← LinearEquiv.map_smul]
         rfl }
 
 @[simp]

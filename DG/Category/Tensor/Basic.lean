@@ -4,6 +4,8 @@ import DG.Module.Quotient
 import DG.Module.TensorProduct
 import DG.Algebra.AddEquiv
 
+set_option backward.isDefEq.respectTransparency false
+
 /-!
 # The tensor product over a dg category
 
@@ -101,8 +103,7 @@ theorem pre_induction_on {P : Pre N M → Prop} (x : Pre N M) (zero : P 0)
   induction x using DirectSum.induction_on with
   | zero => exact zero
   | of X y =>
-    induction y using TensorProduct.induction_on with
-    | zero => simpa [ι] using zero
+    induction y using TensorProduct.inductionOn with
     | tmul n m => exact tmul X n m
     | add y y' hy hy' =>
       have := add _ _ hy hy'
@@ -117,13 +118,13 @@ def relElem {X Y : C} (f : X ⟶ Y) (n : N.obj (op Y)) (m : M.obj X) : Pre N M :
 
 theorem relElem_add_left {X Y : C} (f f' : X ⟶ Y) (n : N.obj (op Y)) (m : M.obj X) :
     relElem N M (f + f') n m = relElem N M f n m + relElem N M f' n m := by
-  simp only [relElem, ract_add, AddMonoidHom.add_apply, CatModule.add_smul,
+  simp only [relElem, AddMonoidHom.add_apply, CatModule.add_smul,
     TensorProduct.add_tmul, TensorProduct.tmul_add, map_add]
   abel
 
 theorem relElem_add_mid {X Y : C} (f : X ⟶ Y) (n n' : N.obj (op Y)) (m : M.obj X) :
     relElem N M f (n + n') m = relElem N M f n m + relElem N M f n' m := by
-  simp only [relElem, add_ract, TensorProduct.add_tmul, map_add]
+  simp only [relElem, TensorProduct.add_tmul, map_add]
   abel
 
 theorem relElem_add_right {X Y : C} (f : X ⟶ Y) (n : N.obj (op Y)) (m m' : M.obj X) :
@@ -179,15 +180,15 @@ theorem rel_eq_closure_relGen : rel N M = AddSubgroup.closure (relGen N M) := by
   rintro _ ⟨X, Y, f, n, m, rfl⟩
   set S := AddSubgroup.closure (relGen N M)
   induction f using DG.induction_on with
-  | h_zero => simpa using zero_mem S
+  | h_zero => simp
   | h_add f f' hf hf' => rw [relElem_add_left]; exact add_mem hf hf'
   | h_homogeneous f =>
     induction n using DG.induction_on with
-    | h_zero => simpa using zero_mem S
+    | h_zero => simp
     | h_add n n' hn hn' => rw [relElem_add_mid]; exact add_mem hn hn'
     | h_homogeneous n =>
       induction m using DG.induction_on with
-      | h_zero => simpa using zero_mem S
+      | h_zero => simp
       | h_add m m' hm hm' => rw [relElem_add_right]; exact add_mem hm hm'
       | h_homogeneous m =>
         exact AddSubgroup.subset_closure ⟨X, Y, _, _, _, f, n, m, f.2, n.2, m.2, rfl⟩
@@ -208,8 +209,8 @@ theorem d_relElem {X Y : C} {i j : ℤ} {f : X ⟶ Y} {n : N.obj (op Y)} (hf : f
     d_sub, d_ι, d_ι, d_tmul_of_mem (ract_mem_grading hn hf), d_tmul_of_mem hn, d_ract hn,
     CatModule.d_smul hf, TensorProduct.add_tmul, TensorProduct.tmul_add, ract_units_smul,
     CatModule.smul_units_smul, CatModule.units_smul_smul, koszulSign_add]
-  simp only [Units.smul_def, Units.val_mul, mul_smul, ← TensorProduct.smul_tmul',
-    TensorProduct.tmul_smul, map_add, map_zsmul, map_sub, _root_.smul_sub, _root_.smul_add]
+  simp only [Units.smul_def, mul_smul, ← TensorProduct.smul_tmul',
+    TensorProduct.tmul_smul, map_add, map_zsmul, _root_.smul_add]
   abel
 
 instance isDGAddSubgroup_rel : IsDGAddSubgroup (rel N M) := by
@@ -423,9 +424,9 @@ theorem induction_on_mem_grading {k : ℤ} {P : CatTensorProduct N M → Prop} (
     | mem z hz =>
       obtain ⟨i, j, h, n, hn, m, hm, rfl⟩ := hz
       exact tmul X hn hm h
-    | one => simpa using zero
-    | mul z z' _ _ hz hz' => rw [map_add, map_add]; exact add _ _ hz hz'
-    | inv z _ hz => rw [map_neg, map_neg]; exact neg _ hz
+    | zero => simpa using zero
+    | add z z' _ _ hz hz' => rw [map_add, map_add]; exact add _ _ hz hz'
+    | neg z _ hz => rw [map_neg, map_neg]; exact neg _ hz
   rw [← DirectSum.sum_support_of x, map_sum]
   refine Finset.sum_induction _ P (fun a b ha hb => add a b ha hb) (by simpa using zero) ?_
   intro X _

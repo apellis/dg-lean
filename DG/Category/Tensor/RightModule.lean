@@ -45,6 +45,8 @@ open CategoryTheory
 
 universe w w' v u
 
+set_option backward.isDefEq.respectTransparency false
+
 namespace DG
 
 namespace CatModule
@@ -309,7 +311,7 @@ theorem d_twistAct {X Y : C} {i : ℤ} {f : X ⟶ Y} (hf : f ∈ grading i) (n :
   induction n using DG.induction_on with
   | h_zero => simp
   | h_add n n' hn hn' =>
-    simp only [map_add, d_add, hn, hn', _root_.smul_add]
+    simp only [map_add, hn, hn', _root_.smul_add]
     abel
   | h_homogeneous n =>
     rename_i j
@@ -389,12 +391,12 @@ theorem representable_op_ract (X : C) {Y Z : C} (f : Z ⟶ Y)
     (h : (representable (op X)).obj (op Y)) :
     h <• f = f ≫ (h : Y ⟶ X) := by
   induction f using DG.induction_on with
-  | h_zero => simp
+  | h_zero => rw [ract_zero, Limits.zero_comp]
   | h_add f f' hf hf' => rw [ract_add, hf, hf', Preadditive.add_comp]
   | h_homogeneous f =>
     rename_i i
     induction h using DG.induction_on with
-    | h_zero => simp
+    | h_zero => rw [zero_ract, Limits.comp_zero]
     | h_add h h' hh hh' => rw [add_ract, hh, hh', Preadditive.comp_add]
     | h_homogeneous h =>
       rename_i j

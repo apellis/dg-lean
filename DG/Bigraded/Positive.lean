@@ -54,7 +54,7 @@ variable {A}
 theorem coe_decompose_degreeZeroWGrading (a : degreeZeroSubring A) (k : ℤ) :
     ((decompose (degreeZeroWGrading A) a k : degreeZeroSubring A) : A) =
       decompose (wgrading (M := A)) (a : A) k := by
-  letI : Decomposition fun k =>
+  let : Decomposition fun k =>
       (wgrading (M := A) k).comap (degreeZeroSubring A).subtype.toAddMonoidHom :=
     degreeZeroWGrading.decomposition A
   exact coe_decompose_comap _ (degreeZeroSubring A).subtype.toAddMonoidHom a k

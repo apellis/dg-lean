@@ -1,5 +1,7 @@
 import DG.Category.Tensor.Bimodule
 
+set_option backward.isDefEq.respectTransparency false
+
 /-!
 # Induction of dg modules along a dg functor
 
@@ -285,8 +287,9 @@ def inductionRepresentableIso (X : C) :
   isoMk (fun Y => (CatTensorProduct.rid ((ofFunctor F).right Y) X).toAddEquiv)
     (fun {Y n y} => ⟨fun h => by
       have := (CatTensorProduct.rid ((ofFunctor F).right Y) X).symm.map_mem h
-      convert this using 2
-      exact ((CatTensorProduct.rid ((ofFunctor F).right Y) X).symm_apply_apply y).symm,
+      change (CatTensorProduct.rid ((ofFunctor F).right Y) X).symm
+        ((CatTensorProduct.rid ((ofFunctor F).right Y) X) y) ∈ grading n at this
+      simpa only [DGAddEquiv.symm_apply_apply] using this,
       fun h => (CatTensorProduct.rid ((ofFunctor F).right Y) X).map_mem h⟩)
     (fun {Y} y => (CatTensorProduct.rid ((ofFunctor F).right Y) X).map_d y)
     (fun {Y Y'} g y => by

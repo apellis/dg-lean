@@ -59,7 +59,7 @@ theorem component_of_same (n : ℤ) (x : K.X n) : component K n (of K n x) = x :
   DirectSum.component.lof_self (M := fun n => K.X n) R n x
 
 theorem component_of_ne {m n : ℤ} (h : m ≠ n) (x : K.X m) : component K n (of K m x) = 0 :=
-  (DirectSum.component.of (M := fun n => K.X n) R n m x).trans (dif_neg h)
+  (DirectSum.component.of (M := fun n => K.X n) R n m x).trans (dite_eq_right h)
 
 /-- Induction on `ComplexSum K`: a predicate holding for `0` and the image of every summand and
 closed under addition holds everywhere. -/

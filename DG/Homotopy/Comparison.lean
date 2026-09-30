@@ -47,6 +47,8 @@ open CategoryTheory Category Limits
 
 universe v u
 
+set_option backward.isDefEq.respectTransparency false
+
 namespace DG
 
 namespace DegreeZero

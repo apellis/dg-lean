@@ -180,14 +180,14 @@ theorem one_zero_apply (v : Fin 0 → 𝔤) : one R 𝔤 0 v = 1 := rfl
 
 @[simp]
 theorem contr_one (x : 𝔤) : contr R 𝔤 x (one R 𝔤) = 0 :=
-  funext fun n => by simp [one, Pi.single_apply]
+  funext fun n => by simp [one]
 
 @[simp]
 theorem sgn_one : sgn R 𝔤 (one R 𝔤) = one R 𝔤 := by
   funext n
   cases n with
   | zero => simp
-  | succ n => simp [one, Pi.single_apply]
+  | succ n => simp [one]
 
 theorem one_wedge_apply (K : ℕ) : ∀ F : Family R 𝔤, wedge R 𝔤 (one R 𝔤) F K = F K := by
   induction K with
@@ -242,7 +242,7 @@ theorem isHomog_zero (m : ℕ) : IsHomog m (0 : Family R 𝔤) := fun _ _ => rfl
 theorem IsHomog.smul {m : ℕ} {F : Family R 𝔤} (hF : IsHomog m F) (u : ℤˣ) :
     IsHomog m (u • F) := fun n hn => by rw [Pi.smul_apply, hF n hn, smul_zero]
 
-theorem isHomog_one : IsHomog 0 (one R 𝔤) := fun n hn => by simp [one, Pi.single_apply, hn]
+theorem isHomog_one : IsHomog 0 (one R 𝔤) := fun n hn => by simp [one, hn]
 
 theorem wedge_apply_eq_zero (K : ℕ) : ∀ (m n : ℕ) (F G : Family R 𝔤), IsHomog m F →
     IsHomog n G → K ≠ m + n → wedge R 𝔤 F G K = 0 := by
@@ -292,7 +292,7 @@ theorem wedge_comm_apply (K : ℕ) : ∀ (m n : ℕ) (F G : Family R 𝔤), IsHo
     refine mcochain_zero_ext ?_
     rcases Nat.eq_zero_or_pos m with rfl | hm
     · simp [wedge_apply_zero_apply, mul_comm]
-    · rw [wedge_apply_zero_apply, Units.smul_def, MultilinearMap.smul_apply,
+    · rw [wedge_apply_zero_apply, Units.smul_def, _root_.smul_apply,
         wedge_apply_zero_apply, hF.zero_apply_zero (by omega), zero_mul, mul_zero, smul_zero]
   | succ K ih =>
     intro m n F G hF hG
@@ -351,11 +351,11 @@ def IsAltFam (F : Family R 𝔤) : Prop := ∀ n, IsAlt (F n)
 
 theorem IsAlt.units_smul {n : ℕ} {f : MCochain R 𝔤 n} (hf : IsAlt f) (u : ℤˣ) :
     IsAlt (u • f) := fun v i j h hij => by
-  rw [Units.smul_def, MultilinearMap.smul_apply, hf v i j h hij, smul_zero]
+  rw [Units.smul_def, _root_.smul_apply, hf v i j h hij, smul_zero]
 
 theorem IsAlt.add {n : ℕ} {f g : MCochain R 𝔤 n} (hf : IsAlt f) (hg : IsAlt g) :
     IsAlt (f + g) := fun v i j h hij => by
-  rw [MultilinearMap.add_apply, hf v i j h hij, hg v i j h hij, add_zero]
+  rw [_root_.add_apply, hf v i j h hij, hg v i j h hij, add_zero]
 
 theorem isAlt_zero_degree (f : MCochain R 𝔤 0) : IsAlt f := fun _ i => i.elim0
 
@@ -472,7 +472,7 @@ theorem lieFam_wedge_apply (x : 𝔤) (K : ℕ) : ∀ F G : Family R 𝔤,
     change (contr R 𝔤 y (lieFam R 𝔤 x (wedge R 𝔤 F G))) K = (contr R 𝔤 y
       (wedge R 𝔤 (lieFam R 𝔤 x F) G + wedge R 𝔤 F (lieFam R 𝔤 x G))) K
     simp only [contr_lieFam, contr_wedge, map_add, map_sub, lieFam_sgn, Pi.add_apply,
-      Pi.sub_apply, ih, LinearMap.add_apply, LinearMap.sub_apply]
+      Pi.sub_apply, ih, LinearMap.sub_apply]
     abel
 
 /-- The coadjoint action is a derivation of the wedge product. -/
@@ -494,7 +494,7 @@ theorem dFam_wedge_apply (K : ℕ) : ∀ F G : Family R 𝔤,
     change (contr R 𝔤 x (dFam R 𝔤 (wedge R 𝔤 F G))) K = (contr R 𝔤 x
       (wedge R 𝔤 (dFam R 𝔤 F) G + wedge R 𝔤 (sgn R 𝔤 F) (dFam R 𝔤 G))) K
     simp only [contr_dFam, contr_wedge, map_add, map_sub, lieFam_wedge, contr_sgn, dFam_sgn,
-      sgn_sgn, Pi.add_apply, Pi.sub_apply, ih, LinearMap.add_apply, LinearMap.sub_apply, map_neg,
+      sgn_sgn, Pi.add_apply, Pi.sub_apply, ih, LinearMap.sub_apply, map_neg,
       LinearMap.neg_apply, Pi.neg_apply]
     abel
 
@@ -528,7 +528,7 @@ theorem single_injective (n : ℕ) : Function.Injective (single R 𝔤 n) := fun
   toMCochain_injective n (by simpa [single] using congrFun h n)
 
 theorem isHomog_single {n : ℕ} (ω : CECochain R 𝔤 n) : IsHomog n (single R 𝔤 n ω) :=
-  fun k hk => by simp [single, Pi.single_apply, hk]
+  fun k hk => by simp [single, hk]
 
 theorem isAltFam_single {n : ℕ} (ω : CECochain R 𝔤 n) : IsAltFam (single R 𝔤 n ω) := fun k => by
   rcases eq_or_ne k n with rfl | hk
@@ -576,6 +576,7 @@ instance gradedMonoid.gOne : GradedMonoid.GOne fun n => CECochain R 𝔤 n := �
 theorem gMul_def {m n : ℕ} (ω : CECochain R 𝔤 m) (η : CECochain R 𝔤 n) :
     GradedMonoid.GMul.mul ω η = wedgeCochain ω η := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 instance gMonoid : GradedMonoid.GMonoid fun n => CECochain R 𝔤 n where
   one_mul := fun ⟨n, ω⟩ => gradedMonoid_mk_eq (zero_add n) (by
     rw [gMul_def, single_wedgeCochain]
@@ -656,7 +657,7 @@ theorem CEAlgebra.toFamily_apply (x : CEAlgebra R 𝔤) (n : ℕ) :
     rw [CEAlgebra.toFamily_of]
     rcases eq_or_ne n k with rfl | h
     · rw [single_apply_self, DirectSum.of_eq_same]
-    · rw [isHomog_single ω n h, DirectSum.of_eq_of_ne _ _ _ (Ne.symm h)]; rfl
+    · rw [isHomog_single ω n h, DirectSum.of_eq_of_ne _ _ _ h]; rfl
   | add x y hx hy => rw [map_add, Pi.add_apply, hx, hy, DirectSum.add_apply]; rfl
 
 theorem CEAlgebra.toFamily_injective : Function.Injective (CEAlgebra.toFamily R 𝔤) :=
@@ -719,7 +720,7 @@ variable {β e}
 omit [DecidableEq ι] in
 theorem of_mem_reindexGrading (n : κ) (b : β n) :
     DirectSum.of β n b ∈ reindexGrading β e (e n) :=
-  fun m hm => DirectSum.of_eq_of_ne _ _ _ (fun h => hm (by rw [h]))
+  fun m hm => DirectSum.of_eq_of_ne _ _ _ (fun h => hm (by rw [← h]))
 
 omit [DecidableEq ι] in
 theorem eq_of_mem_reindexGrading {i : ι} {x : ⨁ n : κ, β n} (hx : x ∈ reindexGrading β e i)
@@ -727,7 +728,7 @@ theorem eq_of_mem_reindexGrading {i : ι} {x : ⨁ n : κ, β n} (hx : x ∈ rei
   ext m
   rcases eq_or_ne m n with rfl | h
   · rw [DirectSum.of_eq_same]
-  · rw [DirectSum.of_eq_of_ne _ _ _ (Ne.symm h), hx m (by rw [← hn]; exact he.ne h)]
+  · rw [DirectSum.of_eq_of_ne _ _ _ h, hx m (by rw [← hn]; exact he.ne h)]
 
 omit [DecidableEq κ] [DecidableEq ι] in
 theorem eq_zero_of_mem_reindexGrading {i : ι} (hi : i ∉ Set.range e) {x : ⨁ n : κ, β n}
@@ -748,6 +749,7 @@ theorem reindexGrading_cases (he : Function.Injective e) {i : ι} {x : ⨁ n : �
   · rw [eq_zero_of_mem_reindexGrading hi hx]; exact h₀
 
 /-- The decomposition of `⨁ n : κ, β n` along `reindexGrading β e`, for `e` injective. -/
+@[instance_reducible]
 noncomputable def reindexGrading.decomposition (he : Function.Injective e) :
     DirectSum.Decomposition (reindexGrading β e) :=
   Decomposition.ofAddHom (reindexGrading β e)
@@ -817,7 +819,6 @@ noncomputable instance CEAlgebra.instDGAddCommGroup : DGAddCommGroup (CEAlgebra 
       (P := fun x => CEAlgebra.dLinear R 𝔤 x ∈
         reindexGrading (fun n => CECochain R 𝔤 n) (Nat.cast : ℕ → ℤ) (k + 1))
       (by simp only [map_zero]; exact zero_mem _) fun n ω hn => ?_
-    simp only
     rw [CEAlgebra.dLinear_of, ← hn]
     have := of_mem_reindexGrading (e := (Nat.cast : ℕ → ℤ)) (n + 1) (ceD R 𝔤 n ω)
     rwa [Nat.cast_succ] at this
@@ -855,10 +856,9 @@ instance CEAlgebra.instDGRing : DGRing (CEAlgebra R 𝔤) where
     simpa using CEAlgebra.of_mem_grading (oneCochain R 𝔤)
   mul_mem i j a b ha hb := by
     refine CEAlgebra.grading_cases ha (P := fun a => a * b ∈ grading (i + j))
-      (by dsimp only; rw [zero_mul]; exact zero_mem _) fun m ω hm => ?_
+      (by rw [zero_mul]; exact zero_mem _) fun m ω hm => ?_
     refine CEAlgebra.grading_cases hb (P := fun b => DirectSum.of _ m ω * b ∈ grading (i + j))
-      (by dsimp only; rw [mul_zero]; exact zero_mem _) fun p η hp => ?_
-    dsimp only
+      (by rw [mul_zero]; exact zero_mem _) fun p η hp => ?_
     rw [CEAlgebra.of_mul_of, ← hm, ← hp, ← Nat.cast_add]
     exact CEAlgebra.of_mem_grading _
   d_mul' {n a} ha b := by

@@ -8,7 +8,6 @@ For a family `M : ι → Type*` of dg abelian groups, the maps `Hⁿ(M i) → H�
 the inclusions of the summands (`DG.cohomology.ofSummand`) induce an isomorphism
 
   `DG.cohomology.directSumAddEquiv M n : Hⁿ(⨁ i, M i) ≃+ ⨁ i, Hⁿ(M i)`,
-
 whose components are induced by the projections (`DG.cohomology.component`). For families of
 dg modules the inclusions are the morphisms `DG.DGModuleHom.lof`
 (`DG.cohomology.directSumAddEquiv_map_lof`); these are the coproduct inclusions of
@@ -67,7 +66,7 @@ theorem component_ofSummand_of_ne {i j : ι} (h : i ≠ j) (n : ℤ) (y : cohomo
   | h z =>
     rw [ofSummand_mk, component_mk, mk_eq_zero_iff]
     change (DirectSum.of M i z) j ∈ _
-    rw [DirectSum.of_eq_of_ne _ _ _ h]
+    rw [DirectSum.of_eq_of_ne _ _ _ (Ne.symm h)]
     exact zero_mem _
 
 variable (M) in
@@ -88,7 +87,7 @@ theorem component_fromDirectSum (n : ℤ) (x : ⨁ i, cohomology (M i) n) (j : �
     by_cases h : i = j
     · subst h
       rw [component_ofSummand_self, DirectSum.of_eq_same]
-    · rw [component_ofSummand_of_ne h, DirectSum.of_eq_of_ne _ _ _ h]
+    · rw [component_ofSummand_of_ne h, DirectSum.of_eq_of_ne _ _ _ (Ne.symm h)]
   | add x y hx hy => rw [_root_.map_add, _root_.map_add, hx, hy, DirectSum.add_apply]
 
 theorem fromDirectSum_injective (n : ℤ) : Function.Injective (fromDirectSum M n) := by
@@ -107,7 +106,7 @@ theorem fromDirectSum_surjective (n : ℤ) : Function.Surjective (fromDirectSum 
           rw [DirectSum.d_of, ← DirectSum.coe_d_apply, cocycles.d_eq_zero z,
             DirectSum.zero_apply, _root_.map_zero]⟩⟩ : cocycles (⨁ i, M i) n) := by
       ext1
-      rw [AddSubgroup.val_finset_sum]
+      rw [AddSubgroup.val_finsetSum]
       exact (DirectSum.sum_support_of _).symm
     rw [← AddMonoidHom.mem_range, hz, map_sum]
     refine sum_mem fun i _ => ⟨DirectSum.of _ i (mk _ n ⟨(z : ⨁ i, M i) i, mem_cocycles.mpr

@@ -183,6 +183,7 @@ theorem move_zero (x : Periodize ℳ) : move ℳ 0 Int.cast_zero x = x := by
   | mk n m hm => simp only [move_mk]; exact mk_congr (add_zero _) rfl _ _
   | add x y hx hy => simp only [map_add, hx, hy]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The shift-by-2 automorphism `σ₂` of `Periodize ℳ`, of degree `2`: `σ₂ (Mⁿ) = Mⁿ⁺²`, the
 identity of `M^{n mod 2}` on each summand. -/
 def shiftTwo : Periodize ℳ ≃+ Periodize ℳ where
@@ -266,6 +267,7 @@ variable (𝒜)
 theorem one_eq_mk : (1 : Periodize 𝒜) =
     mk 𝒜 0 1 (SetLike.GradedOne.one_mem (A := periodicGrading 𝒜)) := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- `fold` as a ring homomorphism `Periodize 𝒜 →+* A`. -/
 def foldRingHom : Periodize 𝒜 →+* A where
   __ := fold 𝒜
@@ -284,6 +286,7 @@ def foldRingHom : Periodize 𝒜 →+* A where
 @[simp]
 theorem foldRingHom_apply (x : Periodize 𝒜) : foldRingHom 𝒜 x = fold 𝒜 x := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The periodicity unit `u` of `Periodize 𝒜`: the identity `1 ∈ A^{0̄}` placed in degree `2`. Its
 inverse is `1` placed in degree `-2`. -/
 def periodUnit : (Periodize 𝒜)ˣ where
@@ -292,22 +295,24 @@ def periodUnit : (Periodize 𝒜)ˣ where
   val_inv := by rw [mk_mul_mk, one_eq_mk]; exact mk_congr (by norm_num) (one_mul 1) _ _
   inv_val := by rw [mk_mul_mk, one_eq_mk]; exact mk_congr (by norm_num) (one_mul 1) _ _
 
+set_option backward.isDefEq.respectTransparency false in
 theorem coe_periodUnit_zpow (k : ℤ) :
     ((periodUnit 𝒜 ^ k : (Periodize 𝒜)ˣ) : Periodize 𝒜) =
       mk 𝒜 (2 * k) 1 (by
         rw [Int.cast_mul, show ((2 : ℤ) : ZMod 2) = 0 from rfl, zero_mul]
         exact SetLike.GradedOne.one_mem (A := 𝒜)) := by
   induction k using Int.induction_on with
-  | hz => rw [zpow_zero, Units.val_one, one_eq_mk]; exact mk_congr (by norm_num) rfl _ _
-  | hp k ih =>
+  | zero => rw [zpow_zero, Units.val_one, one_eq_mk]; exact mk_congr (by norm_num) rfl _ _
+  | succ k ih =>
     rw [zpow_add_one, Units.val_mul, ih]
     change _ * mk 𝒜 2 1 _ = _
     rw [mk_mul_mk]; exact mk_congr (by ring) (one_mul 1) _ _
-  | hn k ih =>
+  | pred k ih =>
     rw [zpow_sub_one, Units.val_mul, ih]
     change _ * mk 𝒜 (-2) 1 _ = _
     rw [mk_mul_mk]; exact mk_congr (by ring) (one_mul 1) _ _
 
+set_option backward.isDefEq.respectTransparency false in
 theorem periodUnit_mul_mk {n : ℤ} {a : A} (ha : a ∈ 𝒜 n) :
     (periodUnit 𝒜 : Periodize 𝒜) * mk 𝒜 n a ha = mk 𝒜 (n + 2) a
       (by rw [Int.cast_add, show ((2 : ℤ) : ZMod 2) = 0 from rfl, add_zero]; exact ha) := by
@@ -353,6 +358,7 @@ instance periodizeGrading.gradedSMul :
     obtain ⟨x, hx, rfl⟩ := mem_periodizeGrading_iff.mp hx
     rw [mk_smul_mk]; exact mk_mem _ _
 
+set_option backward.isDefEq.respectTransparency false in
 theorem fold_smul (p : Periodize 𝒜) (x : Periodize ℳ) :
     fold ℳ (p • x) = fold 𝒜 p • fold ℳ x := by
   induction p using induction_on with
@@ -364,6 +370,7 @@ theorem fold_smul (p : Periodize 𝒜) (x : Periodize ℳ) :
     | add y y' hy hy' => rw [smul_add, map_add, hy, hy', map_add, smul_add]
   | add p p' hp hp' => rw [add_smul, map_add, hp, hp', map_add, add_smul]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem periodUnit_smul (x : Periodize ℳ) :
     (periodUnit 𝒜 : Periodize 𝒜) • x = shiftTwo ℳ x := by
   induction x using induction_on with
@@ -411,13 +418,14 @@ theorem inv_mem : ((P.unit⁻¹ : Aˣ) : A) ∈ 𝒜 (-2) := by
     rw [← one_mul w, ← Units.inv_mul P.unit, mul_assoc, hw, mul_one]
   rw [this]; exact (decompose 𝒜 _ (-2)).2
 
+set_option backward.isDefEq.respectTransparency false in
 theorem zpow_mem (k : ℤ) : ((P.unit ^ k : Aˣ) : A) ∈ 𝒜 (2 * k) := by
   induction k using Int.induction_on with
-  | hz => simpa using (SetLike.GradedOne.one_mem (A := 𝒜))
-  | hp k ih =>
+  | zero => simpa using (SetLike.GradedOne.one_mem (A := 𝒜))
+  | succ k ih =>
     rw [zpow_add_one, Units.val_mul, mul_add, mul_one]
     exact SetLike.GradedMul.mul_mem ih P.mem
-  | hn k ih =>
+  | pred k ih =>
     rw [zpow_sub_one, Units.val_mul, mul_sub, mul_one, sub_eq_add_neg]
     exact SetLike.GradedMul.mul_mem ih P.inv_mem
 
@@ -439,11 +447,11 @@ def collapse (n : ℤ) : A →+ A :=
 
 theorem collapse_of_mem {k n : ℤ} {a : A} (ha : a ∈ 𝒜 k) (h : (k : ZMod 2) = n) :
     P.collapse n a = ((P.unit ^ ((n - k) / 2) : Aˣ) : A) * a := by
-  rw [collapse, liftHomogeneous_of_mem 𝒜 _ ha, if_pos h]; rfl
+  rw [collapse, liftHomogeneous_of_mem 𝒜 _ ha, ite_eq_left h]; rfl
 
 theorem collapse_of_mem_of_ne {k n : ℤ} {a : A} (ha : a ∈ 𝒜 k) (h : (k : ZMod 2) ≠ n) :
     P.collapse n a = 0 := by
-  rw [collapse, liftHomogeneous_of_mem 𝒜 _ ha, if_neg h]; rfl
+  rw [collapse, liftHomogeneous_of_mem 𝒜 _ ha, ite_eq_right h]; rfl
 
 theorem collapse_of_mem_same {n : ℤ} {a : A} (ha : a ∈ 𝒜 n) : P.collapse n a = a := by
   rw [P.collapse_of_mem ha rfl, sub_self, Int.zero_ediv, zpow_zero, Units.val_one, one_mul]
@@ -577,7 +585,7 @@ def decomposeAux : P.Quotient →+ ⨁ j : ZMod 2, P.quotientGrading j :=
       ((P.mkQ.toAddMonoidHom.comp (P.collapse (j.val : ℤ))).codRestrict _
         fun a => ⟨_, P.collapse_mem _ a, rfl⟩))
     fun a ha => by
-      refine (AddMonoidHom.finset_sum_apply _ _ _).trans (Finset.sum_eq_zero fun j _ => ?_)
+      refine (AddMonoidHom.finsetSum_apply _ _ _).trans (Finset.sum_eq_zero fun j _ => ?_)
       have h0 : (⟨P.mkQ (P.collapse (j.val : ℤ) a), _, P.collapse_mem _ a, rfl⟩ :
           P.quotientGrading j) = 0 :=
         Subtype.ext (by simp [P.collapse_eq_zero_of_mem_ideal _ ha])
@@ -642,6 +650,7 @@ def toPeriodizeHom : A →+ Periodize P.quotientGrading :=
       ((P.mkQ.toAddMonoidHom.comp (𝒜 n).subtype).codRestrict _
         fun a => P.mkQ_mem_quotientGrading a.2)
 
+set_option backward.isDefEq.respectTransparency false in
 theorem toPeriodizeHom_of_mem {n : ℤ} {a : A} (ha : a ∈ 𝒜 n) :
     P.toPeriodizeHom a = Periodize.mk _ n (P.mkQ a) (P.mkQ_mem_quotientGrading ha) := by
   rw [toPeriodizeHom, liftHomogeneous_of_mem 𝒜 _ ha]; rfl
@@ -664,6 +673,7 @@ theorem ofPeriodizeHom_toPeriodizeHom (a : A) : P.ofPeriodizeHom (P.toPeriodizeH
       P.collapse_of_mem_same a.2]
   | add a b ha hb => rw [map_add, map_add, ha, hb]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem toPeriodizeHom_ofPeriodizeHom (x : Periodize P.quotientGrading) :
     P.toPeriodizeHom (P.ofPeriodizeHom x) = x := by
   induction x using Periodize.induction_on with
@@ -744,6 +754,7 @@ theorem mk_eq_periodUnit_zpow_mul {m n : ℤ} (h : (m : ZMod 2) = n) {b : B} (hb
   exact mk_congr (by rw [Int.mul_ediv_cancel' (PeriodicityUnit.two_dvd_sub h), sub_add_cancel])
     (one_mul b).symm _ _
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The periodicity unit `u` of `Periodize ℬ` (`1` placed in degree `2`), as a central unit of
 degree `2`. -/
 def periodicityUnit : PeriodicityUnit (periodizeGrading ℬ) where
@@ -785,7 +796,7 @@ def unfoldQ : B →+ (periodicityUnit ℬ).Quotient :=
 variable {ℬ} in
 theorem unfoldQ_of_mem {j : ZMod 2} {b : B} (hb : b ∈ ℬ j) :
     unfoldQ ℬ b = (periodicityUnit ℬ).mkQ (mk ℬ (j.val : ℤ) b (by rwa [intCast_val_zmodTwo])) := by
-  simp only [unfoldQ, AddMonoidHom.comp_apply, AddMonoidHom.finset_sum_apply]
+  simp only [unfoldQ, AddMonoidHom.comp_apply, AddMonoidHom.finsetSum_apply]
   rw [Finset.sum_eq_single j]
   · rw [single_of_mem]; rfl
   · intro j' _ hj'
@@ -793,10 +804,10 @@ theorem unfoldQ_of_mem {j : ZMod 2} {b : B} (hb : b ∈ ℬ j) :
   · simp
 
 theorem foldQ_unfoldQ (b : B) : foldQ ℬ (unfoldQ ℬ b) = b := by
-  simp only [unfoldQ, AddMonoidHom.comp_apply, AddMonoidHom.finset_sum_apply]
+  simp only [unfoldQ, AddMonoidHom.comp_apply, AddMonoidHom.finsetSum_apply]
   change foldQ ℬ ((periodicityUnit ℬ).mkQ _) = b
   rw [foldQ_mkQ, map_sum]
-  simp only [fold_single, intCast_val_zmodTwo]
+  simp only [fold_single]
   exact sum_decompose_univ ℬ b
 
 theorem unfoldQ_foldQ (y : (periodicityUnit ℬ).Quotient) : unfoldQ ℬ (foldQ ℬ y) = y := by
@@ -928,7 +939,7 @@ theorem intCast_val_zmod (r : ZMod k) : ((r.val : ℤ) : ZMod k) = r := by
   rw [Int.cast_natCast, ZMod.natCast_zmod_val]
 
 theorem ediv_mul_add_val (n : ℤ) : n / k * k + ((n : ZMod k).val : ℤ) = n := by
-  rw [ZMod.val_intCast]; exact Int.ediv_add_emod' n k
+  rw [ZMod.val_intCast]; exact Int.ediv_mul_add_emod n k
 
 theorem mul_add_val_ediv (q : ℤ) (r : ZMod k) : (q * k + (r.val : ℤ)) / k = q := by
   have hk : (k : ℤ) ≠ 0 := Int.natCast_ne_zero.mpr (NeZero.ne k)

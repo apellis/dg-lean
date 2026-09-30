@@ -37,10 +37,12 @@ namespace DGSubmodule
 
 instance : SetLike (DGSubmodule A M) M where
   coe S := S.carrier
-  coe_injective' S T h := by
+  coe_injective S T h := by
     obtain ⟨⟨⟨⟨_, _⟩, _⟩, _⟩, _, _⟩ := S
     obtain ⟨⟨⟨⟨_, _⟩, _⟩, _⟩, _, _⟩ := T
     congr
+
+instance : PartialOrder (DGSubmodule A M) := .ofSetLike (DGSubmodule A M) M
 
 @[simp]
 theorem mem_toSubmodule {S : DGSubmodule A M} {m : M} : m ∈ S.toSubmodule ↔ m ∈ S :=
@@ -102,7 +104,7 @@ theorem isInternal_grading : DirectSum.IsInternal S.grading := by
   apply Subtype.ext
   rw [map_sum]
   simp only [DirectSum.coeAddMonoidHom_of]
-  rw [AddSubmonoidClass.coe_finset_sum]
+  rw [AddSubmonoidClass.coe_finsetSum]
   exact DirectSum.sum_support_decompose (DGAddCommGroup.grading (M := M)) (x : M)
 
 /-- The differential of a dg submodule. -/
@@ -134,7 +136,7 @@ instance instDGModule : DGModule A S where
   smul_mem _ _ _ _ ha hx := smul_mem_grading (M := M) ha hx
   d_smul' ha x := Subtype.ext (by
     rw [coe_d, coe_smul, d_smul ha (x : M)]
-    simp only [coe_add, AddSubgroup.val_finset_sum, coe_smul, coe_d]
+    simp only [coe_add, coe_smul]
     rfl)
 
 /-- The inclusion of a dg submodule as a morphism of dg modules. -/

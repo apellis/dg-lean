@@ -58,7 +58,7 @@ variable {A : Type*} [Ring A] [DGAddCommGroup A] {M : Type*} [AddCommGroup M]
   [DGAddCommGroup M] [Module A M]
 
 /-- The inclusion `S → T` of dg submodules with `S ≤ T`, as a morphism of dg modules. -/
-def inclusion {S T : DGSubmodule A M} (h : S ≤ T) : S →ᵈᵍ[A] T :=
+noncomputable def inclusion {S T : DGSubmodule A M} (h : S ≤ T) : S →ᵈᵍ[A] T :=
   codRestrict S.subtype fun x => h x.2
 
 @[simp]
@@ -278,7 +278,7 @@ variable {A : Type*} [Ring A] [DGAddCommGroup A]
 
 /-- For dg submodules `S ≤ T` of `P` and a morphism `π : T → Q` with kernel `S` admitting a graded
 section `s`, the sequence `S → T → Q` is graded split, with retraction `x ↦ x - s (π x)`. -/
-def GradedSplitting.ofSection {S T : DGSubmodule A P} (hST : S ≤ T) (π : T →ᵈᵍ[A] Q)
+noncomputable def GradedSplitting.ofSection {S T : DGSubmodule A P} (hST : S ≤ T) (π : T →ᵈᵍ[A] Q)
     (hπ : ∀ x : T, π x = 0 ↔ (x : P) ∈ S) (s : Cochain A Q T 0) (hs : ∀ y, π (s y) = y) :
     GradedSplitting (DGSubmodule.inclusion hST) π where
   r :=
@@ -481,7 +481,7 @@ variable {A : Type*} [Ring A] [DGAddCommGroup A] [DGRing A] (e : DGIdempotent A)
 
 /-- The filtration `0 ⊆ A e` of `A e`, with the zero submodule in degree `0` and `A e` in all
 positive degrees. -/
-def leftCornerFiltration : ℕ → DGSubmodule A e.LeftCorner
+noncomputable def leftCornerFiltration : ℕ → DGSubmodule A e.LeftCorner
   | 0 => (DGModuleHom.id : e.LeftCorner →ᵈᵍ[A] e.LeftCorner).ker
   | _ + 1 => (0 : e.LeftCorner →ᵈᵍ[A] e.LeftCorner).ker
 

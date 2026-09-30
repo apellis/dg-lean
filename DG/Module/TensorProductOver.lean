@@ -101,7 +101,7 @@ theorem balancedRel_eq_closure_gen :
   rintro _ ⟨a, m, n, rfl⟩
   set S := AddSubgroup.closure (balancedRelGen A M N)
   induction a using induction_on with
-  | h_zero => simpa using zero_mem S
+  | h_zero => simp
   | h_add a a' ha ha' =>
     have : (op (a + a') • m) ⊗ₜ[ℤ] n - m ⊗ₜ ((a + a') • n) =
         ((op a • m) ⊗ₜ[ℤ] n - m ⊗ₜ (a • n)) + ((op a' • m) ⊗ₜ[ℤ] n - m ⊗ₜ (a' • n)) := by
@@ -109,7 +109,7 @@ theorem balancedRel_eq_closure_gen :
     rw [this]; exact add_mem ha ha'
   | h_homogeneous a =>
     induction m using induction_on with
-    | h_zero => simpa using zero_mem S
+    | h_zero => simp
     | h_add m m' hm hm' =>
       have : (op (a : A) • (m + m')) ⊗ₜ[ℤ] n - (m + m') ⊗ₜ ((a : A) • n) =
           ((op (a : A) • m) ⊗ₜ[ℤ] n - m ⊗ₜ ((a : A) • n)) +
@@ -118,7 +118,7 @@ theorem balancedRel_eq_closure_gen :
       rw [this]; exact add_mem hm hm'
     | h_homogeneous m =>
       induction n using induction_on with
-      | h_zero => simpa using zero_mem S
+      | h_zero => simp
       | h_add n n' hn hn' =>
         have : (op (a : A) • (m : M)) ⊗ₜ[ℤ] (n + n') - (m : M) ⊗ₜ ((a : A) • (n + n')) =
             ((op (a : A) • (m : M)) ⊗ₜ[ℤ] n - (m : M) ⊗ₜ ((a : A) • n)) +
@@ -139,7 +139,7 @@ theorem d_balancedRel_gen {i j : ℤ} {a : A} (ha : a ∈ grading i) {m : M} (hm
         koszulSign (j + i) • ((op a • m) ⊗ₜ[ℤ] d n - m ⊗ₜ (a • d n)) := by
   rw [d_sub, d_tmul_of_mem (op_smul_mem_grading ha hm), d_tmul_of_mem hm, d_op_smul hm,
     d_smul ha, add_tmul, tmul_add, smul_sub, smul_sub, koszulSign_add, mul_smul]
-  simp only [Units.smul_def, smul_tmul', tmul_smul, smul_add, Units.val_mul, mul_smul]
+  simp only [Units.smul_def, smul_tmul', tmul_smul, smul_add, mul_smul]
   abel
 
 instance isDGAddSubgroup_balancedRel : IsDGAddSubgroup (balancedRel A M N) := by
@@ -227,9 +227,13 @@ theorem units_smul_tmul (u : ℤˣ) (m : M) (n : N) : tmul A (u • m) n = u •
 @[elab_as_elim]
 theorem induction_on {P : TensorProductOver A M N → Prop} (x : TensorProductOver A M N)
     (zero : P 0) (tmul : ∀ m n, P (tmul A m n)) (add : ∀ x y, P x → P y → P (x + y)) : P x := by
+  classical
+  by_cases hx : x = 0
+  · subst x
+    exact zero
+  clear hx
   obtain ⟨x, rfl⟩ := mk_surjective x
-  induction x using TensorProduct.induction_on with
-  | zero => simpa using zero
+  induction x using TensorProduct.inductionOn with
   | tmul m n => exact tmul m n
   | add x y hx hy => rw [map_add]; exact add _ _ hx hy
 
@@ -326,9 +330,9 @@ theorem smul_mem_balancedRel (b : B) {x : M ⊗[ℤ] N} (hx : x ∈ balancedRel 
     obtain ⟨a, m, n, rfl⟩ := hx
     rw [smul_sub, smul_tmul', smul_tmul', smul_comm b (op a) m]
     exact balancedRel_mem a (b • m) n
-  | one => rw [smul_zero]; exact zero_mem _
-  | mul x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
-  | inv x _ hx => rw [smul_neg]; exact neg_mem hx
+  | zero => rw [smul_zero]; exact zero_mem _
+  | add x y _ _ hx hy => rw [smul_add]; exact add_mem hx hy
+  | neg x _ hx => rw [smul_neg]; exact neg_mem hx
 
 /-- For a `(B, A)`-bimodule `M`, `B` acts on `M ⊗_A N` through `M`. -/
 instance : SMul B (TensorProductOver A M N) where
@@ -383,6 +387,7 @@ theorem tmul_mem_grading {i j : ℤ} {m : M} (hm : m ∈ grading i) {n : N} (hn 
     tmul A m n ∈ grading (i + j) :=
   mk_mem_grading (DG.tmul_mem_grading hm hn)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Induction on the homogeneous elements of `M ⊗_A N` of a given degree `k`: they are generated
 by the tensors `m ⊗ n` with `m ∈ Mⁱ`, `n ∈ Nʲ` and `i + j = k`. -/
 theorem induction_on_mem_grading {k : ℤ} {P : TensorProductOver A M N → Prop} (zero : P 0)
@@ -395,9 +400,9 @@ theorem induction_on_mem_grading {k : ℤ} {P : TensorProductOver A M N → Prop
   | mem x hx =>
     obtain ⟨i, j, h, m, hm, n, hn, rfl⟩ := hx
     exact tmul hm hn h
-  | one => simpa using zero
-  | mul x y _ _ hx hy => rw [map_add]; exact add _ _ hx hy
-  | inv x _ hx => rw [map_neg]; exact neg _ hx
+  | zero => simpa using zero
+  | add x y _ _ hx hy => rw [map_add]; exact add _ _ hx hy
+  | neg x _ hx => rw [map_neg]; exact neg _ hx
 
 /-- The differential of `M ⊗_A N`: `d (m ⊗ n) = d m ⊗ n + ε m ⊗ d n`, with `ε` the grade
 involution of `M`. -/
@@ -414,6 +419,7 @@ section Lift
 
 variable {P : Type*} [AddCommGroup P] [DGAddCommGroup P]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If a balanced bi-additive map sends `Mⁱ × Nʲ` to `Pⁱ⁺ʲ`, the induced map has degree `0`. -/
 theorem lift_mem (f : M →+ N →+ P)
     (hf : ∀ (a : A) (m : M) (n : N), f (op a • m) n = f m (a • n))
@@ -421,8 +427,8 @@ theorem lift_mem (f : M →+ N →+ P)
       f m n ∈ grading (i + j))
     {k : ℤ} {y : TensorProductOver A M N} (hy : y ∈ grading k) : lift f hf y ∈ grading k := by
   obtain ⟨x, hx, rfl⟩ := hy
-  simpa using map_mem_grading_of_tmul ((lift f hf).comp (mk A M N)) 0
-    (fun hm hn => by simpa using hdeg hm hn) hx
+  simpa using! map_mem_grading_of_tmul ((lift f hf).comp (mk A M N)) 0
+    (fun hm hn => by simpa using! hdeg hm hn) hx
 
 /-- If a balanced bi-additive map sends `Mⁱ × Nʲ` to `Pⁱ⁺ʲ⁺ˢ`, the induced map has degree
 `s`. -/
@@ -524,6 +530,7 @@ variable [DGRing A]
 
 variable (A N)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The multiplication map `A ⊗_A N → N`, `a ⊗ n ↦ a • n`, as a morphism of dg `A`-modules. -/
 def lid : TensorProductOver A A N →ᵈᵍ[A] N where
   toFun := lift (smulAddHom A N) fun a a' n => by
@@ -583,7 +590,7 @@ variable (A N)
 
 /-- The unit isomorphism `A ⊗_A N ≅ N`, `a ⊗ n ↦ a • n`, as an `A`-linear equivalence. -/
 def lidLinearEquiv : TensorProductOver A A N ≃ₗ[A] N :=
-  LinearEquiv.ofLinear (lid A N).toLinearMap (lidInv A N).toLinearMap
+  LinearEquiv.ofLinearMap (lid A N).toLinearMap (lidInv A N).toLinearMap
     (LinearMap.ext lid_lidInv) (LinearMap.ext lidInv_lid)
 
 /-- The unit isomorphism `A ⊗_A N ≅ N`, `a ⊗ n ↦ a • n`, as an isomorphism of dg abelian
@@ -626,8 +633,8 @@ variable (A M N) in
 /-- The action of `b ∈ Bᵐᵒᵖ` on `M ⊗_A N` through the right factor, `(m ⊗ n) • b = m ⊗ (n • b)`,
 as an additive map. -/
 def rightAct (b : Bᵐᵒᵖ) : TensorProductOver A M N →+ TensorProductOver A M N :=
-  lift ((tmulAddHom A M N).compl₂ (DistribMulAction.toAddMonoidHom N b)) fun a m n => by
-    simp only [AddMonoidHom.compl₂_apply, DistribMulAction.toAddMonoidHom_apply,
+  lift ((tmulAddHom A M N).compl₂ (DistribSMul.toAddMonoidHom N b)) fun a m n => by
+    simp only [AddMonoidHom.compl₂_apply, DistribSMul.toAddMonoidHom_apply,
       tmulAddHom_apply, op_smul_tmul, smul_comm a b n]
 
 @[simp]
@@ -708,7 +715,6 @@ open RightAction
 theorem op_smul_mem_grading_right {i j : ℤ} {b : B} (hb : b ∈ grading i)
     {y : TensorProductOver A M N} (hy : y ∈ grading j) : op b • y ∈ grading (j + i) := by
   refine induction_on_mem_grading (P := fun y => op b • y ∈ grading (j + i)) ?_ ?_ ?_ ?_ hy
-  all_goals beta_reduce
   · rw [smul_zero]; exact zero_mem _
   · intro p q m n hm hn h
     rw [op_smul_tmul_right, ← h, add_assoc]
@@ -720,7 +726,6 @@ theorem d_op_smul_right {j : ℤ} {y : TensorProductOver A M N} (hy : y ∈ grad
     d (op b • y) = op b • d y + koszulSign j • (op (d b) • y) := by
   refine induction_on_mem_grading
     (P := fun y => d (op b • y) = op b • d y + koszulSign j • (op (d b) • y)) ?_ ?_ ?_ ?_ hy
-  all_goals beta_reduce
   · simp
   · intro p q m n hm hn h
     rw [op_smul_tmul_right, d_tmul_of_mem hm, d_tmul_of_mem hm, d_op_smul hn, tmul_add,
@@ -884,7 +889,7 @@ theorem assocInv_d (z : TensorProductOver A M (TensorProductOver B N P)) :
         map_units_zsmul, assocInvAux_tmul, assocInvAux_tmul, smul_add, smul_smul,
         ← koszulSign_add, add_assoc]
     | h_add n n' hn hn' =>
-      simp only [add_tmul, map_add, d_add, hn, hn', smul_add]; abel
+      simp only [add_tmul, map_add, hn, hn', smul_add]; abel
   | add x y hx hy => rw [map_add, d_add, hx, hy, d_add, map_add, map_add, smul_add]; abel
 
 theorem assoc_mem {k : ℤ} {z : TensorProductOver B (TensorProductOver A M N) P}

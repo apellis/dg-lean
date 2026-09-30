@@ -97,7 +97,7 @@ theorem mem_truncGESubgroup_of_mem {n i : ℤ} {m : M} (hm : m ∈ grading i) (h
 /-- A homogeneous element of `M^{≥ n}` of degree `i` is zero unless `n ≤ i`. -/
 theorem eq_zero_or_le_of_mem_truncGESubgroup {n i : ℤ} {m : M} (hm : m ∈ grading i)
     (hm' : m ∈ truncGESubgroup M n) : m = 0 ∨ n ≤ i := by
-  rcases lt_or_le i n with hi | hi
+  rcases lt_or_ge i n with hi | hi
   · left
     have h := congrArg Subtype.val (hm' i hi)
     rwa [decompose_of_mem_same _ hm, ZeroMemClass.coe_zero] at h
@@ -110,7 +110,7 @@ theorem truncGESubgroup_anti : Antitone (truncGESubgroup M) :=
 theorem isHomogeneous_truncGESubgroup (n : ℤ) :
     SetLike.IsHomogeneous (grading (M := M)) (truncGESubgroup M n) := by
   intro j m hm
-  rcases lt_or_le j n with hj | hj
+  rcases lt_or_ge j n with hj | hj
   · rw [hm j hj, ZeroMemClass.coe_zero]
     exact zero_mem _
   · exact mem_truncGESubgroup_of_mem (decompose (grading (M := M)) m j).2 hj
@@ -233,9 +233,9 @@ theorem coe_decompose_mul_zero (hA : ∀ i < 0, grading (M := A) i = ⊥) (a b :
     | h_homogeneous b =>
       obtain ⟨b, hb⟩ := b
       rename_i j
-      rcases lt_or_le i 0 with hi | hi
+      rcases lt_or_ge i 0 with hi | hi
       · simp [hneg hi ha]
-      rcases lt_or_le j 0 with hj | hj
+      rcases lt_or_ge j 0 with hj | hj
       · simp [hneg hj hb]
       by_cases h : i + j = 0
       · obtain rfl : i = 0 := by omega
@@ -277,8 +277,8 @@ theorem degreeZero (R : Type*) [Ring R] [IsSemisimpleRing R] :
     letI := DGAddCommGroup.degreeZero R
     haveI := DGRing.degreeZero R
     IsPositive R := by
-  letI := DGAddCommGroup.degreeZero R
-  haveI := DGRing.degreeZero R
+  let := DGAddCommGroup.degreeZero R
+  have := DGRing.degreeZero R
   have htop : degreeZeroSubring R = ⊤ :=
     eq_top_iff.mpr fun r _ => mem_degreeZeroGrading_zero R r
   exact
@@ -414,7 +414,8 @@ theorem ker_projZero : hA.projZero.ker = truncGE hA.grading_eq_bot 1 := by
 
 /-- The morphism of dg rings `A ⧸ A^{≥ 1} → A⁰` induced by the projection; it is bijective
 (`quotientTruncGEOneHom_bijective`). -/
-def quotientTruncGEOneHom : (A ⧸ truncGE hA.grading_eq_bot 1) →ᵈᵍ+* hA.degreeZeroDGSubring :=
+noncomputable def quotientTruncGEOneHom :
+    (A ⧸ truncGE hA.grading_eq_bot 1) →ᵈᵍ+* hA.degreeZeroDGSubring :=
   DGIdeal.Quotient.lift hA.projZero fun a ha => by
     rw [← DGRingHom.mem_ker, hA.ker_projZero]
     exact ha

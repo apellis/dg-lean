@@ -129,6 +129,7 @@ theorem koszulTwist_actHom_mul_of_mem {i j : ℤ} {x y : Aᵒᵖ} (hx : x ∈ gr
     ring
   | h_add m m' hm hm' => simp only [map_add, hm, hm']
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The left action of the opposite dg algebra on a right dg module, as a ring homomorphism
 `Aᵒᵖ →+* AddMonoid.End M`: `op a ↦ (m ↦ (-1)^{|a||m|} • m • a)`. -/
 def opRingHom : Aᵒᵖ →+* AddMonoid.End M where
@@ -155,6 +156,7 @@ def opRingHom : Aᵒᵖ →+* AddMonoid.End M where
 
 /-- The left `Aᵒᵖ`-module structure on a right dg `A`-module `M`, given by the Koszul rule
 `op a • m = (-1)^{|a||m|} • (m • a)`. -/
+@[instance_reducible]
 def opModule : Module Aᵒᵖ M := Module.compHom M (opRingHom R (A := A) (M := M))
 
 theorem opModule_smul (x : Aᵒᵖ) (m : M) :
@@ -250,6 +252,7 @@ theorem koszulTwist_opActHom_mul (a b : A) (m : M) :
     | h_add b b' hb hb' => simp only [add_mul, map_add, AddMonoidHom.add_apply, hb, hb']
   | h_add a a' ha ha' => simp only [mul_add, map_add, AddMonoidHom.add_apply, ha, ha']
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The right action of `A` on a left dg `Aᵒᵖ`-module, as a ring homomorphism
 `Aᵐᵒᵖ →+* AddMonoid.End M`: `op a ↦ (m ↦ (-1)^{|a||m|} • op a • m)`. -/
 def mulOppositeRingHom : Aᵐᵒᵖ →+* AddMonoid.End M where
@@ -269,6 +272,7 @@ def mulOppositeRingHom : Aᵐᵒᵖ →+* AddMonoid.End M where
 
 /-- The right `A`-module structure on a left dg `Aᵒᵖ`-module `M`, given by the Koszul rule
 `m • a = (-1)^{|a||m|} • (op a • m)`. -/
+@[instance_reducible]
 def mulOppositeModule : Module Aᵐᵒᵖ M := Module.compHom M (mulOppositeRingHom R (A := A) (M := M))
 
 theorem mulOppositeModule_smul (x : Aᵐᵒᵖ) (m : M) :
@@ -332,14 +336,14 @@ def rightModuleEquivOpModule :
   left_inv P := by
     obtain ⟨P, hP⟩ := P
     refine Subtype.ext (Module.ext' _ _ fun x m => ?_)
-    letI := P
+    let := P
     change koszulTwist (koszulTwist (DGRightModule.actHom A M)) (MulOpposite.unop x) m = x • m
     rw [koszulTwist_koszulTwist]
     rfl
   right_inv Q := by
     obtain ⟨Q, hQ⟩ := Q
     refine Subtype.ext (Module.ext' _ _ fun x m => ?_)
-    letI := Q
+    let := Q
     change koszulTwist (koszulTwist (DGModule.opActHom R A M))
       (GradedOpposite.unop (DGAlgebra.gradingSubmodule R A) x) m = x • m
     rw [koszulTwist_koszulTwist]
