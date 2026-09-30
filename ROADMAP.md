@@ -640,8 +640,14 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     the super Grothendieck group `SuperK0`, `SuperK0c` with the comparison `superK0Equiv`,
     `superK0cEquiv` (even `K₀` modulo `[Π X] = [X]`, via `DG.K0Rel.equivQuotient`); over a field,
     `DG.HalfGradedDGRing.Field.K0Equiv : K₀(D(k)^c) ≃+ (Fin (2k) → ℤ)` for all `k > 0`
-    (`DG.IsOrthonormalGenerating.K0Equiv`). Open: the `ℤ[q]/(q^{2k} - 1)`-module identification,
-    `[Π k] = -qᵏ[k]`, super `K₀(D(k)) ≅ ℤ[q, q⁻¹]/(1 + qᵏ)`, the case over `ℤ`.
+    (`DG.IsOrthonormalGenerating.K0Equiv`); `DG.HalfGradedDGRing.Field.K0LinearEquiv :
+    K₀(D(k)^c) ≃ₗ[ℤ[q, q⁻¹]] ℤ[q, q⁻¹]/(q^{2k} - 1)` (`[k] ↦ 1`, basis `qⁱ[k]`,
+    `0 ≤ i < 2k`), `cls_parityShift` (`[Π k] = -qᵏ[k]`), `Field.superK0Equiv` (super
+    `K₀(D(k)^c) ≃+ ℤ[q, q⁻¹]/(1 + qᵏ)`) and, for `k = 2`, `superK0EquivGaussianInt`
+    (`≃ ℤ[√-1]`). As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
+    by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
+    modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
+    weight category of the regraded ring).
 
 ## Tier 8 — Filling out (candidates for upstreaming)
 
