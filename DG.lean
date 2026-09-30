@@ -76,6 +76,7 @@ import DG.Category.WeightComparison
 import DG.Category.Yoneda
 import DG.Compact.Basic
 import DG.Compact.Brown
+import DG.Compact.CellTower
 import DG.Compact.Generation
 import DG.Compact.HomotopyColimit
 import DG.Compact.Thick
@@ -84,6 +85,9 @@ import DG.Derived.Bar
 import DG.Derived.Basic
 import DG.Derived.Comparison
 import DG.Derived.Coproducts
+import DG.Derived.FiniteCell
+import DG.Derived.GradedSplitting
+import DG.Derived.KProjective
 import DG.Derived.LocalizationCoproducts
 import DG.Derived.Perfect
 import DG.Derived.QuasiIso
@@ -167,3 +171,4 @@ import DG.Monoidal.ModComparison
 import DG.Monoidal.MonComparison
 import DG.Monoidal.MonObj
 import DG.Positive.Basic
+import DG.Positive.Idempotent
