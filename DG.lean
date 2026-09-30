@@ -166,6 +166,7 @@ import DG.K0.Field
 import DG.K0.Homological
 import DG.K0.LeftCorner
 import DG.K0.Morita
+import DG.K0.Orthonormal
 import DG.K0.PositiveCategory
 import DG.K0.Rel
 import DG.K0.Triangulated
