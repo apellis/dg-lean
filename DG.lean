@@ -23,6 +23,7 @@ import DG.Category.Basic
 import DG.Category.Comparison
 import DG.Category.Coproducts
 import DG.Category.Derived.Basic
+import DG.Category.Derived.Compact
 import DG.Category.Derived.Comparison
 import DG.Category.Derived.Coproducts
 import DG.Category.Derived.HomotopyCoproducts

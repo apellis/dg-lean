@@ -248,6 +248,12 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     compact objects are the thick closure of the representables; `K₀(C)`; positive dg
     categories and Schnürer's theorem; the internal shift of tier 7 as the dg autoequivalence of
     `C_A` shifting objects by `1`.
+    — D.5 partly done: `DG.CatModule.DerivedCategory.compactlyGenerates` (the representable
+    modules `Q C(X, -)` compactly generate `D(C)`, `DG.CompactlyGenerates`), with
+    `DG.CatModule.DerivedCategory.isCompact_Q_obj`,
+    `DG.CatModule.DerivedCategory.isZero_of_forall_representable`, and
+    `DG.CatModule.DerivedCategory.thickClosure_representable_eq_isCompact` (compact objects =
+    thick closure of the representables). Open: `K₀(C)`, positive dg categories, tier 7.
 
 ## Tier 3 — The homotopy category
 
