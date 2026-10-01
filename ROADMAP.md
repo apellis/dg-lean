@@ -664,8 +664,18 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     relations with `(1 + qᵏ)K₀`. `SuperK0c` carries Laurent-polynomial and quotient-ring scalar
     actions (`superK0cModule`, `superK0cQuotientModule`); `T_smul_superK0c_mk` identifies the action
     with the actual internal shift. The field comparison is linear over both coefficient rings
-    (`Field.superK0LinearEquiv`, `Field.superK0QuotientLinearEquiv`). General functorial linear-map
-    descent and the Gaussian-integer scalar upgrade remain open.
+    (`Field.superK0LinearEquiv`, `Field.superK0QuotientLinearEquiv`). `superK0cMap` uniquely descends
+    a supplied Laurent-linear compact-K₀ map at a common integer parameter; `superK0cQuotientMap`
+    is linear over the quotient coefficient ring. This does not construct a ring-induced derived
+    functor. At parameter `2`, every `SuperK0c H` has canonical Gaussian scalars, compatible with
+    the Laurent action (`superK0c_evalI_smul`); powers of `i` act by actual internal shifts
+    (`gaussian_zpow_smul_superK0c_mk`). `Field.superK0GaussianLinearEquiv` upgrades the existing
+    additive field comparison, preserving the regular class and all internal shifts.
+    `HalfGradedDGRing.ofDGRing` places an ordinary dg ring's degree `n` at `(2n, n mod 2)` on
+    the same underlying ring, with its original differential. Diagonal components and projections
+    recover the originals; off-diagonal components vanish. The original module action satisfies
+    the diagonal degree and parity Leibniz rules, but its weight-category module embedding and
+    a derived comparison are not yet constructed (`DG/HalfGraded/Diagonal.lean`).
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the

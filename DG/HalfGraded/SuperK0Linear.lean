@@ -138,3 +138,74 @@ theorem T_smul_superK0c_mk (n : ℤ)
     superK0cMk_mk]
 
 end DG.HalfGradedDGRing
+
+/-! ## Descent of linear maps -/
+
+universe v' v t
+
+namespace DG.HalfGradedDGRing
+variable {A : Type u} [Ring A] {B : Type t} [Ring B] {k : ℤ}
+  (H : HalfGradedDGRing A k) (H' : HalfGradedDGRing B k)
+  [CatModule.HasDerivedCategory.{w', max u w} (WeightCategory H.Regraded)]
+  [CatModule.HasDerivedCategory.{v', max t v} (WeightCategory H'.Regraded)]
+
+/-- Laurent-linear maps preserve the parity submodule, with no extra compatibility hypothesis. -/
+theorem map_mem_paritySubmodule
+    (f : CompactK0.{w', w} H →ₗ[LaurentPolynomial ℤ] CompactK0.{v', v} H') :
+    paritySubmodule H ≤ (paritySubmodule H').comap f := by
+  rintro _ ⟨x, rfl⟩
+  exact ⟨f x, (f.map_smul (1 + T k) x).symm⟩
+
+/-- Descent of an arbitrary Laurent-linear map to the existing compact super Grothendieck groups.
+Both rings have the same integer parameter; no field or positivity hypothesis is required. -/
+def superK0cMap
+    (f : CompactK0.{w', w} H →ₗ[LaurentPolynomial ℤ] CompactK0.{v', v} H') :
+    SuperK0c H →ₗ[LaurentPolynomial ℤ] SuperK0c H' :=
+  (superK0cLinearEquiv H').symm.toLinearMap.comp
+    (((paritySubmodule H).mapQ (paritySubmodule H') f (map_mem_paritySubmodule H H' f)).comp
+      (superK0cLinearEquiv H).toLinearMap)
+
+@[simp]
+theorem superK0cMap_mk (f : CompactK0.{w', w} H →ₗ[LaurentPolynomial ℤ] CompactK0.{v', v} H')
+    (x : CompactK0 H) :
+    superK0cMap H H' f (superK0cMk H x) = superK0cMk H' (f x) := by
+  apply (superK0cLinearEquiv H').injective
+  change superK0cLinearEquiv H' ((superK0cLinearEquiv H').symm
+    ((paritySubmodule H).mapQ (paritySubmodule H') f (map_mem_paritySubmodule H H' f)
+      (superK0cLinearEquiv H ((superK0cLinearEquiv H).symm
+        ((paritySubmodule H).mkQ x))))) =
+    superK0cLinearEquiv H' ((superK0cLinearEquiv H').symm ((paritySubmodule H').mkQ (f x)))
+  simp only [LinearEquiv.apply_symm_apply]
+  rfl
+
+/-- The descended map is also linear over the quotient coefficient ring. -/
+def superK0cQuotientMap
+    (f : CompactK0.{w', w} H →ₗ[LaurentPolynomial ℤ] CompactK0.{v', v} H') :
+    SuperK0c H →ₗ[LaurentPolynomial ℤ ⧸ superIdeal k] SuperK0c H' :=
+  { superK0cMap H H' f with
+    map_smul' := fun p x => by
+      obtain ⟨q, rfl⟩ := Ideal.Quotient.mk_surjective p
+      exact (superK0cMap H H' f).map_smul q x }
+
+/-- Uniqueness of descent, expressed on the canonical quotient map rather than assumed data. -/
+theorem superK0cMap_unique
+    (f : CompactK0.{w', w} H →ₗ[LaurentPolynomial ℤ] CompactK0.{v', v} H')
+    (g : SuperK0c H →ₗ[LaurentPolynomial ℤ] SuperK0c H')
+    (hg : ∀ x, g (superK0cMk H x) = superK0cMk H' (f x)) :
+    g = superK0cMap H H' f := by
+  ext x
+  obtain ⟨y, rfl⟩ := superK0cMk_surjective H x
+  rw [hg, superK0cMap_mk]
+
+/-- Concrete descent consumer: multiplication by a Laurent monomial descends to the actual
+internal shift, on every compact class. -/
+theorem superK0cMap_lsmul_T_mk (n : ℤ)
+    (X : (compactSubcategory.{max u w}
+      (CatModule.DerivedCategory.{w', max u w} (WeightCategory H.Regraded))).FullSubcategory) :
+    superK0cMap H H (LinearMap.lsmul (LaurentPolynomial ℤ) (CompactK0 H) (T n))
+      (K0Rel.mk X) =
+      K0Rel.mk (((CatModule.DerivedCategory.compactInternalShiftAction H.Regraded).functor n).obj X) := by
+  rw [← superK0cMk_mk H, superK0cMap_mk]
+  change superK0cMk H ((T n : LaurentPolynomial ℤ) • K0.mk X) = _
+  rw [map_smul, superK0cMk_mk, T_smul_superK0c_mk]
+end DG.HalfGradedDGRing

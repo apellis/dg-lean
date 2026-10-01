@@ -143,6 +143,7 @@ import DG.Graded.RegradingModuleCat
 import DG.Graded.TensorProduct
 import DG.HalfGraded.Basic
 import DG.HalfGraded.Derived
+import DG.HalfGraded.Diagonal
 import DG.HalfGraded.Field
 import DG.HalfGraded.Parity
 import DG.HalfGraded.SuperK0
