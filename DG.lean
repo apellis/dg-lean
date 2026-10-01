@@ -10,6 +10,7 @@ import DG.Algebra.Hochschild
 import DG.Algebra.Hom
 import DG.Algebra.Opposite
 import DG.Algebra.Regrading
+import DG.Algebra.RegradingDGModuleCat
 import DG.Algebra.RegradingModuleCat
 import DG.Algebra.TensorProduct
 import DG.Basic
@@ -20,6 +21,7 @@ import DG.Bigraded.Derived
 import DG.Bigraded.GradedSemisimple
 import DG.Bigraded.InternalShift
 import DG.Bigraded.K0Basis
+import DG.Bigraded.K0Free
 import DG.Bigraded.K0Map
 import DG.Bigraded.K0Morita
 import DG.Bigraded.ModuleCat
@@ -59,6 +61,7 @@ import DG.Category.Derived.TensorInduction
 import DG.Category.Functor
 import DG.Category.Homotopy.Acyclic
 import DG.Category.Homotopy.Comparison
+import DG.Category.Homotopy.ComparisonLinear
 import DG.Category.Homotopy.Cone
 import DG.Category.Homotopy.ConeCochain
 import DG.Category.Homotopy.ConeComp
@@ -68,14 +71,17 @@ import DG.Category.Homotopy.HomBimodule
 import DG.Category.Homotopy.HomBimoduleTriangulated
 import DG.Category.Homotopy.HomComp
 import DG.Category.Homotopy.HomShift
+import DG.Category.Homotopy.HomShiftIso
 import DG.Category.Homotopy.Homotopy
 import DG.Category.Homotopy.HomotopyCategory
 import DG.Category.Homotopy.HomotopyShift
+import DG.Category.Homotopy.Linear
 import DG.Category.Homotopy.Path
 import DG.Category.Homotopy.Precomp
 import DG.Category.Homotopy.Pretriangulated
 import DG.Category.Homotopy.Shift
 import DG.Category.Homotopy.Triangulated
+import DG.Category.Linear
 import DG.Category.Module
 import DG.Category.Opposite
 import DG.Category.Positive
@@ -109,15 +115,18 @@ import DG.Compact.Triangulated
 import DG.Derived.Bar
 import DG.Derived.Basic
 import DG.Derived.Comparison
+import DG.Derived.ConnectiveResolution
 import DG.Derived.Coproducts
 import DG.Derived.FiniteCell
 import DG.Derived.GradedSplitting
+import DG.Derived.Heart
 import DG.Derived.KProjective
 import DG.Derived.LocalizationCoproducts
 import DG.Derived.Morita
 import DG.Derived.Perfect
 import DG.Derived.QuasiIso
 import DG.Derived.Resolution
+import DG.Derived.TStructure
 import DG.Derived.Zero
 import DG.Examples.EndComplex
 import DG.Examples.Koszul
@@ -145,6 +154,7 @@ import DG.Homotopy.CohomologySequence
 import DG.Homotopy.Comparison
 import DG.Homotopy.ConeCochain
 import DG.Homotopy.ConeComp
+import DG.Homotopy.ConeQuotient
 import DG.Homotopy.Coproducts
 import DG.Homotopy.Forget
 import DG.Homotopy.ForgetTriangulated
@@ -219,6 +229,7 @@ import DG.Positive.Basic
 import DG.Positive.Category
 import DG.Positive.CellSum
 import DG.Positive.Formality
+import DG.Positive.FreeFormality
 import DG.Positive.Idempotent
 import DG.Positive.K0
 import DG.Positive.K0Basis

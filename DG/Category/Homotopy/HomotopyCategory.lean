@@ -26,9 +26,9 @@ ring).
 
 ## Differences with the dg-ring version
 
-The dg-ring version is also `R`-linear for a dg `R`-algebra; linearity over a commutative ring
-is not part of the present setting of dg categories (whose Hom groups are dg abelian groups),
-so only the (`ℤ`-linear) preadditive structure is ported.
+The dg-ring version is also `R`-linear for a dg `R`-algebra. Here only the (`ℤ`-linear)
+preadditive structure is constructed; for a dg category over a commutative ring `R`
+(`DG.DGLinear R C`), the `R`-linear structure is in `DG.Category.Homotopy.Linear`.
 -/
 
 open CategoryTheory CategoryTheory.Limits

@@ -1,52 +1,78 @@
 # dg-lean
 
-A Lean 4 / Mathlib library of differential graded (dg) algebra: dg algebras and dg modules,
-their homotopy and derived categories, compact objects and Grothendieck groups, and the
-structure theory of positive dg algebras.
+A Lean 4 / Mathlib library of differential graded (dg) algebra: dg algebras, dg categories and
+their dg modules, homotopy and derived categories, compact objects and Grothendieck groups, and
+the structure theory of positive dg algebras, including internal gradings.
 
-The library is at the roadmap stage. This file describes the goals; [ROADMAP.md](ROADMAP.md)
-lists the intended results, with references and acceptance criteria, in the order they should
-be built; [docs/CONVENTIONS.md](docs/CONVENTIONS.md) fixes gradings, signs and naming;
-[AGENTS.md](AGENTS.md) is the contributor guide. As results are completed this file will be
-rewritten to describe what is formalized.
+[ROADMAP.md](ROADMAP.md) lists the results item by item, with references, acceptance criteria and
+the names of the declarations proving them; [docs/CONVENTIONS.md](docs/CONVENTIONS.md) fixes
+gradings, signs and naming; [AGENTS.md](AGENTS.md) is the contributor guide.
 
-## Goals
+## What is formalized
 
-Mathlib (at the pinned revision) has homological complexes in an abelian category, the
-homotopy category of cochain complexes with its triangulated structure, the derived category
-of an abelian category, and the general theory of triangulated categories and localization.
-It has no dg algebras, no dg modules over a dg algebra, no derived category of a dg algebra, no
-compact or perfect objects, and no Grothendieck group of a triangulated category. This library
-is meant to supply those, in a form that could be upstreamed to Mathlib, and to prove the
-standard theorems about them:
+Gradings are cohomological (`ℤ`-graded, differential of degree `+1`) with the Koszul sign rule.
+Most results are stated for a small dg category `C`, with a dg ring `A` as the one-object case
+`SingleObj A`; the dg-ring statements are obtained through `D(SingleObj A) ≌ D(A)`.
 
-1. **Foundations.** ℤ-graded dg algebras over a commutative ring with the Koszul sign rule;
-   left, right and bi- dg modules; morphisms and the `HOM` complexes; endomorphism dg
-   algebras; tensor products; cohomology; quasi-isomorphisms; dg ideals, quotients,
-   idempotents and corners; comparison with monoid and module objects in Mathlib's monoidal
-   category of cochain complexes.
-2. **The homotopy category `H(A)`.** The abelian category of dg modules; homotopies; the
-   homotopy category as a quotient, its shift, mapping cones and its (pre)triangulated
-   structure; `Hom_{H(A)}(M, N) = H⁰(HOM_A(M, N))`; K-projective (cofibrant), semi-free and
-   finite-cell modules.
-3. **The derived category `D(A)`.** Localization of `H(A)` at quasi-isomorphisms, its
-   triangulated structure, existence and uniqueness of K-projective resolutions,
-   `Hom_{D(A)}(M, N) = H⁰(HOM_A(P_M, N))`, derived tensor and `RHom`, the tensor–Hom
-   adjunction, induction and restriction along dg algebra maps, and Keller's theorem that a
-   quasi-isomorphism of dg algebras induces an equivalence of derived categories; the
-   acyclicity criterion `D(A) ≃ 0 ⟺ H(A) = 0 ⟺ ∃ x, d x = 1`.
-4. **Compact objects and Grothendieck groups.** Compact objects of a triangulated category
-   with coproducts; the perfect derived category `D^c(A)`; the Grothendieck group `K₀` of a
-   triangulated category and `K₀(A) := K₀(D^c(A))`; `K₀` of a field and of a ring concentrated
-   in degree `0`; comparison with Mathlib's derived category of modules.
-5. **Positive dg algebras.** Schnürer's theorem: over a positive dg algebra the compact
-   objects are exactly the finite-cell modules up to isomorphism, hence `K₀(A) ≅ K₀(A⁰)`;
-   formality and Keller's theorem; bigraded variants (an additional internal grading with its
-   shift functor, making `K₀` a `ℤ[q, q⁻¹]`-module).
+1. **Foundations.** Graded modules and algebras with Koszul signs; dg abelian groups, dg rings
+   and algebras, dg modules, `HOM`/`END`, tensor products, cohomology rings, corners `e A e`;
+   regradings (`ℤ/2`-periodic, differentials of degree `k`); dg categories (`DG.DGCategory`),
+   dg functors, the categories `Z⁰(C)`, `H⁰(C)`, right modules, bimodules, tensor products over
+   `C`, induction along dg functors, the dg Yoneda lemma.
+2. **Homotopy categories.** The abelian category of dg modules; homotopies; the homotopy
+   category with its triangulated structure; `Hom_{H(C)}(M, N) = H⁰(HOM(M, N))`.
+3. **Derived categories.** `D(C)` as a triangulated localization, with coproducts; K-projective,
+   semi-free and finite-cell modules; existence and uniqueness of resolutions
+   (`DG.CatModule.exists_kProjective_resolution`, `DG.CatModule.SemiFreeResolution`); `D(C)` is
+   equivalent to the K-projective part of `H(C)`; derived induction and restriction along dg
+   functors, derived tensor product and `RHOM` along bimodules; **Keller's theorem**: a
+   quasi-equivalence induces a triangulated equivalence of derived categories
+   (`DG.CatModule.DerivedCategory.kellerEquivalence`, and for dg rings
+   `DG.DGRingHom.derivedEquivalence`); `D(A) ≃ 0 ⟺ H(A) = 0 ⟺ ∃ x, d x = 1`; comparison with
+   Mathlib's derived category of `R`-modules for `R` in degree `0`.
+4. **Compact objects and `K₀`.** Compact objects of triangulated categories, Neeman's
+   characterization of the compact objects of a compactly generated category and Brown
+   representability; the representable modules compactly generate `D(C)`; `K₀` of triangulated
+   categories; `K₀(C) := K₀(D^c(C))` and `K₀(A)`, functorial along dg functors and dg ring maps
+   and invariant under quasi-equivalences; `K₀(k) ≅ ℤ` for a field.
+5. **Positive dg algebras and dg categories.** Schnürer's theorem: over a positive dg algebra (or
+   dg category) the compact objects are exactly the ordered finite-cell modules up to isomorphism;
+   `K₀(A) ≅ K₀(A⁰)`, free on the classes of simple idempotents; Künneth formula for `K₀` under a
+   splitting hypothesis; formality and `D(A) ≃ D(H(A))` for formal `A`; Morita theory for
+   idempotents.
+6. **Internal gradings.** Bigraded dg algebras via the weight dg category `C_A`; the internal
+   shift `⟨1⟩` on `H`, `D` and `K₀` (a `ℤ[q, q⁻¹]`-module); positive bigraded dg algebras;
+   half-graded dg modules (a `ℤ × ℤ/2`-grading with differential of bidegree `(k, 1̄)`), odd
+   morphisms and the super Grothendieck group, with the computations over a field
+   `K₀(D(k)^c) ≅ ℤ[q]/(q^{2k} - 1)`, `[Π k] = -qᵏ[k]` and super `K₀ ≅ ℤ[q, q⁻¹]/(1 + qᵏ)`
+   (`≅ ℤ[√-1]` for `k = 2`).
+7. **Further topics.** Commutative dg algebras, dg Lie algebras and Chevalley–Eilenberg
+   cochains, Hochschild cochains, the bar construction.
 
-Everything is stated over a commutative ring `R` unless a theorem needs a field. Cohomological
-ℤ-gradings are primary; ℤ/2-graded and "differential of degree `n`" variants are obtained by
-regrading, see the conventions.
+The remaining open items are listed as "Open:" in [ROADMAP.md](ROADMAP.md).
+
+## Errata
+
+Some items of the roadmap were false as first stated; the library proves corrected versions and
+records counterexamples.
+
+- **3.5.** The lifting property against surjective quasi-isomorphisms is not equivalent to
+  K-projectivity: it is equivalent to K-projectivity together with graded projectivity
+  (`DG.hasLiftingProperty_iff`). Over `ℤ`, the cone of the identity of `ℚ` is contractible but
+  not graded-projective.
+- **6.5.** The Künneth formula `K₀(A ⊗_k B) ≅ K₀(A) ⊗ K₀(B)` needs the degree-zero parts to be
+  split semisimple: `ℂ ⊗_ℝ ℂ ≅ ℂ × ℂ` is a counterexample, and over an imperfect field the tensor
+  product of positive dg algebras need not be positive.
+- **7.3.** `A e A = A` does not imply `D(e A e) ≃ D(A)`
+  (`DG/Examples/MoritaCounterexample.lean`); the equivalence holds when `[e]` generates `H⁰(A)` as
+  a two-sided ideal (`DG.DGIdempotent.moritaEquivalence`), in particular for positive `A`.
+- **D.5.** `K₀(C)` need not be generated by the classes of the representable modules (their
+  direct summands may be needed, e.g. `k × k` in degree `0`).
+- **6.2 (Schnürer's theorem).** The main theorem of O. M. Schnürer, *Perfect derived categories
+  of positively graded DG algebras* (arXiv:0809.4782v2), is proved there as Theorems 13 and 16
+  and needs no field hypothesis; it is formalized for left modules. Closure of the finite-cell
+  modules under direct summands is proved directly in the derived category, avoiding the route
+  through bounded t-structures.
 
 ## Building
 
@@ -62,8 +88,8 @@ lake build
 ```
 
 The package treats warnings as errors. Completed results contain no `sorry` and no added
-axioms; the axiom closure of a result should be contained in `propext`, `Classical.choice`
-and `Quot.sound`.
+axioms; `scripts/AxiomAudit.lean` checks that the axioms of every declaration are among
+`propext`, `Classical.choice` and `Quot.sound`, and runs in CI.
 
 ## Models used
 
