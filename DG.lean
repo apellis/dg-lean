@@ -10,6 +10,7 @@ import DG.Algebra.Hochschild
 import DG.Algebra.Hom
 import DG.Algebra.Opposite
 import DG.Algebra.Regrading
+import DG.Algebra.RegradingDGModuleCat
 import DG.Algebra.RegradingModuleCat
 import DG.Algebra.TensorProduct
 import DG.Basic
@@ -60,6 +61,7 @@ import DG.Category.Derived.TensorInduction
 import DG.Category.Functor
 import DG.Category.Homotopy.Acyclic
 import DG.Category.Homotopy.Comparison
+import DG.Category.Homotopy.ComparisonLinear
 import DG.Category.Homotopy.Cone
 import DG.Category.Homotopy.ConeCochain
 import DG.Category.Homotopy.ConeComp
@@ -69,14 +71,17 @@ import DG.Category.Homotopy.HomBimodule
 import DG.Category.Homotopy.HomBimoduleTriangulated
 import DG.Category.Homotopy.HomComp
 import DG.Category.Homotopy.HomShift
+import DG.Category.Homotopy.HomShiftIso
 import DG.Category.Homotopy.Homotopy
 import DG.Category.Homotopy.HomotopyCategory
 import DG.Category.Homotopy.HomotopyShift
+import DG.Category.Homotopy.Linear
 import DG.Category.Homotopy.Path
 import DG.Category.Homotopy.Precomp
 import DG.Category.Homotopy.Pretriangulated
 import DG.Category.Homotopy.Shift
 import DG.Category.Homotopy.Triangulated
+import DG.Category.Linear
 import DG.Category.Module
 import DG.Category.Opposite
 import DG.Category.Positive
