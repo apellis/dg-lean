@@ -5,6 +5,37 @@ import Mathlib.Algebra.Homology.Embedding.CochainComplex
 import DG.K0.Euler
 import DG.K0.ProjectiveModules
 
+/-!
+# Perfect complexes over a ring
+
+Let `R` be a ring. A *perfect complex* over `R` is a strictly bounded cochain complex of finitely
+generated projective `R`-modules (`DG.IsPerfectComplex`, a property of Mathlib's
+`CochainComplex (ModuleCat R) ℤ`); an object of Mathlib's derived category
+`DerivedCategory (ModuleCat R)` is *perfect* if it is isomorphic to the image of a perfect
+complex (`DG.IsPerfect R`). See The Stacks Project, Chapter "More on Algebra", Section "Perfect
+complexes".
+
+## Main definitions and results
+
+* `DG.IsPerfectComplex K`, with the closure properties `DG.IsPerfectComplex.of_iso`,
+  `DG.IsPerfectComplex.mappingCone`, `DG.IsPerfectComplex.shift`, `DG.IsPerfectComplex.single`.
+* `DG.IsPerfectComplex.eulerChar : DG.ProjK0 R`: the Euler characteristic `Σₙ (-1)ⁿ [Kⁿ]` of a
+  perfect complex in the Grothendieck group of finitely generated projective modules;
+  `DG.IsPerfectComplex.eulerChar_mappingCone` (`χ(C(φ)) = χ(L) - χ(K)` for `φ : K ⟶ L`),
+  `DG.IsPerfectComplex.eulerChar_single`.
+* `DG.IsPerfectComplex.eulerChar_eq_zero_of_homotopy`: a contractible perfect complex has Euler
+  characteristic `0` (its cocycles are finitely generated projective and the alternating sum
+  telescopes).
+* `DG.IsPerfectComplex.isKProjective`: a perfect complex is K-projective, so morphisms out of it
+  in the derived category are homotopy classes of morphisms of complexes
+  (`DG.IsPerfectComplex.exists_Q_map_eq`, `DG.IsPerfectComplex.nonempty_homotopy_of_Q_map_eq`).
+* `DG.IsPerfectComplex.eulerChar_eq_of_iso_Q`: perfect complexes which are isomorphic in the
+  derived category have the same Euler characteristic.
+* `DG.IsPerfect R`: the perfect objects of the derived category, closed under isomorphisms,
+  shifts and cones (`DG.IsPerfect.of_iso`, `DG.IsPerfect.shift`, `DG.IsPerfect.ext₂`,
+  `DG.IsPerfect.ext₃`). Closure under direct summands is in `DG/Derived/PerfectThick.lean`.
+-/
+
 namespace DG
 
 open CategoryTheory Category Limits Pretriangulated ZeroObject
@@ -278,7 +309,8 @@ end Contractible
 
 section Derived
 
-variable [_root_.HasDerivedCategory.{w} (ModuleCat.{u} R)] {K L : CochainComplex (ModuleCat.{u} R) ℤ}
+variable [_root_.HasDerivedCategory.{w} (ModuleCat.{u} R)]
+  {K L : CochainComplex (ModuleCat.{u} R) ℤ}
 
 omit [_root_.HasDerivedCategory (ModuleCat R)] in
 /-- A perfect complex is K-projective (a bounded above complex of projectives). -/
