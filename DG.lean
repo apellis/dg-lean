@@ -20,6 +20,7 @@ import DG.Bigraded.Derived
 import DG.Bigraded.GradedSemisimple
 import DG.Bigraded.InternalShift
 import DG.Bigraded.K0Basis
+import DG.Bigraded.K0Free
 import DG.Bigraded.K0Morita
 import DG.Bigraded.ModuleCat
 import DG.Bigraded.Morita
