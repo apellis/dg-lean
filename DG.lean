@@ -51,6 +51,7 @@ import DG.Category.Derived.QuasiIso
 import DG.Category.Derived.Restriction
 import DG.Category.Derived.RestrictionIso
 import DG.Category.Derived.Schnurer
+import DG.Category.Derived.ShiftedObjects
 import DG.Category.Derived.Small
 import DG.Category.Derived.Tensor
 import DG.Category.Derived.TensorInduction
@@ -84,6 +85,7 @@ import DG.Category.Resolution.Resolution
 import DG.Category.Resolution.SemiFree
 import DG.Category.Resolution.SeqColimit
 import DG.Category.Resolution.Uniqueness
+import DG.Category.ShiftedObjects
 import DG.Category.SingleObj
 import DG.Category.SubQuotient
 import DG.Category.Tensor.Basic
