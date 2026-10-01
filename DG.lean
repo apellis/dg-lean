@@ -107,6 +107,7 @@ import DG.Derived.ConnectiveResolution
 import DG.Derived.Coproducts
 import DG.Derived.FiniteCell
 import DG.Derived.GradedSplitting
+import DG.Derived.Heart
 import DG.Derived.KProjective
 import DG.Derived.LocalizationCoproducts
 import DG.Derived.Morita
