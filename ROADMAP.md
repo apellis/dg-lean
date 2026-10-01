@@ -673,9 +673,13 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     additive field comparison, preserving the regular class and all internal shifts.
     `HalfGradedDGRing.ofDGRing` places an ordinary dg ring's degree `n` at `(2n, n mod 2)` on
     the same underlying ring, with its original differential. Diagonal components and projections
-    recover the originals; off-diagonal components vanish. The original module action satisfies
-    the diagonal degree and parity Leibniz rules, but its weight-category module embedding and
-    a derived comparison are not yet constructed (`DG/HalfGraded/Diagonal.lean`).
+    recover the originals; off-diagonal components vanish (`DG/HalfGraded/Diagonal.lean`).
+    For any ordinary dg module, `DG.Diagonal.toCatModuleObj` constructs an actual module over
+    the regraded ring's weight category (`DG/HalfGraded/DiagonalModule.lean`), with its action
+    and differential induced by the originals. `halfGrading_zero_weight` recovers each original
+    homogeneous component, and `toWeightZero_injective` embeds it in the weight-zero object.
+    This is an object construction: a functor on module morphisms, full-faithfulness and a
+    derived comparison are not yet established.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
