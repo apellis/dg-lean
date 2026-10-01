@@ -61,8 +61,10 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `DG.GradedModuleCat.periodizeDGEquivalence`; for a differential of degree `k`, the
     regrading by residues with the object-level decomposition: `DG.RegradeByDivision`,
     `DG.residueEquiv`, `DG.residueEquiv_d`, `DG.RegradeByDivision.dgRing` (Leibniz sign
-    `(-1)^{|a|/k}` on `A^{qk}`). Open: the category equivalence for degree-`k` differentials, and
-    the comparison of the periodic dg module category with `DG.DGModuleCat`.
+    `(-1)^{|a|/k}` on `A^{qk}`). The comparison with `DG.DGModuleCat (Periodize ℬ)` is proved:
+    `DG.GradedModuleCat.periodicDGModuleCatEquivalence`,
+    `DG.GradedModuleCat.zmod2DGModuleCatEquivalence`.
+    Open: the category equivalence for degree-`k` differentials.
 
 ## Tier 2 — dg algebras and dg modules
 
@@ -215,8 +217,12 @@ D.3 Tier 3 for dg modules over `C`: Hom complexes, shifts, cones, homotopies, th
     `DG.CatModule.HomotopyCategory.isTriangulated`, `DG.CatModule.HomotopyCategory.precomp_isTriangulated`
     (restriction along a dg functor), `DG.CatModule.HomotopyCategory.eval_isTriangulated`,
     `DG.CatModule.HomotopyCategory.cohomologyFunctor_isHomological`,
-    `DG.CatModule.HomotopyCategory.singleObjEquivalence` (with `DG.HomotopyCategory A`). Open:
-    `R`-linearity, `HOM(M, N[n]) ≅ HOM(M, N)[n]`.
+    `DG.CatModule.HomotopyCategory.singleObjEquivalence` (with `DG.HomotopyCategory A`).
+    For `DG.DGLinear R C`, `DG.CatModule.instLinear` and
+    `DG.CatModule.HomotopyCategory.instLinear` give `R`-linearity, including quotient and shift
+    functors; the one-object comparison is linear (`toDGHomotopyCategory_linear`).
+    `DG.CatModule.HOM.rightShiftEquiv` and `leftShiftEquiv` identify the Hom complexes into
+    and out of shifts, with `homShiftAddEquivCohomology` on the homotopy category.
 D.4 Tier 4 for `C`: acyclic modules, quasi-isomorphisms, the derived category `D(C)`,
     K-projective and semi-free modules (cells are shifts of representable modules), resolutions,
     derived functors along dg functors and bimodules, and Keller's theorem that a
@@ -535,7 +541,11 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     — done: `DG.QuasiIsomorphic`, `DG.IsFormal`, `DG.IsFormal.nonempty_derivedEquivalence`
     (`D(A) ≌ D(H(A))`), `DG.IsFormal.nonempty_K0_addEquiv`, the criterion
     `DG.isFormal_of_isCohomologySection` (a dg ring map `H(A) → A` sending each class to a
-    representing cocycle), `DG.IsPositive.cohomology`. Open: the free graded-commutative criterion.
+    representing cocycle), `DG.IsPositive.cohomology`. The free graded-commutative criterion is
+    proved for strictly graded-commutative dg algebras (`DG.isFormal_of_isFreeGradedCommAlgebra`),
+    or graded-commutative dg algebras when `2` is invertible
+    (`DG.isFormal_of_isFreeGradedCommAlgebra_of_isGradedComm`). Graded commutativity alone does
+    not ensure square-zero cocycle representatives for odd generators.
 6.5 Künneth for positive dg algebras over a field: `K₀(A ⊗_k B) ≅ K₀(A) ⊗_ℤ K₀(B)` when `A`,
     `B` (hence `A ⊗ B`) are positive, from 6.3 and `K₀` of tensor products of semisimple
     algebras.
@@ -592,8 +602,13 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `DG.IsPositive.isCompact_iff_weight`, and the coincidence of hypotheses
     `DG.isGradedPositive_iff_isPositive` (for `A⁰` finite-dimensional over a field; more
     generally `DG.isSemisimpleRing_of_isGradedSemisimpleRing` for gradings bounded below).
-    Open: `K₀(A) ≅ K₀(A⁰)` over `ℤ[q, q⁻¹]`, freeness, `K₀(k) ≅ ℤ[q, q⁻¹]`, and the transport of
-    the finite-cell description to bigraded modules along `weightEquivalence`.
+    `DG.IsGradedPositive.K0DegreeZeroEquiv` proves `K₀(C_A) ≅ K₀(C_{A⁰})` over `ℤ[q, q⁻¹]`.
+    With `A⁰` Artinian, `DG.IsGradedPositive.laurentBasis` proves freeness on graded simple
+    idempotents up to shift (in particular `DG.IsPositive.laurentBasis` in case (b)); no such
+    freeness is claimed from graded semisimplicity alone in (a).
+    `DG.IsPositive.K0EquivLaurentOfField` gives `K₀(C_A) ≅ ℤ[q, q⁻¹]` when `A⁰` is the ground
+    field, including a field in bidegree `(0, 0)`. Open: transport of the finite-cell description
+    to bigraded modules along `weightEquivalence`.
 7.3 Graded Morita theory: for a bigraded dg algebra `A` and a degree-`(0,0)` idempotent `e`
     with `d e = 0` such that `A e A = A`, the functors `Ae ⊗_{eAe} -` and `eA ⊗_A -` induce an
     equivalence `D(eAe) ≃ D(A)` compatible with shifts; `K₀(eAe) ≅ K₀(A)`.
@@ -644,7 +659,14 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     K₀(D(k)^c) ≃ₗ[ℤ[q, q⁻¹]] ℤ[q, q⁻¹]/(q^{2k} - 1)` (`[k] ↦ 1`, basis `qⁱ[k]`,
     `0 ≤ i < 2k`), `cls_parityShift` (`[Π k] = -qᵏ[k]`), `Field.superK0Equiv` (super
     `K₀(D(k)^c) ≃+ ℤ[q, q⁻¹]/(1 + qᵏ)`) and, for `k = 2`, `superK0EquivGaussianInt`
-    (`≃ ℤ[√-1]`). As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
+    (`≃ ℤ[√-1]`). For every integer parameter and every half-graded ring,
+    `mk_parityShiftCompact` gives `[ΠX] = -q⁻ᵏ[X]`, and `parityRelations_eq` identifies the parity
+    relations with `(1 + qᵏ)K₀`. `SuperK0c` carries Laurent-polynomial and quotient-ring scalar
+    actions (`superK0cModule`, `superK0cQuotientModule`); `T_smul_superK0c_mk` identifies the action
+    with the actual internal shift. The field comparison is linear over both coefficient rings
+    (`Field.superK0LinearEquiv`, `Field.superK0QuotientLinearEquiv`). General functorial linear-map
+    descent and the Gaussian-integer scalar upgrade remain open.
+    As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
     weight category of the regraded ring).
@@ -684,3 +706,5 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
   `DG.CompactlyGenerates.forall_of_isLocalizing`.
 - t-structures on `D(A)` for non-positively/positively graded `A` (Mathlib has the definition
   of a t-structure).
+  — done for non-positively graded dg rings: `DG.DerivedCategory.tStructure`, with heart
+  `ModuleCat H⁰(A)` (`DG.DerivedCategory.tStructureHeart`).

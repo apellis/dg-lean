@@ -1,4 +1,4 @@
-import DG.HalfGraded.SuperK0
+import DG.HalfGraded.SuperK0Linear
 import DG.K0.Orthonormal
 import DG.Category.Derived.Compact
 import Mathlib.NumberTheory.Zsqrtd.GaussianInt
@@ -640,9 +640,7 @@ omit [NeZero k] in
 theorem mk_parityShiftCompact (X : (compacts K k).FullSubcategory) :
     K0.mk (parityShiftCompact.{u, u} (degreeZero K (k : ℤ)) X) =
       -((T (-(k : ℤ)) : LaurentPolynomial ℤ) • K0.mk X) := by
-  rw [CatModule.DerivedCategory.T_smul_mk_compact, ← K0.mk_shift_one]
-  exact K0.mk_eq_of_iso (shiftObjIso (𝒮 := compacts K k)
-    (((CatModule.DerivedCategory.compactInternalShiftAction _).functor (-(k : ℤ))).obj X) 1)
+  exact HalfGradedDGRing.mk_parityShiftCompact (degreeZero K (k : ℤ)) X
 
 omit [NeZero k] in
 /-- `q²ᵏ` acts trivially on `K₀(D(K)^c)`: `Π Π ≅ 𝟭` and `[Π X] = -q⁻ᵏ [X]`. -/
@@ -970,6 +968,53 @@ theorem superK0Equiv_cls :
   have := toSuperQuot_smul_cls (K := K) (k := k) 1
   rw [one_smul, map_one] at this
   exact this
+
+variable (K k) in
+/-- The field computation agrees with the canonical Laurent-linear quotient map. -/
+theorem superK0Equiv_superK0cMk (x : CompactK0.{u, u} (degreeZero K (k : ℤ))) :
+    superK0Equiv K k (superK0cMk (degreeZero K (k : ℤ)) x) = toSuperQuot K k x := by
+  induction x using K0.induction_on with
+  | zero => rw [map_zero, map_zero, map_zero]
+  | mk X => rw [superK0cMk_mk]; rfl
+  | neg x hx => simp only [map_neg, hx]
+  | add x y hx hy => simp only [map_add, hx, hy]
+
+variable (K k) in
+/-- The existing field super Grothendieck-group equivalence is Laurent-linear. -/
+def superK0LinearEquiv : SuperK0c.{u, u} (degreeZero K (k : ℤ)) ≃ₗ[LaurentPolynomial ℤ]
+    LaurentPolynomial ℤ ⧸ idealSuper k :=
+  { superK0Equiv K k with
+    map_smul' := fun p x => by
+      change superK0Equiv K k (p • x) = p • superK0Equiv K k x
+      obtain ⟨y, rfl⟩ := superK0cMk_surjective (degreeZero K (k : ℤ)) x
+      rw [← map_smul, superK0Equiv_superK0cMk, superK0Equiv_superK0cMk]
+      obtain ⟨q, rfl⟩ := exists_eq_smul_cls y
+      rw [smul_smul, toSuperQuot_smul_cls, toSuperQuot_smul_cls]
+      exact map_mul (Ideal.Quotient.mk (idealSuper k)) p q }
+
+variable (K k) in
+/-- The field computation is linear over the quotient coefficient ring itself. -/
+def superK0QuotientLinearEquiv : SuperK0c.{u, u} (degreeZero K (k : ℤ)) ≃ₗ[
+    LaurentPolynomial ℤ ⧸ idealSuper k] LaurentPolynomial ℤ ⧸ idealSuper k :=
+  { superK0Equiv K k with
+    map_smul' := fun p x => by
+      obtain ⟨q, rfl⟩ := Ideal.Quotient.mk_surjective p
+      exact (superK0LinearEquiv K k).map_smul q x }
+
+variable (K k) in
+@[simp]
+theorem superK0LinearEquiv_apply (x : SuperK0c.{u, u} (degreeZero K (k : ℤ))) :
+    superK0LinearEquiv K k x = superK0Equiv K k x := rfl
+
+variable (K k) in
+@[simp]
+theorem superK0QuotientLinearEquiv_apply (x : SuperK0c.{u, u} (degreeZero K (k : ℤ))) :
+    superK0QuotientLinearEquiv K k x = superK0Equiv K k x := rfl
+
+/-- The quotient-linear field computation sends the regular module to `1`. -/
+theorem superK0QuotientLinearEquiv_cls :
+    superK0QuotientLinearEquiv K k (K0Rel.mk ⟨obj K k 0, isCompact_obj 0⟩) = 1 :=
+  superK0Equiv_cls
 
 end Field
 

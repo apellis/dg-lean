@@ -146,6 +146,7 @@ import DG.HalfGraded.Derived
 import DG.HalfGraded.Field
 import DG.HalfGraded.Parity
 import DG.HalfGraded.SuperK0
+import DG.HalfGraded.SuperK0Linear
 import DG.Homotopy.Abelian
 import DG.Homotopy.ChangeOfRings
 import DG.Homotopy.CohomologyComparison
