@@ -159,6 +159,7 @@ import DG.HalfGraded.DiagonalEssentialImage
 import DG.HalfGraded.DiagonalImageEquivalence
 import DG.HalfGraded.DiagonalShift
 import DG.HalfGraded.DiagonalShiftCoherence
+import DG.HalfGraded.DiagonalRecoveryTriangulated
 import DG.HalfGraded.Field
 import DG.HalfGraded.Parity
 import DG.HalfGraded.SuperK0
