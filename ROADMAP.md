@@ -772,9 +772,13 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     explicit cone lift, and periodic-unit action. It respects the original inclusion,
     first projection through the existing coherent signed shift comparison, actual
     negative triangle connecting map, and both differential signs. Arbitrary dg rings
-    and independent ring/module universes are retained. General square naturality,
-    bundled triangle comparison, and homotopy/derived descent remain open; no
-    equivalence with the whole target is asserted.
+    and independent ring/module universes are retained. `DiagonalConeNaturality.lean`
+    proves naturality of that original all-weight comparison under arbitrary commuting
+    squares, using the existing `Cone.map` and `CatModule.cone.map`. It also bundles
+    the original standard-triangle comparison with identity first/second components,
+    the original cone isomorphism as third component, and the existing coherent signed
+    shift. Bundled arrow-to-triangle functor naturality and homotopy/derived descent
+    remain open; no equivalence with the whole target is asserted.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
