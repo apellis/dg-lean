@@ -760,8 +760,15 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `DiagonalCompactK0.lean` restricts that same triangulated functor to the existing
     compact subcategories and supplies its compact `K₀` homomorphism with the formula
     on object classes. No `K₀` isomorphism or larger-universe coproduct preservation
-    is asserted. Explicit cone comparison remains open; an equivalence with the whole
-    target is not asserted.
+    is asserted. `DiagonalConeRecovery.lean` supplies an explicit module-level cone
+    comparison after weight-zero scalar restriction: componentwise evaluation and
+    homogeneous-decomposition lift are inverse on the original cones. It proves
+    inclusion/projection compatibility, the actual triangle's negative connecting
+    map, and both differential signs. Scalar restriction itself commutes with cones
+    at every weight. The diagonal comparison remains weight-zero only: an all-weight
+    CatModule isomorphism, compatibility with the coherent diagonal shift comparison,
+    and homotopy/derived descent remain open. An equivalence with the whole target
+    is not asserted.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the

@@ -163,6 +163,7 @@ import DG.HalfGraded.DiagonalRecoveryTriangulated
 import DG.HalfGraded.DiagonalDerivedTriangulated
 import DG.HalfGraded.DiagonalCompact
 import DG.HalfGraded.DiagonalCompactK0
+import DG.HalfGraded.DiagonalConeRecovery
 import DG.HalfGraded.Field
 import DG.HalfGraded.Parity
 import DG.HalfGraded.SuperK0
