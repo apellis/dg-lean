@@ -699,7 +699,11 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `recoveryNatIso` gives `toCatModule A ⋙ recover A 0 ≅ 𝟭` as genuine dg modules.
     All-supported-weight recovery as signed shifted dg modules and CatModule shift/cone
     comparisons are not yet proved.
-    Full faithfulness, preservation of all compact objects, shift/cone compatibility and an equivalence with the appropriate
+    `DiagonalDerivedRecovery.lean` identifies the recovery cohomology map with actual
+    weightwise cohomology, descends recovery through localization, and proves
+    `toDerived A ⋙ recoveryDerived A 0 ≅ 𝟭`. Consequently `toDerived` is faithful on
+    arbitrary derived morphisms, not just localized module maps. A left inverse does not
+    imply fullness. Fullness, preservation of all compact objects, shift/cone compatibility and an equivalence with the appropriate
     essential image remain open; the image is not asserted to be the whole half-graded category.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
