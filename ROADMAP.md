@@ -739,9 +739,13 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `derivedSupported_iff_of_iso` detects this property on every chosen representative;
     it does not require the representative's values to vanish. The forward functors
     are the existing diagonal functors with codomain restricted, with explicit
-    inclusion comparisons. Zero/add shift coherence, a diagonal `CommShift` instance,
-    cone compatibility, triangulatedness, and preservation of all compact objects
-    remain open; an equivalence with the whole target is not asserted.
+    inclusion comparisons. `DiagonalShiftCoherence.lean` proves zero/add coherence
+    of the existing module and derived shift comparisons. Its actual `CommShift`
+    instances come from the recovery adjunction and quasi-isomorphism localization;
+    the comparison isomorphisms are proved equal to the previously constructed ones,
+    preserving independent derived Hom universes. Cone compatibility, triangulatedness,
+    and preservation of all compact objects remain open; an equivalence with the whole
+    target is not asserted.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
