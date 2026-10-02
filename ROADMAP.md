@@ -708,6 +708,13 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     weight component from weight zero, and unsupported weights vanish. Its explicit
     inverse on morphisms is weight-zero recovery conjugated by `recoveryIso`, with both
     inverse laws. This is not a fullness theorem for derived localization.
+    `DiagonalAdjunction.lean` constructs the actual module-level adjunction
+    `diagonalAdjunction : toCatModule A ⊣ recover A 0` on unrestricted target CatModules.
+    Its counit evaluates and then uses the target's existing periodic-unit action;
+    factorization of arbitrary supported-weight arrows and vanishing in the unsupported
+    branch prove full action compatibility. The unit is `(recoveryNatIso A).inv`, and
+    both triangle identities hold. This adjunction has not yet been descended to the
+    derived categories and does not itself prove general compactness preservation.
     Derived fullness, preservation of all compact objects, shift/cone compatibility and an equivalence with the appropriate
     essential image remain open; the image is not asserted to be the whole half-graded category.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
