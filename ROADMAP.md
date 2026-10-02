@@ -681,9 +681,11 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `DG.Diagonal.toCatModule` extends this to an actual functor on ordinary dg modules
     (`DG/HalfGraded/DiagonalFunctor.lean`), preserving the original maps on homogeneous
     generators, action, differential and every weight; the weight-zero injection is natural.
-    Quasi-isomorphism compatibility still requires a natural cohomology comparison at every
-    weight, including unsupported slices. Full-faithfulness, compactness and a derived
-    comparison are not yet established.
+    `DiagonalCohomology.lean` proves the natural all-weight comparison:
+    `Hⁿ(F(M)(4t)) ≃+ Hⁿ⁺²ᵗ(M)`, with every unsupported weight zero. Consequently
+    `isQuasiIso_toCatModule_iff` proves preservation and reflection of the existing
+    quasi-isomorphism predicates, over arbitrary dg rings and in all integer degrees.
+    Full-faithfulness, compactness and a derived-category comparison are not yet established.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
