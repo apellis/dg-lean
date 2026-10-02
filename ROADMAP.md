@@ -765,10 +765,16 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     homogeneous-decomposition lift are inverse on the original cones. It proves
     inclusion/projection compatibility, the actual triangle's negative connecting
     map, and both differential signs. Scalar restriction itself commutes with cones
-    at every weight. The diagonal comparison remains weight-zero only: an all-weight
-    CatModule isomorphism, compatibility with the coherent diagonal shift comparison,
-    and homotopy/derived descent remain open. An equivalence with the whole target
-    is not asserted.
+    at every weight. `DiagonalCone.lean` upgrades the comparison to an actual
+    all-weight CatModule isomorphism: support of the original target cone is proved,
+    and its genuine action-compatible counit supplies compatibility across distinct
+    weights. The comparison has a supported-weight formula using evaluation, the
+    explicit cone lift, and periodic-unit action. It respects the original inclusion,
+    first projection through the existing coherent signed shift comparison, actual
+    negative triangle connecting map, and both differential signs. Arbitrary dg rings
+    and independent ring/module universes are retained. General square naturality,
+    bundled triangle comparison, and homotopy/derived descent remain open; no
+    equivalence with the whole target is asserted.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
