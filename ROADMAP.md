@@ -678,8 +678,12 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     the regraded ring's weight category (`DG/HalfGraded/DiagonalModule.lean`), with its action
     and differential induced by the originals. `halfGrading_zero_weight` recovers each original
     homogeneous component, and `toWeightZero_injective` embeds it in the weight-zero object.
-    This is an object construction: a functor on module morphisms, full-faithfulness and a
-    derived comparison are not yet established.
+    `DG.Diagonal.toCatModule` extends this to an actual functor on ordinary dg modules
+    (`DG/HalfGraded/DiagonalFunctor.lean`), preserving the original maps on homogeneous
+    generators, action, differential and every weight; the weight-zero injection is natural.
+    Quasi-isomorphism compatibility still requires a natural cohomology comparison at every
+    weight, including unsupported slices. Full-faithfulness, compactness and a derived
+    comparison are not yet established.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
