@@ -777,8 +777,15 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     squares, using the existing `Cone.map` and `CatModule.cone.map`. It also bundles
     the original standard-triangle comparison with identity first/second components,
     the original cone isomorphism as third component, and the existing coherent signed
-    shift. Bundled arrow-to-triangle functor naturality and homotopy/derived descent
-    remain open; no equivalence with the whole target is asserted.
+    shift. `DiagonalDerivedCone.lean` transports the original cone and standard-triangle
+    comparisons through the existing localization comparison to `toDerived`, with
+    arbitrary-square naturality for actual dg module maps. The first two triangle
+    components are the existing localization comparisons and the third is exactly
+    localization of the original cone map after its source comparison; the negative
+    connecting maps and coherent shifts are retained, with independent derived Hom
+    universes. A standalone forward homotopy functor/comparison and bundled
+    arrow-to-triangle functor naturality remain open. No cone functor on arbitrary
+    derived arrows or equivalence with the whole target is asserted.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
