@@ -713,9 +713,14 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     Its counit evaluates and then uses the target's existing periodic-unit action;
     factorization of arbitrary supported-weight arrows and vanishing in the unsupported
     branch prove full action compatibility. The unit is `(recoveryNatIso A).inv`, and
-    both triangle identities hold. This adjunction has not yet been descended to the
-    derived categories and does not itself prove general compactness preservation.
-    Derived fullness, preservation of all compact objects, shift/cone compatibility and an equivalence with the appropriate
+    both triangle identities hold. `DiagonalDerivedAdjunction.lean` descends this actual
+    adjunction through the existing quasi-isomorphism localizations. Its unit is proved
+    equal to `(derivedRecoveryNatIso A).inv`, yielding genuine derived full faithfulness
+    (`toDerivedFullyFaithful`, `toDerived_full`) and preimages with both inverse laws for
+    arbitrary derived morphisms. The localized unit and counit formulas retain the actual
+    recovery comparison and action-compatible counit. Arbitrary dg rings and independent
+    derived Hom universes are preserved; no general compactness result is inferred.
+    Preservation of all compact objects, shift/cone compatibility and an equivalence with the appropriate
     essential image remain open; the image is not asserted to be the whole half-graded category.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
