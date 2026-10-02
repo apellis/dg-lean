@@ -685,7 +685,11 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `Hⁿ(F(M)(4t)) ≃+ Hⁿ⁺²ᵗ(M)`, with every unsupported weight zero. Consequently
     `isQuasiIso_toCatModule_iff` proves preservation and reflection of the existing
     quasi-isomorphism predicates, over arbitrary dg rings and in all integer degrees.
-    Full-faithfulness, compactness and a derived-category comparison are not yet established.
+    `DiagonalDerived.lean` constructs the induced `DG.Diagonal.toDerived` between the
+    existing derived categories, with natural localization comparison `QCompToDerivedIso`
+    and the actual quasi-isomorphic-roof formula `toDerived_map_roof`. Full faithfulness,
+    compactness preservation, shift/cone compatibility and an equivalence with the appropriate
+    essential image remain open; the image is not asserted to be the whole half-graded category.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the

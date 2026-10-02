@@ -147,6 +147,7 @@ import DG.HalfGraded.Diagonal
 import DG.HalfGraded.DiagonalModule
 import DG.HalfGraded.DiagonalFunctor
 import DG.HalfGraded.DiagonalCohomology
+import DG.HalfGraded.DiagonalDerived
 import DG.HalfGraded.Field
 import DG.HalfGraded.Parity
 import DG.HalfGraded.SuperK0
