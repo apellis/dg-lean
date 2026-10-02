@@ -727,9 +727,15 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     for every module representative and every derived object isomorphic to it
     (`mem_essImage_toDerived_Q_iff_cohomologicallySupported`,
     `mem_essImage_toDerived_iff_of_iso`). This does not require the unsupported values
-    themselves to vanish. Preservation of all compact objects, shift/cone compatibility,
-    and a bundled equivalence with the concrete image subcategory remain open; the image
-    is not asserted to be the whole half-graded category.
+    themselves to vanish. `DiagonalShift.lean` constructs genuine natural isomorphisms
+    comparing the existing signed shifts with the actual diagonal functor, at module
+    and derived levels, for arbitrary integers and all weights. The module comparison
+    uses actual restriction-shift compatibility and the existing counit on shifted
+    diagonal modules; the derived comparison descends that map through localization.
+    Its signed action/differential equations and localized-component formula are explicit.
+    Zero/add shift coherence, a diagonal `CommShift` instance, cone compatibility,
+    triangulatedness, preservation of all compact objects, and a bundled equivalence
+    with the concrete image subcategory remain open; the image is not asserted to be the whole target.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
