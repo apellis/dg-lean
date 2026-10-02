@@ -751,8 +751,17 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     proves the existing derived adjunction respects the existing forward and recovery
     shift structures. The actual forward diagonal functor consequently preserves
     distinguished triangles by the triangulated-adjunction theorem. Independent
-    derived Hom universes are retained. Explicit cone comparison and preservation of
-    all compact objects remain open; an equivalence with the whole target is not asserted.
+    derived Hom universes are retained. `DiagonalCompact.lean` proves that actual
+    restriction/evaluation recovery preserves coproducts before localization and that
+    the existing derived recovery preserves coproducts at every weight, on unrestricted
+    target objects. The original derived adjunction consequently proves preservation
+    of every `IsCompact.{v}` object by the actual diagonal functor, with coproducts
+    indexed in the common module universe and independent derived Hom universes.
+    `DiagonalCompactK0.lean` restricts that same triangulated functor to the existing
+    compact subcategories and supplies its compact `K₀` homomorphism with the formula
+    on object classes. No `K₀` isomorphism or larger-universe coproduct preservation
+    is asserted. Explicit cone comparison remains open; an equivalence with the whole
+    target is not asserted.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
