@@ -746,10 +746,13 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     preserving independent derived Hom universes. `DiagonalRecoveryTriangulated.lean`
     identifies the existing derived recovery at every weight with localization of actual
     homotopy restriction followed by one-object evaluation, and proves it preserves
-    distinguished triangles with coherent shifts. This result concerns recovery, not
-    the forward diagonal functor: derived adjunction shift compatibility, forward
-    triangulatedness and cone compatibility, and preservation of all compact objects
-    remain open; an equivalence with the whole target is not asserted.
+    distinguished triangles with coherent shifts. `DiagonalDerivedTriangulated.lean`
+    identifies the original recovery comparison with its homotopy-localized form and
+    proves the existing derived adjunction respects the existing forward and recovery
+    shift structures. The actual forward diagonal functor consequently preserves
+    distinguished triangles by the triangulated-adjunction theorem. Independent
+    derived Hom universes are retained. Explicit cone comparison and preservation of
+    all compact objects remain open; an equivalence with the whole target is not asserted.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
