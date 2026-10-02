@@ -687,8 +687,14 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     quasi-isomorphism predicates, over arbitrary dg rings and in all integer degrees.
     `DiagonalDerived.lean` constructs the induced `DG.Diagonal.toDerived` between the
     existing derived categories, with natural localization comparison `QCompToDerivedIso`
-    and the actual quasi-isomorphic-roof formula `toDerived_map_roof`. Full faithfulness,
-    compactness preservation, shift/cone compatibility and an equivalence with the appropriate
+    and the actual quasi-isomorphic-roof formula `toDerived_map_roof`.
+    `DiagonalRegular.lean` identifies the full diagonal regular module with the weight-zero
+    representable, including all supported periodic copies, and proves its actual derived image
+    compact (`isCompact_toDerived_regular`). `DiagonalEvaluation.lean` strengthens evaluation
+    at weight `4t` to a natural chain-complex isomorphism with the underlying complex of the
+    ordinary shift by `2t`, including the signed differential. This comparison forgets the
+    action: it is not yet an `A`-module recovery or a CatModule shift/cone comparison.
+    Full faithfulness, preservation of all compact objects, shift/cone compatibility and an equivalence with the appropriate
     essential image remain open; the image is not asserted to be the whole half-graded category.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
