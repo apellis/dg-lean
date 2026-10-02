@@ -155,6 +155,7 @@ import DG.HalfGraded.DiagonalDerivedRecovery
 import DG.HalfGraded.DiagonalFullness
 import DG.HalfGraded.DiagonalAdjunction
 import DG.HalfGraded.DiagonalDerivedAdjunction
+import DG.HalfGraded.DiagonalEssentialImage
 import DG.HalfGraded.Field
 import DG.HalfGraded.Parity
 import DG.HalfGraded.SuperK0

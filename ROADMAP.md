@@ -720,8 +720,16 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     arbitrary derived morphisms. The localized unit and counit formulas retain the actual
     recovery comparison and action-compatible counit. Arbitrary dg rings and independent
     derived Hom universes are preserved; no general compactness result is inferred.
-    Preservation of all compact objects, shift/cone compatibility and an equivalence with the appropriate
-    essential image remain open; the image is not asserted to be the whole half-graded category.
+    `DiagonalEssentialImage.lean` identifies the actual module essential image exactly by
+    vanishing outside weights divisible by four. An explicit inverse periodic-action formula
+    proves that the existing counit is bijective on every supported weight. The derived
+    essential image is characterized by vanishing of all off-support weight cohomology,
+    for every module representative and every derived object isomorphic to it
+    (`mem_essImage_toDerived_Q_iff_cohomologicallySupported`,
+    `mem_essImage_toDerived_iff_of_iso`). This does not require the unsupported values
+    themselves to vanish. Preservation of all compact objects, shift/cone compatibility,
+    and a bundled equivalence with the concrete image subcategory remain open; the image
+    is not asserted to be the whole half-graded category.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
