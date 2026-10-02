@@ -693,7 +693,12 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     compact (`isCompact_toDerived_regular`). `DiagonalEvaluation.lean` strengthens evaluation
     at weight `4t` to a natural chain-complex isomorphism with the underlying complex of the
     ordinary shift by `2t`, including the signed differential. This comparison forgets the
-    action: it is not yet an `A`-module recovery or a CatModule shift/cone comparison.
+    action. `DiagonalRecovery.lean` then embeds the actual ring as weight-zero
+    endomorphisms at every weight and defines `recover A w` for arbitrary CatModules by
+    dg restriction, retaining their existing action. Actual evaluation is `A`-linear;
+    `recoveryNatIso` gives `toCatModule A ⋙ recover A 0 ≅ 𝟭` as genuine dg modules.
+    All-supported-weight recovery as signed shifted dg modules and CatModule shift/cone
+    comparisons are not yet proved.
     Full faithfulness, preservation of all compact objects, shift/cone compatibility and an equivalence with the appropriate
     essential image remain open; the image is not asserted to be the whole half-graded category.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes

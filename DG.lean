@@ -150,6 +150,7 @@ import DG.HalfGraded.DiagonalCohomology
 import DG.HalfGraded.DiagonalDerived
 import DG.HalfGraded.DiagonalRegular
 import DG.HalfGraded.DiagonalEvaluation
+import DG.HalfGraded.DiagonalRecovery
 import DG.HalfGraded.Field
 import DG.HalfGraded.Parity
 import DG.HalfGraded.SuperK0
