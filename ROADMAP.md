@@ -733,9 +733,15 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     uses actual restriction-shift compatibility and the existing counit on shifted
     diagonal modules; the derived comparison descends that map through localization.
     Its signed action/differential equations and localized-component formula are explicit.
-    Zero/add shift coherence, a diagonal `CommShift` instance, cone compatibility,
-    triangulatedness, preservation of all compact objects, and a bundled equivalence
-    with the concrete image subcategory remain open; the image is not asserted to be the whole target.
+    `DiagonalImageEquivalence.lean` bundles the module equivalence with the actual
+    full subcategory of supported modules, and the derived equivalence with the full
+    subcategory of objects admitting an off-support-acyclic representative. Its
+    `derivedSupported_iff_of_iso` detects this property on every chosen representative;
+    it does not require the representative's values to vanish. The forward functors
+    are the existing diagonal functors with codomain restricted, with explicit
+    inclusion comparisons. Zero/add shift coherence, a diagonal `CommShift` instance,
+    cone compatibility, triangulatedness, and preservation of all compact objects
+    remain open; an equivalence with the whole target is not asserted.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
