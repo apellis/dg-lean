@@ -703,7 +703,12 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     weightwise cohomology, descends recovery through localization, and proves
     `toDerived A ⋙ recoveryDerived A 0 ≅ 𝟭`. Consequently `toDerived` is faithful on
     arbitrary derived morphisms, not just localized module maps. A left inverse does not
-    imply fullness. Fullness, preservation of all compact objects, shift/cone compatibility and an equivalence with the appropriate
+    imply fullness. `DiagonalFullness.lean` separately proves full faithfulness on the
+    actual module categories: the genuine periodic unit arrow determines every supported
+    weight component from weight zero, and unsupported weights vanish. Its explicit
+    inverse on morphisms is weight-zero recovery conjugated by `recoveryIso`, with both
+    inverse laws. This is not a fullness theorem for derived localization.
+    Derived fullness, preservation of all compact objects, shift/cone compatibility and an equivalence with the appropriate
     essential image remain open; the image is not asserted to be the whole half-graded category.
     As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
