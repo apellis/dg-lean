@@ -95,8 +95,9 @@ noncomputable def K0ToProjK0 : K0 P.FullSubcategory →+ ProjK0.{u} R :=
     eulerChar_obj₂ (P.ι.mapTriangle.obj T) (P.ι.map_distinguished T hT)
       ((hP _).1 T.obj₁.property) ((hP _).1 T.obj₂.property) ((hP _).1 T.obj₃.property))
 
+omit [P.IsClosedUnderIsomorphisms] in
 @[simp]
-theorem K0ToProjK0_mk (X : P.FullSubcategory) :
+theorem K0ToProjK0_mk [P.IsClosedUnderIsomorphisms] (X : P.FullSubcategory) :
     K0ToProjK0 P hP (K0.mk X) = eulerChar X.obj ((hP _).1 X.property) :=
   K0.lift_mk _ _ X
 
@@ -110,8 +111,9 @@ noncomputable def projK0ToK0 : ProjK0.{u} R →+ K0 P.FullSubcategory :=
       ((hP _).2 (singleFunctor_obj h₁ 0)) ((hP _).2 (singleFunctor_obj h₂ 0))
       ((hP _).2 (singleFunctor_obj h₃ 0)))
 
+omit [P.IsClosedUnderIsomorphisms] in
 @[simp]
-theorem projK0ToK0_mk (M : ModuleCat.{u} R) (hM : IsFGProjective R M) :
+theorem projK0ToK0_mk [P.IsClosedUnderIsomorphisms] (M : ModuleCat.{u} R) (hM : IsFGProjective R M) :
     projK0ToK0 P hP (ProjK0.mk M hM) = K0.mk (⟨(_root_.DerivedCategory.singleFunctor _ 0).obj M,
       (hP _).2 (singleFunctor_obj hM 0)⟩ : P.FullSubcategory) :=
   ProjK0.lift_mk _ _ M hM

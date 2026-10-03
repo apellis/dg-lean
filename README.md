@@ -51,6 +51,12 @@ Most results are stated for a small dg category `C`, with a dg ring `A` as the o
 
 The remaining open items are listed as "Open:" in [ROADMAP.md](ROADMAP.md).
 
+| Theorem | Source locator | Declaration | Hypotheses | Status |
+|---|---|---|---|---|
+| Perfect objects form a thick subcategory | Roadmap 5.6; bounded projective-complex description | `DG.IsPerfect.isThick` | Ring `R`; Mathlib `HasDerivedCategory (ModuleCat R)` | Proved |
+| `K₀(Dᵖᵉʳᶠ(R)) ≃ K₀(R-proj)` via Euler characteristic | Roadmap 5.6; compare Weibel, *The K-book*, II §9 | `DG.perfectK0Equiv` | Same; perfect objects in Mathlib's derived category | Proved |
+| Original compact-DG `K₀(ℤ) ≃ ℤ`, regular class ↦ 1 | Roadmap 5.6; integral track | — | Compact/perfect comparison and integral projective rank | Open |
+
 ## Errata
 
 Some items of the roadmap were false as first stated; the library proves corrected versions and

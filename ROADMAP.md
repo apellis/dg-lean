@@ -61,8 +61,10 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `DG.GradedModuleCat.periodizeDGEquivalence`; for a differential of degree `k`, the
     regrading by residues with the object-level decomposition: `DG.RegradeByDivision`,
     `DG.residueEquiv`, `DG.residueEquiv_d`, `DG.RegradeByDivision.dgRing` (Leibniz sign
-    `(-1)^{|a|/k}` on `A^{qk}`). Open: the category equivalence for degree-`k` differentials, and
-    the comparison of the periodic dg module category with `DG.DGModuleCat`.
+    `(-1)^{|a|/k}` on `A^{qk}`). The comparison with `DG.DGModuleCat (Periodize ℬ)` is proved:
+    `DG.GradedModuleCat.periodicDGModuleCatEquivalence`,
+    `DG.GradedModuleCat.zmod2DGModuleCatEquivalence`.
+    Open: the category equivalence for degree-`k` differentials.
 
 ## Tier 2 — dg algebras and dg modules
 
@@ -215,8 +217,12 @@ D.3 Tier 3 for dg modules over `C`: Hom complexes, shifts, cones, homotopies, th
     `DG.CatModule.HomotopyCategory.isTriangulated`, `DG.CatModule.HomotopyCategory.precomp_isTriangulated`
     (restriction along a dg functor), `DG.CatModule.HomotopyCategory.eval_isTriangulated`,
     `DG.CatModule.HomotopyCategory.cohomologyFunctor_isHomological`,
-    `DG.CatModule.HomotopyCategory.singleObjEquivalence` (with `DG.HomotopyCategory A`). Open:
-    `R`-linearity, `HOM(M, N[n]) ≅ HOM(M, N)[n]`.
+    `DG.CatModule.HomotopyCategory.singleObjEquivalence` (with `DG.HomotopyCategory A`).
+    For `DG.DGLinear R C`, `DG.CatModule.instLinear` and
+    `DG.CatModule.HomotopyCategory.instLinear` give `R`-linearity, including quotient and shift
+    functors; the one-object comparison is linear (`toDGHomotopyCategory_linear`).
+    `DG.CatModule.HOM.rightShiftEquiv` and `leftShiftEquiv` identify the Hom complexes into
+    and out of shifts, with `homShiftAddEquivCohomology` on the homotopy category.
 D.4 Tier 4 for `C`: acyclic modules, quasi-isomorphisms, the derived category `D(C)`,
     K-projective and semi-free modules (cells are shifts of representable modules), resolutions,
     derived functors along dg functors and bimodules, and Keller's theorem that a
@@ -486,7 +492,13 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     — done for a field: `DG.DGRing.K0.equivIntOfField : K₀(k) ≃+ ℤ`, `[k] ↦ 1`, via the Euler
     characteristic of total cohomology; `DG.DerivedCategory.isCompact_iff_hasFiniteCohomology`.
     `DG.DerivedCategory.nonempty_iso_shiftSum_of_isCompact`: every compact object of `D(k)` is
-    a finite direct sum of shifts of `k`. Open: stretch items.
+    a finite direct sum of shifts of `k`.
+    — perfect-complex step for general rings: `DG.IsPerfect.isThick` and
+    `DG.perfectK0Equiv : K₀(D^perf(R)) ≃+ DG.ProjK0 R` in Mathlib's derived
+    category (`DG/Derived/PerfectThick.lean`, `DG/K0/PerfectComplex.lean`).
+    Open: identify these perfect objects with compacts and transport through
+    `DG.DerivedCategory.comparisonEquivalence` to the original DG source; compute
+    `DG.ProjK0 ℤ ≃+ ℤ` with the regular class mapping to 1; remaining stretch items.
 
 ## Tier 6 — Positive dg algebras (Schnürer)
 
@@ -535,7 +547,11 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     — done: `DG.QuasiIsomorphic`, `DG.IsFormal`, `DG.IsFormal.nonempty_derivedEquivalence`
     (`D(A) ≌ D(H(A))`), `DG.IsFormal.nonempty_K0_addEquiv`, the criterion
     `DG.isFormal_of_isCohomologySection` (a dg ring map `H(A) → A` sending each class to a
-    representing cocycle), `DG.IsPositive.cohomology`. Open: the free graded-commutative criterion.
+    representing cocycle), `DG.IsPositive.cohomology`. The free graded-commutative criterion is
+    proved for strictly graded-commutative dg algebras (`DG.isFormal_of_isFreeGradedCommAlgebra`),
+    or graded-commutative dg algebras when `2` is invertible
+    (`DG.isFormal_of_isFreeGradedCommAlgebra_of_isGradedComm`). Graded commutativity alone does
+    not ensure square-zero cocycle representatives for odd generators.
 6.5 Künneth for positive dg algebras over a field: `K₀(A ⊗_k B) ≅ K₀(A) ⊗_ℤ K₀(B)` when `A`,
     `B` (hence `A ⊗ B`) are positive, from 6.3 and `K₀` of tensor products of semisimple
     algebras.
@@ -592,8 +608,13 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `DG.IsPositive.isCompact_iff_weight`, and the coincidence of hypotheses
     `DG.isGradedPositive_iff_isPositive` (for `A⁰` finite-dimensional over a field; more
     generally `DG.isSemisimpleRing_of_isGradedSemisimpleRing` for gradings bounded below).
-    Open: `K₀(A) ≅ K₀(A⁰)` over `ℤ[q, q⁻¹]`, freeness, `K₀(k) ≅ ℤ[q, q⁻¹]`, and the transport of
-    the finite-cell description to bigraded modules along `weightEquivalence`.
+    `DG.IsGradedPositive.K0DegreeZeroEquiv` proves `K₀(C_A) ≅ K₀(C_{A⁰})` over `ℤ[q, q⁻¹]`.
+    With `A⁰` Artinian, `DG.IsGradedPositive.laurentBasis` proves freeness on graded simple
+    idempotents up to shift (in particular `DG.IsPositive.laurentBasis` in case (b)); no such
+    freeness is claimed from graded semisimplicity alone in (a).
+    `DG.IsPositive.K0EquivLaurentOfField` gives `K₀(C_A) ≅ ℤ[q, q⁻¹]` when `A⁰` is the ground
+    field, including a field in bidegree `(0, 0)`. Open: transport of the finite-cell description
+    to bigraded modules along `weightEquivalence`.
 7.3 Graded Morita theory: for a bigraded dg algebra `A` and a degree-`(0,0)` idempotent `e`
     with `d e = 0` such that `A e A = A`, the functors `Ae ⊗_{eAe} -` and `eA ⊗_A -` induce an
     equivalence `D(eAe) ≃ D(A)` compatible with shifts; `K₀(eAe) ≅ K₀(A)`.
@@ -644,7 +665,134 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     K₀(D(k)^c) ≃ₗ[ℤ[q, q⁻¹]] ℤ[q, q⁻¹]/(q^{2k} - 1)` (`[k] ↦ 1`, basis `qⁱ[k]`,
     `0 ≤ i < 2k`), `cls_parityShift` (`[Π k] = -qᵏ[k]`), `Field.superK0Equiv` (super
     `K₀(D(k)^c) ≃+ ℤ[q, q⁻¹]/(1 + qᵏ)`) and, for `k = 2`, `superK0EquivGaussianInt`
-    (`≃ ℤ[√-1]`). As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
+    (`≃ ℤ[√-1]`). For every integer parameter and every half-graded ring,
+    `mk_parityShiftCompact` gives `[ΠX] = -q⁻ᵏ[X]`, and `parityRelations_eq` identifies the parity
+    relations with `(1 + qᵏ)K₀`. `SuperK0c` carries Laurent-polynomial and quotient-ring scalar
+    actions (`superK0cModule`, `superK0cQuotientModule`); `T_smul_superK0c_mk` identifies the action
+    with the actual internal shift. The field comparison is linear over both coefficient rings
+    (`Field.superK0LinearEquiv`, `Field.superK0QuotientLinearEquiv`). `superK0cMap` uniquely descends
+    a supplied Laurent-linear compact-K₀ map at a common integer parameter; `superK0cQuotientMap`
+    is linear over the quotient coefficient ring. This does not construct a ring-induced derived
+    functor. At parameter `2`, every `SuperK0c H` has canonical Gaussian scalars, compatible with
+    the Laurent action (`superK0c_evalI_smul`); powers of `i` act by actual internal shifts
+    (`gaussian_zpow_smul_superK0c_mk`). `Field.superK0GaussianLinearEquiv` upgrades the existing
+    additive field comparison, preserving the regular class and all internal shifts.
+    `HalfGradedDGRing.ofDGRing` places an ordinary dg ring's degree `n` at `(2n, n mod 2)` on
+    the same underlying ring, with its original differential. Diagonal components and projections
+    recover the originals; off-diagonal components vanish (`DG/HalfGraded/Diagonal.lean`).
+    For any ordinary dg module, `DG.Diagonal.toCatModuleObj` constructs an actual module over
+    the regraded ring's weight category (`DG/HalfGraded/DiagonalModule.lean`), with its action
+    and differential induced by the originals. `halfGrading_zero_weight` recovers each original
+    homogeneous component, and `toWeightZero_injective` embeds it in the weight-zero object.
+    `DG.Diagonal.toCatModule` extends this to an actual functor on ordinary dg modules
+    (`DG/HalfGraded/DiagonalFunctor.lean`), preserving the original maps on homogeneous
+    generators, action, differential and every weight; the weight-zero injection is natural.
+    `DiagonalCohomology.lean` proves the natural all-weight comparison:
+    `Hⁿ(F(M)(4t)) ≃+ Hⁿ⁺²ᵗ(M)`, with every unsupported weight zero. Consequently
+    `isQuasiIso_toCatModule_iff` proves preservation and reflection of the existing
+    quasi-isomorphism predicates, over arbitrary dg rings and in all integer degrees.
+    `DiagonalDerived.lean` constructs the induced `DG.Diagonal.toDerived` between the
+    existing derived categories, with natural localization comparison `QCompToDerivedIso`
+    and the actual quasi-isomorphic-roof formula `toDerived_map_roof`.
+    `DiagonalRegular.lean` identifies the full diagonal regular module with the weight-zero
+    representable, including all supported periodic copies, and proves its actual derived image
+    compact (`isCompact_toDerived_regular`). `DiagonalEvaluation.lean` strengthens evaluation
+    at weight `4t` to a natural chain-complex isomorphism with the underlying complex of the
+    ordinary shift by `2t`, including the signed differential. This comparison forgets the
+    action. `DiagonalRecovery.lean` then embeds the actual ring as weight-zero
+    endomorphisms at every weight and defines `recover A w` for arbitrary CatModules by
+    dg restriction, retaining their existing action. Actual evaluation is `A`-linear;
+    `recoveryNatIso` gives `toCatModule A ⋙ recover A 0 ≅ 𝟭` as genuine dg modules.
+    All-supported-weight recovery as signed shifted dg modules and CatModule shift/cone
+    comparisons are not yet proved.
+    `DiagonalDerivedRecovery.lean` identifies the recovery cohomology map with actual
+    weightwise cohomology, descends recovery through localization, and proves
+    `toDerived A ⋙ recoveryDerived A 0 ≅ 𝟭`. Consequently `toDerived` is faithful on
+    arbitrary derived morphisms, not just localized module maps. A left inverse does not
+    imply fullness. `DiagonalFullness.lean` separately proves full faithfulness on the
+    actual module categories: the genuine periodic unit arrow determines every supported
+    weight component from weight zero, and unsupported weights vanish. Its explicit
+    inverse on morphisms is weight-zero recovery conjugated by `recoveryIso`, with both
+    inverse laws. This is not a fullness theorem for derived localization.
+    `DiagonalAdjunction.lean` constructs the actual module-level adjunction
+    `diagonalAdjunction : toCatModule A ⊣ recover A 0` on unrestricted target CatModules.
+    Its counit evaluates and then uses the target's existing periodic-unit action;
+    factorization of arbitrary supported-weight arrows and vanishing in the unsupported
+    branch prove full action compatibility. The unit is `(recoveryNatIso A).inv`, and
+    both triangle identities hold. `DiagonalDerivedAdjunction.lean` descends this actual
+    adjunction through the existing quasi-isomorphism localizations. Its unit is proved
+    equal to `(derivedRecoveryNatIso A).inv`, yielding genuine derived full faithfulness
+    (`toDerivedFullyFaithful`, `toDerived_full`) and preimages with both inverse laws for
+    arbitrary derived morphisms. The localized unit and counit formulas retain the actual
+    recovery comparison and action-compatible counit. Arbitrary dg rings and independent
+    derived Hom universes are preserved; no general compactness result is inferred.
+    `DiagonalEssentialImage.lean` identifies the actual module essential image exactly by
+    vanishing outside weights divisible by four. An explicit inverse periodic-action formula
+    proves that the existing counit is bijective on every supported weight. The derived
+    essential image is characterized by vanishing of all off-support weight cohomology,
+    for every module representative and every derived object isomorphic to it
+    (`mem_essImage_toDerived_Q_iff_cohomologicallySupported`,
+    `mem_essImage_toDerived_iff_of_iso`). This does not require the unsupported values
+    themselves to vanish. `DiagonalShift.lean` constructs genuine natural isomorphisms
+    comparing the existing signed shifts with the actual diagonal functor, at module
+    and derived levels, for arbitrary integers and all weights. The module comparison
+    uses actual restriction-shift compatibility and the existing counit on shifted
+    diagonal modules; the derived comparison descends that map through localization.
+    Its signed action/differential equations and localized-component formula are explicit.
+    `DiagonalImageEquivalence.lean` bundles the module equivalence with the actual
+    full subcategory of supported modules, and the derived equivalence with the full
+    subcategory of objects admitting an off-support-acyclic representative. Its
+    `derivedSupported_iff_of_iso` detects this property on every chosen representative;
+    it does not require the representative's values to vanish. The forward functors
+    are the existing diagonal functors with codomain restricted, with explicit
+    inclusion comparisons. `DiagonalShiftCoherence.lean` proves zero/add coherence
+    of the existing module and derived shift comparisons. Its actual `CommShift`
+    instances come from the recovery adjunction and quasi-isomorphism localization;
+    the comparison isomorphisms are proved equal to the previously constructed ones,
+    preserving independent derived Hom universes. `DiagonalRecoveryTriangulated.lean`
+    identifies the existing derived recovery at every weight with localization of actual
+    homotopy restriction followed by one-object evaluation, and proves it preserves
+    distinguished triangles with coherent shifts. `DiagonalDerivedTriangulated.lean`
+    identifies the original recovery comparison with its homotopy-localized form and
+    proves the existing derived adjunction respects the existing forward and recovery
+    shift structures. The actual forward diagonal functor consequently preserves
+    distinguished triangles by the triangulated-adjunction theorem. Independent
+    derived Hom universes are retained. `DiagonalCompact.lean` proves that actual
+    restriction/evaluation recovery preserves coproducts before localization and that
+    the existing derived recovery preserves coproducts at every weight, on unrestricted
+    target objects. The original derived adjunction consequently proves preservation
+    of every `IsCompact.{v}` object by the actual diagonal functor, with coproducts
+    indexed in the common module universe and independent derived Hom universes.
+    `DiagonalCompactK0.lean` restricts that same triangulated functor to the existing
+    compact subcategories and supplies its compact `K₀` homomorphism with the formula
+    on object classes. No `K₀` isomorphism or larger-universe coproduct preservation
+    is asserted. `DiagonalConeRecovery.lean` supplies an explicit module-level cone
+    comparison after weight-zero scalar restriction: componentwise evaluation and
+    homogeneous-decomposition lift are inverse on the original cones. It proves
+    inclusion/projection compatibility, the actual triangle's negative connecting
+    map, and both differential signs. Scalar restriction itself commutes with cones
+    at every weight. `DiagonalCone.lean` upgrades the comparison to an actual
+    all-weight CatModule isomorphism: support of the original target cone is proved,
+    and its genuine action-compatible counit supplies compatibility across distinct
+    weights. The comparison has a supported-weight formula using evaluation, the
+    explicit cone lift, and periodic-unit action. It respects the original inclusion,
+    first projection through the existing coherent signed shift comparison, actual
+    negative triangle connecting map, and both differential signs. Arbitrary dg rings
+    and independent ring/module universes are retained. `DiagonalConeNaturality.lean`
+    proves naturality of that original all-weight comparison under arbitrary commuting
+    squares, using the existing `Cone.map` and `CatModule.cone.map`. It also bundles
+    the original standard-triangle comparison with identity first/second components,
+    the original cone isomorphism as third component, and the existing coherent signed
+    shift. `DiagonalDerivedCone.lean` transports the original cone and standard-triangle
+    comparisons through the existing localization comparison to `toDerived`, with
+    arbitrary-square naturality for actual dg module maps. The first two triangle
+    components are the existing localization comparisons and the third is exactly
+    localization of the original cone map after its source comparison; the negative
+    connecting maps and coherent shifts are retained, with independent derived Hom
+    universes. A standalone forward homotopy functor/comparison and bundled
+    arrow-to-triangle functor naturality remain open. No cone functor on arbitrary
+    derived arrows or equivalence with the whole target is asserted.
+    As in 5.5, `K₀` is that of the compact objects (`K₀` of all of `D(k)` vanishes
     by the Eilenberg swindle). Open: the case over `ℤ`; a concrete category of half-graded
     modules equivalent to `CatModule C_H` (half-graded modules are used as dg modules over the
     weight category of the regraded ring).
@@ -684,3 +832,5 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
   `DG.CompactlyGenerates.forall_of_isLocalizing`.
 - t-structures on `D(A)` for non-positively/positively graded `A` (Mathlib has the definition
   of a t-structure).
+  — done for non-positively graded dg rings: `DG.DerivedCategory.tStructure`, with heart
+  `ModuleCat H⁰(A)` (`DG.DerivedCategory.tStructureHeart`).

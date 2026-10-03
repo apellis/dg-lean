@@ -258,21 +258,26 @@ theorem of_retract_step {X : _root_.DerivedCategory (ModuleCat.{u} R)}
       rw [assoc, ← he, ← CategoryTheory.Functor.map_comp, ← CategoryTheory.Functor.map_comp, hing])
   obtain ⟨β, hβ₁, hβ₂⟩ := complete_distinguished_triangle_morphism _ _ hT₂ hT₁
     (_root_.DerivedCategory.Q.map pr₁) h.r hgr
+  dsimp [CochainComplex.mappingCone.triangle] at α β hα₁ hβ₁ hα₂ hβ₂
   -- `α ≫ β` is an isomorphism: it completes the identities to an endomorphism of a triangle
-  have hαβ : IsIso (α ≫ β) :=
-    isIso₃_of_isIso₁₂ (Triangle.homMk _ _ (𝟙 _) (𝟙 _) (α ≫ β) (by simp)
+  have hαβ : IsIso (α ≫ β) := by
+    let φ : Triangle.mk (_root_.DerivedCategory.Q.map ι ≫ h.r) v w ⟶
+        Triangle.mk (_root_.DerivedCategory.Q.map ι ≫ h.r) v w :=
+      Triangle.homMk _ _ (𝟙 _) (𝟙 _) (α ≫ β) (by simp)
       (by
-        dsimp at hα₁ hβ₁ ⊢
-        rw [reassoc_of% hα₁, assoc, hβ₁, id_comp, reassoc_of% h.retract])
+        dsimp [CochainComplex.mappingCone.triangle] at hα₁ hβ₁ ⊢
+        rw [reassoc_of% hα₁, hβ₁, id_comp, reassoc_of% h.retract])
       (by
         dsimp at hα₂ hβ₂ ⊢
+        simp only [assoc] at hα₂ hβ₂
         rw [CategoryTheory.Functor.map_id, comp_id, assoc, ← hβ₂, ← reassoc_of% hα₂, ← CategoryTheory.Functor.map_comp,
-          ← CategoryTheory.Functor.map_comp, h₁, CategoryTheory.Functor.map_id, CategoryTheory.Functor.map_id, comp_id]))
-      hT₁ hT₁ (by dsimp; infer_instance) (by dsimp; infer_instance)
+          ← CategoryTheory.Functor.map_comp, h₁, CategoryTheory.Functor.map_id, CategoryTheory.Functor.map_id, comp_id])
+    exact isIso₃_of_isIso₁₂ φ hT₁ hT₁
+      (by change IsIso (𝟙 (_root_.DerivedCategory.Q.obj S)); infer_instance)
+      (by change IsIso (𝟙 X); infer_instance)
   -- the cone of `Q g` is represented by a shorter perfect complex
   obtain ⟨C', f, hC', hf, hC'z⟩ := hS₂.exists_quasiIso_mappingCone hK g a b hab hS₂' hK'
-  have : IsIso (_root_.DerivedCategory.Q.map f) :=
-    (_root_.DerivedCategory.isIso_Q_map_iff_quasiIso f).2 hf
+  have : QuasiIso f := hf
   have hX' : IsPerfect R X' := ih C' hC' hC'z X'
     ⟨α ≫ inv (_root_.DerivedCategory.Q.map f),
       _root_.DerivedCategory.Q.map f ≫ β ≫ inv (α ≫ β), by
@@ -420,13 +425,13 @@ theorem induction
       exact iso (singleFunctor_obj (IsFGProjective.of_isZero (isZero_zero _)) 0) _
         (((_root_.DerivedCategory.singleFunctor (ModuleCat.{u} R) 0).map_isZero
           (isZero_zero _)).iso (_root_.DerivedCategory.Q.map_isZero hK0))
-        (single 0 _)
+        (single 0 (IsFGProjective.of_isZero (isZero_zero _)))
     | succ m ih =>
       intro a K hK hK'
       obtain ⟨K', i, π, w, hS, hK'p, hK'z⟩ := hK.exists_shortExact a m hK'
       exact ext₂ _ (_root_.DerivedCategory.triangleOfSES_distinguished hS) (Q_obj hK'p)
         (Q_obj hK) (Q_obj (IsPerfectComplex.single (hK.fgProjective a) a))
-        (ih (a + 1) K' hK'p hK'z) (hsingle _ _ a)
+        (ih (a + 1) K' hK'p hK'z) (hsingle _ (hK.fgProjective a) a)
   have hX' := hX
   obtain ⟨K, hK, ⟨e⟩⟩ := hX'
   obtain ⟨a, m, hm⟩ := hK.exists_bounds

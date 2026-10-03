@@ -1,4 +1,4 @@
-import DG.HalfGraded.SuperK0
+import DG.HalfGraded.SuperK0Linear
 import DG.K0.Orthonormal
 import DG.Category.Derived.Compact
 import Mathlib.NumberTheory.Zsqrtd.GaussianInt
@@ -49,7 +49,7 @@ its Grothendieck group vanishes (Eilenberg swindle: `X ⊕ ∐ₙ X ≅ ∐ₙ X
 
 open CategoryTheory Category Limits Pretriangulated DirectSum
 
-universe u
+universe u w' w
 
 noncomputable section
 
@@ -640,9 +640,7 @@ omit [NeZero k] in
 theorem mk_parityShiftCompact (X : (compacts K k).FullSubcategory) :
     K0.mk (parityShiftCompact.{u, u} (degreeZero K (k : ℤ)) X) =
       -((T (-(k : ℤ)) : LaurentPolynomial ℤ) • K0.mk X) := by
-  rw [CatModule.DerivedCategory.T_smul_mk_compact, ← K0.mk_shift_one]
-  exact K0.mk_eq_of_iso (shiftObjIso (𝒮 := compacts K k)
-    (((CatModule.DerivedCategory.compactInternalShiftAction _).functor (-(k : ℤ))).obj X) 1)
+  exact HalfGradedDGRing.mk_parityShiftCompact (degreeZero K (k : ℤ)) X
 
 omit [NeZero k] in
 /-- `q²ᵏ` acts trivially on `K₀(D(K)^c)`: `Π Π ≅ 𝟭` and `[Π X] = -q⁻ᵏ [X]`. -/
@@ -971,6 +969,53 @@ theorem superK0Equiv_cls :
   rw [one_smul, map_one] at this
   exact this
 
+variable (K k) in
+/-- The field computation agrees with the canonical Laurent-linear quotient map. -/
+theorem superK0Equiv_superK0cMk (x : CompactK0.{u, u} (degreeZero K (k : ℤ))) :
+    superK0Equiv K k (superK0cMk (degreeZero K (k : ℤ)) x) = toSuperQuot K k x := by
+  induction x using K0.induction_on with
+  | zero => rw [map_zero, map_zero, map_zero]
+  | mk X => rw [superK0cMk_mk]; rfl
+  | neg x hx => simp only [map_neg, hx]
+  | add x y hx hy => simp only [map_add, hx, hy]
+
+variable (K k) in
+/-- The existing field super Grothendieck-group equivalence is Laurent-linear. -/
+def superK0LinearEquiv : SuperK0c.{u, u} (degreeZero K (k : ℤ)) ≃ₗ[LaurentPolynomial ℤ]
+    LaurentPolynomial ℤ ⧸ idealSuper k :=
+  { superK0Equiv K k with
+    map_smul' := fun p x => by
+      change superK0Equiv K k (p • x) = p • superK0Equiv K k x
+      obtain ⟨y, rfl⟩ := superK0cMk_surjective (degreeZero K (k : ℤ)) x
+      rw [← map_smul, superK0Equiv_superK0cMk, superK0Equiv_superK0cMk]
+      obtain ⟨q, rfl⟩ := exists_eq_smul_cls y
+      rw [smul_smul, toSuperQuot_smul_cls, toSuperQuot_smul_cls]
+      exact map_mul (Ideal.Quotient.mk (idealSuper k)) p q }
+
+variable (K k) in
+/-- The field computation is linear over the quotient coefficient ring itself. -/
+def superK0QuotientLinearEquiv : SuperK0c.{u, u} (degreeZero K (k : ℤ)) ≃ₗ[
+    LaurentPolynomial ℤ ⧸ idealSuper k] LaurentPolynomial ℤ ⧸ idealSuper k :=
+  { superK0Equiv K k with
+    map_smul' := fun p x => by
+      obtain ⟨q, rfl⟩ := Ideal.Quotient.mk_surjective p
+      exact (superK0LinearEquiv K k).map_smul q x }
+
+variable (K k) in
+@[simp]
+theorem superK0LinearEquiv_apply (x : SuperK0c.{u, u} (degreeZero K (k : ℤ))) :
+    superK0LinearEquiv K k x = superK0Equiv K k x := rfl
+
+variable (K k) in
+@[simp]
+theorem superK0QuotientLinearEquiv_apply (x : SuperK0c.{u, u} (degreeZero K (k : ℤ))) :
+    superK0QuotientLinearEquiv K k x = superK0Equiv K k x := rfl
+
+/-- The quotient-linear field computation sends the regular module to `1`. -/
+theorem superK0QuotientLinearEquiv_cls :
+    superK0QuotientLinearEquiv K k (K0Rel.mk ⟨obj K k 0, isCompact_obj 0⟩) = 1 :=
+  superK0Equiv_cls
+
 end Field
 
 /-! ### The Gaussian integers -/
@@ -1067,7 +1112,50 @@ def equivGaussianInt : (LaurentPolynomial ℤ ⧸ Field.idealSuper 2) ≃+* Gaus
   (Ideal.quotEquivOfEq ker_evalI.symm).trans
     (RingHom.quotientKerEquivOfSurjective evalI_surjective)
 
+@[simp]
+theorem equivGaussianInt_mk (p : LaurentPolynomial ℤ) :
+    equivGaussianInt (Ideal.Quotient.mk (Field.idealSuper 2) p) = evalI p := rfl
+
+@[simp]
+theorem equivGaussianInt_mk_T (n : ℤ) :
+    equivGaussianInt (Ideal.Quotient.mk (Field.idealSuper 2) (T n)) =
+      (unitI ^ n : GaussianIntˣ) := by
+  simp [evalI]
 end GaussianQuot
+
+section GaussianScalars
+variable {A : Type u} [Ring A] (H : HalfGradedDGRing A 2)
+  [CatModule.HasDerivedCategory.{w', max u w} (WeightCategory H.Regraded)]
+
+/-- Gaussian scalars for every parameter-two half-graded dg ring, obtained by restriction
+along the inverse coefficient-ring equivalence, not from a field-specific class computation. -/
+instance superK0cGaussianModule : Module GaussianInt (SuperK0c.{w', w} H) :=
+  Module.compHom (SuperK0c H) GaussianQuot.equivGaussianInt.symm.toRingHom
+
+/-- Evaluation at `i` agrees with the existing Laurent-polynomial action. -/
+theorem superK0c_evalI_smul (p : LaurentPolynomial ℤ) (x : SuperK0c.{w', w} H) :
+    GaussianQuot.evalI p • x = p • x := by
+  change GaussianQuot.equivGaussianInt.symm (GaussianQuot.evalI p) • x = p • x
+  rw [← GaussianQuot.equivGaussianInt_mk, RingEquiv.symm_apply_apply]
+  rfl
+
+/-- Integer powers of `i` act by the actual internal-shift functors on compact classes. -/
+theorem gaussian_zpow_smul_superK0c_mk (n : ℤ)
+    (X : (compactSubcategory.{max u w}
+      (CatModule.DerivedCategory.{w', max u w} (WeightCategory H.Regraded))).FullSubcategory) :
+    ((GaussianQuot.unitI ^ n : GaussianIntˣ) : GaussianInt) • (K0Rel.mk X : SuperK0c H) =
+      K0Rel.mk (((CatModule.DerivedCategory.compactInternalShiftAction H.Regraded).functor n).obj X) := by
+  rw [← GaussianQuot.equivGaussianInt_mk_T, GaussianQuot.equivGaussianInt_mk,
+    superK0c_evalI_smul, T_smul_superK0c_mk]
+
+/-- In particular, the Gaussian integer `i` is the internal shift by one. -/
+theorem gaussian_I_smul_superK0c_mk
+    (X : (compactSubcategory.{max u w}
+      (CatModule.DerivedCategory.{w', max u w} (WeightCategory H.Regraded))).FullSubcategory) :
+    (⟨0, 1⟩ : GaussianInt) • (K0Rel.mk X : SuperK0c H) =
+      K0Rel.mk (((CatModule.DerivedCategory.compactInternalShiftAction H.Regraded).functor 1).obj X) := by
+  simpa [GaussianQuot.unitI] using gaussian_zpow_smul_superK0c_mk H 1 X
+end GaussianScalars
 
 namespace Field
 
@@ -1083,6 +1171,42 @@ theorem superK0EquivGaussianInt_cls :
     superK0EquivGaussianInt K (K0Rel.mk ⟨obj K 2 0, isCompact_obj 0⟩) = 1 := by
   rw [superK0EquivGaussianInt, AddEquiv.trans_apply, superK0Equiv_cls]
   exact map_one GaussianQuot.equivGaussianInt
+
+/-- The existing Gaussian-integer field computation, upgraded to a linear equivalence for
+canonical Gaussian scalars. -/
+def superK0GaussianLinearEquiv : SuperK0c.{u, u} (degreeZero K (2 : ℤ)) ≃ₗ[GaussianInt] GaussianInt :=
+  { superK0EquivGaussianInt K with
+    map_smul' := fun z x => by
+      change GaussianQuot.equivGaussianInt
+        (superK0Equiv K 2 (GaussianQuot.equivGaussianInt.symm z • x)) =
+          z * GaussianQuot.equivGaussianInt (superK0Equiv K 2 x)
+      rw [← superK0QuotientLinearEquiv_apply,
+        (superK0QuotientLinearEquiv K 2).map_smul]
+      change GaussianQuot.equivGaussianInt
+        (GaussianQuot.equivGaussianInt.symm z * superK0QuotientLinearEquiv K 2 x) = _
+      rw [map_mul, RingEquiv.apply_symm_apply]
+      rfl }
+
+@[simp]
+theorem superK0GaussianLinearEquiv_apply (x : SuperK0c.{u, u} (degreeZero K (2 : ℤ))) :
+    superK0GaussianLinearEquiv K x = superK0EquivGaussianInt K x := rfl
+
+/-- The regular-module class is the unit in the Gaussian linear computation. -/
+theorem superK0GaussianLinearEquiv_cls :
+    superK0GaussianLinearEquiv K (K0Rel.mk ⟨obj K 2 0, isCompact_obj 0⟩) = 1 :=
+  superK0EquivGaussianInt_cls K
+
+/-- The actual internal shift of any compact class is multiplication by `iⁿ` under the
+Gaussian linear equivalence. -/
+theorem superK0GaussianLinearEquiv_internalShift (n : ℤ)
+    (X : (compacts K 2).FullSubcategory) :
+    superK0GaussianLinearEquiv K
+      (K0Rel.mk (((CatModule.DerivedCategory.compactInternalShiftAction
+        (degreeZero K (2 : ℤ)).Regraded).functor n).obj X)) =
+      ((GaussianQuot.unitI ^ n : GaussianIntˣ) : GaussianInt) *
+        superK0GaussianLinearEquiv K (K0Rel.mk X) := by
+  rw [← gaussian_zpow_smul_superK0c_mk, map_smul]
+  rfl
 
 end Field
 

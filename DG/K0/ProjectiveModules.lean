@@ -124,7 +124,6 @@ theorem mk_X₂ {S : ShortComplex (ModuleCat.{v} R)} (hS : S.ShortExact)
   change mkHom R _ = 0 at h
   rwa [map_sub, map_sub, sub_sub, sub_eq_zero] at h
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Induction principle for `K₀(R)`: every element is obtained from the classes of finitely
 generated projective modules by sums and negatives. -/
 theorem induction_on {p : ProjK0.{v} R → Prop} (x : ProjK0.{v} R) (zero : p 0)
@@ -141,7 +140,6 @@ section lift
 
 variable {G : Type*} [AddCommGroup G]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Two homomorphisms out of `K₀(R)` which agree on the classes of modules are equal. -/
 @[ext]
 theorem addMonoidHom_ext ⦃f g : ProjK0.{v} R →+ G⦄
@@ -150,7 +148,6 @@ theorem addMonoidHom_ext ⦃f g : ProjK0.{v} R →+ G⦄
   apply QuotientAddGroup.addMonoidHom_ext
   exact FreeAbelianGroup.lift_ext _ _ fun P => h P.obj P.property
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The universal property of `K₀(R)`: a function on finitely generated projective modules with
 values in an abelian group, additive on short exact sequences, induces a homomorphism
 `ProjK0 R →+ G`. -/
@@ -166,7 +163,6 @@ def lift (f : ∀ P : ModuleCat.{v} R, IsFGProjective R P → G)
     rw [hf S hS h₁ h₂ h₃]
     abel)
 
-set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem lift_mk (f : ∀ P : ModuleCat.{v} R, IsFGProjective R P → G) (hf)
     (P : ModuleCat.{v} R) (hP : IsFGProjective R P) : lift f hf (mk P hP) = f P hP :=
