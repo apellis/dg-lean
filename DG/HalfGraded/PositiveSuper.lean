@@ -62,7 +62,7 @@ end OfSuper
 positive. -/
 theorem isPositive_ofSuper_superMatrix (D : Type u) [DivisionRing D] (m n : ℕ) {k : ℤ}
     (hk : 0 < k) :
-    (ofSuper (matrixGrading (trivialGrading (ZMod 2) D) (superParity m n)) k).IsPositive :=
+    (ofSuper (matrixGrading (concentratedGrading (ZMod 2) D) (superParity m n)) k).IsPositive :=
   isPositive_ofSuper hk (isGradedSemisimpleRing_superMatrix D m n)
 
 /-- The queer matrix superalgebra `Q(n) = Mₙ(K) ⊗ Cl₁` over a field, placed in internal degree

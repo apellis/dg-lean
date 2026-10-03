@@ -18,7 +18,7 @@ diagonal matrix units `E_{aa}` being orthogonal graded simple idempotents of deg
 For `ι = ℤ/2` this covers the two families of simple superalgebras:
 
 * `M(m|n)` over a division ring `D`: matrices over `D` (concentrated in degree `0`,
-  `DG.trivialGrading`) with the parity `p = (0, …, 0, 1, …, 1)` of `Fin m ⊕ Fin n`
+  `DG.concentratedGrading`) with the parity `p = (0, …, 0, 1, …, 1)` of `Fin m ⊕ Fin n`
   (`DG.isGradedSemisimpleRing_superMatrix`);
 * `Q(n) = Mₙ(K) ⊗ Cl₁` over a field `K`: `n × n` matrices over the Clifford algebra
   `Cl₁ = K[ℤ/2] = K ⊕ K c` with `c` odd and `c² = 1` (the group algebra of `ℤ/2`, graded by
@@ -31,7 +31,7 @@ characteristic `2`, where it is not semisimple as an ungraded ring (`c - 1` is n
 ## Main definitions
 
 * `DG.IsGradedDivisionRing 𝒜`, `DG.IsGradedDivisionRing.isGradedSemisimpleRing`.
-* `DG.trivialGrading ι R`: the grading concentrated in degree `0`.
+* `DG.concentratedGrading ι R`: the grading concentrated in degree `0`.
 * `DG.matrixGrading 𝒜 p`, with its `GradedRing` instance (for `ι` finite).
 * `DG.groupAlgebraGrading K G`: the grading of `K[G]` by `G`.
 -/
@@ -78,53 +78,53 @@ section Trivial
 variable (ι : Type*) [AddCommGroup ι] [DecidableEq ι] (R : Type*) [Ring R]
 
 /-- The grading of a ring concentrated in degree `0`. -/
-def trivialGrading (i : ι) : AddSubgroup R := if i = 0 then ⊤ else ⊥
+def concentratedGrading (i : ι) : AddSubgroup R := if i = 0 then ⊤ else ⊥
 
 variable {ι R}
 
-theorem mem_trivialGrading_iff {i : ι} {x : R} : x ∈ trivialGrading ι R i ↔ i = 0 ∨ x = 0 := by
-  unfold trivialGrading
+theorem mem_concentratedGrading_iff {i : ι} {x : R} : x ∈ concentratedGrading ι R i ↔ i = 0 ∨ x = 0 := by
+  unfold concentratedGrading
   split_ifs with h <;> simp [h]
 
 variable (ι R)
 
 /-- The decomposition of a ring for the grading concentrated in degree `0`. -/
-def trivialDecompose : R →+ ⨁ i, trivialGrading ι R i :=
-  (DirectSum.of (fun i => trivialGrading ι R i) 0).comp
-    { toFun := fun x => ⟨x, mem_trivialGrading_iff.mpr (Or.inl rfl)⟩
+def concentratedDecompose : R →+ ⨁ i, concentratedGrading ι R i :=
+  (DirectSum.of (fun i => concentratedGrading ι R i) 0).comp
+    { toFun := fun x => ⟨x, mem_concentratedGrading_iff.mpr (Or.inl rfl)⟩
       map_zero' := rfl
       map_add' := fun _ _ => rfl }
 
-instance : Decomposition (trivialGrading ι R) :=
-  Decomposition.ofAddHom _ (trivialDecompose ι R)
+instance : Decomposition (concentratedGrading ι R) :=
+  Decomposition.ofAddHom _ (concentratedDecompose ι R)
     (AddMonoidHom.ext fun x => by
-      simp [trivialDecompose, DirectSum.coeAddMonoidHom_of])
+      simp [concentratedDecompose, DirectSum.coeAddMonoidHom_of])
     (DirectSum.addHom_ext fun i x => by
       obtain ⟨x, hx⟩ := x
       simp only [AddMonoidHom.comp_apply, DirectSum.coeAddMonoidHom_of, AddMonoidHom.id_apply,
-        trivialDecompose, AddMonoidHom.coe_mk, ZeroHom.coe_mk]
-      rcases mem_trivialGrading_iff.mp hx with rfl | rfl
+        concentratedDecompose, AddMonoidHom.coe_mk, ZeroHom.coe_mk]
+      rcases mem_concentratedGrading_iff.mp hx with rfl | rfl
       · rfl
-      · exact (map_zero (DirectSum.of (fun i => trivialGrading ι R i) 0)).trans
-          (map_zero (DirectSum.of (fun i => trivialGrading ι R i) i)).symm)
+      · exact (map_zero (DirectSum.of (fun i => concentratedGrading ι R i) 0)).trans
+          (map_zero (DirectSum.of (fun i => concentratedGrading ι R i) i)).symm)
 
-instance : SetLike.GradedMonoid (trivialGrading ι R) where
-  one_mem := mem_trivialGrading_iff.mpr (Or.inl rfl)
+instance : SetLike.GradedMonoid (concentratedGrading ι R) where
+  one_mem := mem_concentratedGrading_iff.mpr (Or.inl rfl)
   mul_mem i j a b ha hb := by
-    rcases mem_trivialGrading_iff.mp ha with rfl | rfl
-    · rcases mem_trivialGrading_iff.mp hb with rfl | rfl
-      · exact mem_trivialGrading_iff.mpr (Or.inl (add_zero 0))
+    rcases mem_concentratedGrading_iff.mp ha with rfl | rfl
+    · rcases mem_concentratedGrading_iff.mp hb with rfl | rfl
+      · exact mem_concentratedGrading_iff.mpr (Or.inl (add_zero 0))
       · rw [mul_zero]; exact zero_mem _
     · rw [zero_mul]; exact zero_mem _
 
-instance : GradedRing (trivialGrading ι R) where
+instance : GradedRing (concentratedGrading ι R) where
 
 /-- A division ring concentrated in degree `0` is a graded division ring. -/
-theorem isGradedDivisionRing_trivialGrading (D : Type*) [DivisionRing D] :
-    IsGradedDivisionRing (trivialGrading ι D) := by
+theorem isGradedDivisionRing_concentratedGrading (D : Type*) [DivisionRing D] :
+    IsGradedDivisionRing (concentratedGrading ι D) := by
   refine ⟨one_ne_zero, fun i x hx hx0 => ⟨x⁻¹, ?_, inv_mul_cancel₀ hx0⟩⟩
-  rcases mem_trivialGrading_iff.mp hx with rfl | h
-  · exact mem_trivialGrading_iff.mpr (Or.inl neg_zero)
+  rcases mem_concentratedGrading_iff.mp hx with rfl | h
+  · exact mem_concentratedGrading_iff.mpr (Or.inl neg_zero)
   · exact absurd h hx0
 
 end Trivial
@@ -342,8 +342,8 @@ def superParity (m n : ℕ) : Fin m ⊕ Fin n → ZMod 2 :=
 /-- The matrix superalgebra `M(m|n)` over a division ring `D` (matrices on `D^{m|n}` with the
 parity grading) is a `ℤ/2`-graded semisimple ring. -/
 theorem isGradedSemisimpleRing_superMatrix (D : Type*) [DivisionRing D] (m n : ℕ) :
-    IsGradedSemisimpleRing (matrixGrading (trivialGrading (ZMod 2) D) (superParity m n)) :=
-  (isGradedDivisionRing_trivialGrading (ZMod 2) D).isGradedSemisimpleRing_matrixGrading _
+    IsGradedSemisimpleRing (matrixGrading (concentratedGrading (ZMod 2) D) (superParity m n)) :=
+  (isGradedDivisionRing_concentratedGrading (ZMod 2) D).isGradedSemisimpleRing_matrixGrading _
 
 /-- The queer matrix superalgebra `Q(n) = Mₙ(K) ⊗ Cl₁`, realized as `n × n` matrices over the
 Clifford algebra `Cl₁ = K[ℤ/2]` (`c` odd, `c² = 1`) with even matrix units, is a `ℤ/2`-graded
