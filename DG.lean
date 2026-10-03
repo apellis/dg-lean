@@ -11,6 +11,7 @@ import DG.Algebra.Hom
 import DG.Algebra.Opposite
 import DG.Algebra.Regrading
 import DG.Algebra.RegradingDGModuleCat
+import DG.Algebra.RegradingDivisionModuleCat
 import DG.Algebra.RegradingModuleCat
 import DG.Algebra.TensorProduct
 import DG.Basic
@@ -141,6 +142,7 @@ import DG.Graded.Hom
 import DG.Graded.ModuleCat
 import DG.Graded.Opposite
 import DG.Graded.Regrading
+import DG.Graded.RegradingDivisionModuleCat
 import DG.Graded.RegradingModuleCat
 import DG.Graded.TensorProduct
 import DG.HalfGraded.Basic
