@@ -61,8 +61,6 @@ universe w u
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
-
 namespace DG
 
 namespace HalfGradedDGRing
@@ -311,7 +309,7 @@ def shiftFamily (X : WeightCategory H.Regraded) : WeightCategory H.Regraded × �
 variable (H) in
 /-- The dg category of the formal shifts `w[-⌊w / k⌋]` of the objects of `C_H`; it is positive
 when `H` is. -/
-abbrev PositiveModel : Type u := ShiftedObjects H.shiftFamily
+abbrev PositiveModel : Type := ShiftedObjects H.shiftFamily
 
 /-- The bidegree (cohomological degree, weight) in the regraded ring of the morphisms `i ⟶ j` of
 degree `n` of the positive model. -/
@@ -508,9 +506,9 @@ variable [CatModule.HasDerivedCategory.{max u w, max u w}
 theorem K0Map_proj_K0Map_incl
     (x : DGCategory.K0.{max u w, max u w} (WeightCategory H.degreeZeroPart.Regraded)) :
     hH.proj.K0Map.{w} (hH.incl.K0Map.{w} x) = x := by
-  rw [Hom.K0Map_apply, Hom.K0Map_apply, ← AddMonoidHom.comp_apply, ← DGCategory.K0.map_comp,
-    ← Hom.weightFunctor_comp, hH.proj_comp_incl, Hom.weightFunctor_id, DGCategory.K0.map_id,
-    AddMonoidHom.id_apply]
+  rw [Hom.K0Map_apply, Hom.K0Map_apply, ← AddMonoidHom.comp_apply, ← DGCategory.K0.map_comp]
+  simp only [← Hom.weightFunctor_comp, hH.proj_comp_incl, Hom.weightFunctor_id,
+    DGCategory.K0.map_id, AddMonoidHom.id_apply]
 
 theorem K0Map_incl_K0Map_proj
     (x : DGCategory.K0.{max u w, max u w} (WeightCategory H.Regraded)) :

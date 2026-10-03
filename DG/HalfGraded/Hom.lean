@@ -29,8 +29,6 @@ universe w u
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
-
 namespace DG
 
 namespace HalfGradedDGRing
@@ -190,13 +188,18 @@ abbrev weightFunctor (f : Hom H H') :
 
 theorem weightFunctor_comp (g : Hom H' H'') (f : Hom H H') :
     (g.comp f).weightFunctor = f.weightFunctor ⋙ g.weightFunctor :=
-  CategoryTheory.Functor.ext (fun _ => rfl) fun _ _ φ => by
-    simp only [eqToHom_refl, Category.comp_id, Category.id_comp]
-    exact WeightCategory.hom_ext (regraded_comp g f φ.1)
+  CategoryTheory.Functor.ext
+    (fun X => (show (⟨X.as⟩ : WeightCategory H''.Regraded) = ⟨X.as⟩ from rfl))
+    fun _ _ φ => by
+      change (g.comp f).weightFunctor.map φ =
+        𝟙 _ ≫ (f.weightFunctor ⋙ g.weightFunctor).map φ ≫ 𝟙 _
+      rw [Category.comp_id, Category.id_comp]
+      exact WeightCategory.hom_ext (regraded_comp g f φ.1)
 
 theorem weightFunctor_id : (Hom.id H).weightFunctor = 𝟭 _ :=
-  CategoryTheory.Functor.ext (fun _ => rfl) fun _ _ φ => by
-    simp only [eqToHom_refl, Category.comp_id, Category.id_comp]
+  CategoryTheory.Functor.ext (fun X => (show X = X from rfl)) fun _ _ φ => by
+    change (Hom.id H).weightFunctor.map φ = 𝟙 _ ≫ φ ≫ 𝟙 _
+    rw [Category.comp_id, Category.id_comp]
     exact WeightCategory.hom_ext (regraded_id φ.1)
 
 variable [CatModule.HasDerivedCategory.{max u w, max u w} (WeightCategory H.Regraded)]

@@ -42,8 +42,6 @@ universe w v u
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
-
 namespace DG
 
 open DGCategory
@@ -127,8 +125,12 @@ theorem isCornerGenerator_corner_of_comp_eq (ha : a ∈ cocycles (Y ⟶ X) n) (h
   surjective Z h := ⟨b ≫ h.1, Subtype.ext (by
     change (a ≫ e.val) ≫ b ≫ h.1 = h.1
     have h' : f.val ≫ h.1 = h.1 := h.2
+    change (f.val ≫ h.1 : Y ⟶ Z) = h.1 at h'
     rw [hf] at h'
-    simpa only [Category.assoc] using h')⟩
+    change (a ≫ e.val) ≫ b ≫ h.1 = h.1
+    exact (Category.assoc a e.val (b ≫ h.1)).trans
+      ((congrArg (a ≫ ·) (Category.assoc e.val b h.1).symm).trans
+        ((Category.assoc a (e.val ≫ b) h.1).symm.trans h')))⟩
   val_comp_eq_zero {Z} c hc := by
     have h : (a ≫ e.val) ≫ c = 0 := congrArg Subtype.val hc
     calc e.val ≫ c = (b ≫ a) ≫ e.val ≫ c := by rw [hba, Category.id_comp]
@@ -213,8 +215,9 @@ theorem isShiftDense_toClosureOfFamily [DGCategory C] (hφ : ∀ Y : C, ∃ i, (
   · rw [neg_sub]
     exact shiftHom_mem_cocycles (φ := id) (i := (toClosureOfFamily φ).obj ⟨i⟩)
       (j := ⟨((φ i).1, m)⟩) rfl
-  · rw [shiftHom_comp_shiftHom]
-    rfl
+  · change shiftHom (φ := id) (i := ⟨((φ i).1, m)⟩) (j := ⟨φ i⟩) rfl ≫
+      shiftHom (φ := id) (i := ⟨φ i⟩) (j := ⟨((φ i).1, m)⟩) rfl = _
+    exact (shiftHom_comp_shiftHom _ _).trans (shiftHom_self _)
 
 variable {φ}
 
@@ -270,8 +273,8 @@ theorem closure_cell_eq_top_of_isPositive (hφ : ∀ Y : C, ∃ i, (φ i).1 = Y)
     (hP : DGCategory.IsPositive (ShiftedObjects φ)) :
     AddSubgroup.closure (Set.range fun c : SimpleCorner (ShiftedObjects φ) =>
       DGCategory.K0.cell.{max v w} (idempotentVal c.1.2) 0) = ⊤ := by
-  letI := CatModule.HasDerivedCategory.small.{w} (ShiftedObjects φ)
-  letI := CatModule.HasDerivedCategory.small.{w} (ShiftedObjects (id : C × ℤ → C × ℤ))
+  let := CatModule.HasDerivedCategory.small.{w} (ShiftedObjects φ)
+  let := CatModule.HasDerivedCategory.small.{w} (ShiftedObjects (id : C × ℤ → C × ℤ))
   let E₁ := DGCategory.K0.mapEquivOfIsShiftDense.{max u v w, w}
     (isQuasiFullyFaithful_toClosureOfFamily φ) (isShiftDense_toClosureOfFamily φ hφ)
   let E₂ := DGCategory.K0.mapEquivOfIsShiftDense.{max u v w, w}
