@@ -55,7 +55,7 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
 1.4 Regrading constructions: from a `ℤ/2`-graded algebra to a 2-periodic `ℤ`-graded one and
     back; from a grading with a map of degree `k` to a grading with a map of degree `1`.
     Acceptance: equivalences of the corresponding categories of graded modules.
-    — done for `ℤ/2` (graded and dg): `DG.Periodize`, `DG.Periodize.periodUnit`,
+    — done (graded and dg). For `ℤ/2`: `DG.Periodize`, `DG.Periodize.periodUnit`,
     `DG.Periodize.quotientEquiv`, `DG.PeriodicityUnit.periodizeEquiv`, `DG.GradedModuleCat`,
     `DG.GradedModuleCat.periodizeEquivalence`, `DG.Periodize.dgRing`,
     `DG.GradedModuleCat.periodizeDGEquivalence`; for a differential of degree `k`, the
@@ -63,8 +63,14 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `DG.residueEquiv`, `DG.residueEquiv_d`, `DG.RegradeByDivision.dgRing` (Leibniz sign
     `(-1)^{|a|/k}` on `A^{qk}`). The comparison with `DG.DGModuleCat (Periodize ℬ)` is proved:
     `DG.GradedModuleCat.periodicDGModuleCatEquivalence`,
-    `DG.GradedModuleCat.zmod2DGModuleCatEquivalence`.
-    Open: the category equivalence for degree-`k` differentials.
+    `DG.GradedModuleCat.zmod2DGModuleCatEquivalence`. For a ring `A` concentrated in degrees
+    divisible by `k ≥ 1` (`DG.IsConcentratedInMultiples`; necessary for the residue classes to
+    be submodules), `A ≅ ⨁ q, A^{qk}` (`DG.regradeRingEquiv`, compatible with the
+    differentials: `DG.regradeRingHom_d`), and the category equivalences
+    `DG.GradedModuleCat.regradeEquivalence : GradedModuleCat 𝒜 ≌ (ZMod k → GradedModuleCat ℬ)`
+    and, for a differential of degree `k`, `DG.GradedModuleCat.regradeDGEquivalence` and
+    `DG.GradedModuleCat.divDGModuleCatEquivalence : DivDGModuleCat 𝒜 k dA ≌
+    (ZMod k → DGModuleCat (⨁ q, A^{qk}))`, `M ↦ (⨁ q, M^{qk + r})_r`.
 
 ## Tier 2 — dg algebras and dg modules
 
