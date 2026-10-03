@@ -34,11 +34,12 @@ namespace DG
 
 section GradedRingEquiv
 
-variable {R S : Type*} [Ring R] [Ring S] {𝒜 : ℤ → AddSubgroup R} [GradedRing 𝒜]
-  {𝒮 : ℤ → AddSubgroup S} [GradedRing 𝒮] (φ : R ≃+* S) (hφ : ∀ i x, φ x ∈ 𝒮 i ↔ x ∈ 𝒜 i)
+variable {ι : Type*} [AddCommGroup ι] [DecidableEq ι] {R S : Type*} [Ring R] [Ring S]
+  {𝒜 : ι → AddSubgroup R} [GradedRing 𝒜]
+  {𝒮 : ι → AddSubgroup S} [GradedRing 𝒮] (φ : R ≃+* S) (hφ : ∀ i x, φ x ∈ 𝒮 i ↔ x ∈ 𝒜 i)
 include hφ
 
-omit [GradedRing 𝒜] [GradedRing 𝒮] in
+omit [DecidableEq ι] [GradedRing 𝒜] [GradedRing 𝒮] in
 theorem isGradedSimpleIdempotent_ringEquiv {e : R} (he : IsGradedSimpleIdempotent 𝒜 e) :
     IsGradedSimpleIdempotent 𝒮 (φ e) := by
   refine ⟨fun h => he.1 (φ.injective (by rw [h, map_zero])), fun j h hh hhe hh0 => ?_⟩
