@@ -170,6 +170,7 @@ import DG.HalfGraded.DiagonalCompact
 import DG.HalfGraded.DiagonalCompactK0
 import DG.HalfGraded.DiagonalBlocks
 import DG.HalfGraded.DiagonalK0
+import DG.HalfGraded.DiagonalK0Map
 import DG.HalfGraded.DiagonalConeRecovery
 import DG.HalfGraded.DiagonalCone
 import DG.HalfGraded.Field
