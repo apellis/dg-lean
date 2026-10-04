@@ -203,6 +203,7 @@ import DG.Homotopy.HomShift
 import DG.Homotopy.HomologyFunctor
 import DG.Homotopy.Homotopy
 import DG.Homotopy.HomotopyCategory
+import DG.Homotopy.ExternalTensor
 import DG.Homotopy.KProjective
 import DG.Homotopy.Lifting
 import DG.Homotopy.Localization
