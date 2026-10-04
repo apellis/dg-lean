@@ -810,9 +810,14 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     and `SuperK0c H ≃ₗ[ℤ[q,q⁻¹]] (ℤ[q,q⁻¹] ⧸ (1 + q²)) ⊗[ℤ] K₀(D(A)^c)`
     (`Diagonal.superK0LinearEquiv`), with `[toDerived X] ↦ 1 ⊗ [X]`; along the way,
     `q²ᵏ` acts trivially on `K₀(D(C_H)^c)` for every half-graded dg ring
-    (`HalfGradedDGRing.T_two_mul_smul_compactK0`). Open: an arbitrary parameter `k` for the
-    diagonal construction, and transport of triangulated functors `D(A) ⥤ D(B)` with the
-    compatibility of the induced map with `id ⊗ K₀(F)`.
+    (`HalfGradedDGRing.T_two_mul_smul_compactK0`). `DiagonalK0Map.lean`: for triangulated
+    functors `F : D(A) ⥤ D(B)` and `G : D(C_{H_A}) ⥤ D(C_{H_B})` preserving compact objects,
+    with `G` commuting with the internal shifts and `G ∘ ι_A ≅ ι_B ∘ F`, the map induced by `G`
+    on `K₀` is `ℤ[q,q⁻¹]`-linear and equals `id ⊗ K₀(F)` under `K0LinearEquiv`, and likewise on
+    `SuperK0c` (`K0LinearEquiv_mapCompact`, `superK0LinearEquiv_superK0cMap`). Open: an
+    arbitrary parameter `k` for the diagonal construction, and constructing `G` from `F`
+    (e.g. identifying derived induction along the weight functor of an induced morphism of
+    half-graded dg rings with the diagonal of derived induction).
     Generic half-graded morphisms: `HalfGradedDGRing.Hom.weightFunctor` and
     `Hom.K0Map` give actual derived-induction maps, Laurent-linear for arbitrary
     common `k`; generic quasi-isomorphism invariance remains open (issue #6 B).
