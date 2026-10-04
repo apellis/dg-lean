@@ -262,6 +262,7 @@ import DG.Module.Shift
 import DG.Module.Sub
 import DG.Module.SubQuotient
 import DG.Module.TensorProduct
+import DG.Module.ExternalTensor
 import DG.Module.TensorProductOver
 import DG.Module.ULift
 import DG.Monoidal.Complex
