@@ -276,7 +276,12 @@ D.4 Tier 4 for `C`: acyclic modules, quasi-isomorphisms, the derived category `D
     left modules `B(-, Y)` are K-projective, `DG.CatModule.DerivedCategory.derivedTensor`,
     `DG.CatModule.DerivedCategory.rhom` and `derivedTensorAdjunction` (`⊗^L ⊣ RHOM`, both
     triangulated, `⊗^L` preserves coproducts), `derivedTensorObjIso`, and
-    `derivedTensorOfFunctorIso` (`D(F-, -) ⊗^L - ≅ LF_!`), `rhomOfFunctorIso`. Open: general
+    `derivedTensorOfFunctorIso` (`D(F-, -) ⊗^L - ≅ LF_!`), `rhomOfFunctorIso`. Isomorphisms of dg
+    bimodules (`DG.CatBimodule.Iso`) induce isomorphisms of Hom functors, `RHOM` and `⊗^L`
+    (`CatBimodule.homFunctorIso`, `rhomIso`, `derivedTensorIso`; `derivedTensorIsoId` for bimodules
+    isomorphic to the diagonal, `singleObjDerivedTensorIsoId` for dg rings;
+    `DG/Category/Derived/TensorIso.lean`); derived induction along a quasi-isomorphism of dg rings is
+    an equivalence (`DGRingHom.derivedInductionEquivalence`). Open: general
     bimodules (would need bimodule resolutions, i.e. tensor products of dg categories).
 D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C)`, so the
     compact objects are the thick closure of the representables; `K₀(C)`; positive dg
