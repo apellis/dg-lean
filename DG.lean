@@ -124,6 +124,7 @@ import DG.Derived.FiniteCell
 import DG.Derived.GradedSplitting
 import DG.Derived.Heart
 import DG.Derived.KProjective
+import DG.Derived.ExternalTensor
 import DG.Derived.LocalizationCoproducts
 import DG.Derived.Morita
 import DG.Derived.Perfect
