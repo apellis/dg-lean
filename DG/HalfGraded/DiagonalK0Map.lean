@@ -180,6 +180,48 @@ theorem superK0LinearEquiv_superK0cMap
     rfl
   | add x y hx hy => rw [map_add, map_add, hx, hy, map_add, map_add]
 
+/-- **Linear maps compatible with the diagonals.** A `ℤ[q, q⁻¹]`-linear map `g` with
+`g ∘ ι_A = ι_B ∘ h` is `id ⊗ h` under `K0LinearEquiv`. -/
+theorem K0LinearEquiv_linearMap
+    (g : DiagK0.{w', v} A →ₗ[LaurentPolynomial ℤ] DiagK0.{w₂', v₂} B)
+    (h : BaseK0.{w, v} A →+ BaseK0.{w₂, v₂} B)
+    (hg : ∀ y, g (mapCompactK0.{w', w, max u v} A y) = mapCompactK0.{w₂', w₂, max u₂ v₂} B (h y))
+    (x : DiagK0.{w', v} A) :
+    K0LinearEquiv.{w₂', w₂, v₂} B (g x) =
+      LinearMap.lTensor _ h.toIntLinearMap (K0LinearEquiv.{w', w, v} A x) := by
+  have key : ∀ t : (LaurentPolynomial ℤ ⧸ periodIdeal) ⊗[ℤ] BaseK0.{w, v} A,
+      K0LinearEquiv.{w₂', w₂, v₂} B (g (toK0.{w', w, v} A t)) =
+        LinearMap.lTensor _ h.toIntLinearMap t := by
+    intro t
+    induction t using TensorProduct.inductionOn with
+    | tmul p y =>
+      obtain ⟨p, rfl⟩ := Submodule.Quotient.mk_surjective _ p
+      rw [toK0_tmul, g.map_smul, hg, K0LinearEquiv_smul_mapCompactK0, LinearMap.lTensor_tmul]
+      rfl
+    | add x y hx hy => rw [map_add, map_add, map_add, hx, hy, map_add]
+  have hx : x = toK0.{w', w, v} A (K0LinearEquiv.{w', w, v} A x) := by
+    rw [K0LinearEquiv_apply, toK0_ofK0]
+  conv_lhs => rw [hx]
+  exact key _
+
+/-- The super version of `K0LinearEquiv_linearMap`. -/
+theorem superK0LinearEquiv_superK0cMap_linearMap
+    (g : DiagK0.{w', v} A →ₗ[LaurentPolynomial ℤ] DiagK0.{w₂', v₂} B)
+    (h : BaseK0.{w, v} A →+ BaseK0.{w₂, v₂} B)
+    (hg : ∀ y, g (mapCompactK0.{w', w, max u v} A y) = mapCompactK0.{w₂', w₂, max u₂ v₂} B (h y))
+    (s : HalfGradedDGRing.SuperK0c.{w', v} (HalfGradedDGRing.ofDGRing A)) :
+    superK0LinearEquiv.{w₂', w₂, v₂} B (HalfGradedDGRing.superK0cMap _ _ g s) =
+      LinearMap.lTensor _ h.toIntLinearMap (superK0LinearEquiv.{w', w, v} A s) := by
+  obtain ⟨x, rfl⟩ := HalfGradedDGRing.superK0cMk_surjective.{w', v} _ s
+  rw [HalfGradedDGRing.superK0cMap_mk, superK0LinearEquiv_superK0cMk,
+    superK0LinearEquiv_superK0cMk, K0LinearEquiv_linearMap A B g h hg x]
+  generalize K0LinearEquiv.{w', w, v} A x = t
+  induction t using TensorProduct.inductionOn with
+  | tmul p y =>
+    obtain ⟨p, rfl⟩ := Submodule.Quotient.mk_surjective _ p
+    rfl
+  | add x y hx hy => rw [map_add, map_add, hx, hy, map_add, map_add]
+
 end Diagonal
 
 end DG

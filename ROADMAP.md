@@ -824,10 +824,14 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     functors `F : D(A) ⥤ D(B)` and `G : D(C_{H_A}) ⥤ D(C_{H_B})` preserving compact objects,
     with `G` commuting with the internal shifts and `G ∘ ι_A ≅ ι_B ∘ F`, the map induced by `G`
     on `K₀` is `ℤ[q,q⁻¹]`-linear and equals `id ⊗ K₀(F)` under `K0LinearEquiv`, and likewise on
-    `SuperK0c` (`K0LinearEquiv_mapCompact`, `superK0LinearEquiv_superK0cMap`). Open: an
-    arbitrary parameter `k` for the diagonal construction, and constructing `G` from `F`
-    (e.g. identifying derived induction along the weight functor of an induced morphism of
-    half-graded dg rings with the diagonal of derived induction).
+    `SuperK0c` (`K0LinearEquiv_mapCompact`, `superK0LinearEquiv_superK0cMap`; for any Laurent-linear
+    map compatible with the diagonals, `K0LinearEquiv_linearMap`). `DiagonalInduction.lean`: a
+    morphism of dg rings `φ` induces `HalfGradedDGRing.Hom.ofDGRingHom φ`; the diagonal functor is
+    derived induction along the weight-zero inclusion (`toDerivedInductionIso`, via
+    `recoveryDerivedIso`), so `K₀` of the induced weight functor is `id ⊗ K₀(φ)` under
+    `K0LinearEquiv` and `superK0LinearEquiv` (`K0LinearEquiv_K0Map_ofDGRingHom`,
+    `superK0LinearEquiv_superK0cMap_ofDGRingHom`; dg modules and Hom groups in the universe of
+    the rings). Open: an arbitrary parameter `k`, and derived tensor products with bimodules.
     Generic half-graded morphisms: `HalfGradedDGRing.Hom.weightFunctor` and
     `Hom.K0Map` give actual derived-induction maps, Laurent-linear for arbitrary
     common `k`; generic quasi-isomorphism invariance remains open (issue #6 B).
