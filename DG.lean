@@ -183,6 +183,7 @@ import DG.HalfGraded.Positive
 import DG.HalfGraded.PositiveSuper
 import DG.HalfGraded.SuperK0
 import DG.HalfGraded.SuperK0Linear
+import DG.HalfGraded.Vanishing
 import DG.Homotopy.Abelian
 import DG.Homotopy.ChangeOfRings
 import DG.Homotopy.CohomologyComparison
