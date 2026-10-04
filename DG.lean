@@ -60,6 +60,7 @@ import DG.Category.Derived.ShiftedObjects
 import DG.Category.Derived.Small
 import DG.Category.Derived.Tensor
 import DG.Category.Derived.TensorInduction
+import DG.Category.Derived.TensorIso
 import DG.Category.Functor
 import DG.Category.Homotopy.Acyclic
 import DG.Category.Homotopy.Comparison
