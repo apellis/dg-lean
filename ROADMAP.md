@@ -680,7 +680,10 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `K₀(D(k)^c) ≃+ ℤ[q, q⁻¹]/(1 + qᵏ)`) and, for `k = 2`, `superK0EquivGaussianInt`
     (`≃ ℤ[√-1]`). For every integer parameter and every half-graded ring,
     `mk_parityShiftCompact` gives `[ΠX] = -q⁻ᵏ[X]`, and `parityRelations_eq` identifies the parity
-    relations with `(1 + qᵏ)K₀`. `SuperK0c` carries Laurent-polynomial and quotient-ring scalar
+    relations with `(1 + qᵏ)K₀`. If `hd x = 1` for some `x`, every dg module over `C_H` is
+    acyclic, `D(C_H) = 0` and `K₀(D(C_H)^c)`, `SuperK0c H` vanish (`DG/HalfGraded/Vanishing.lean`,
+    `isAcyclic_of_hd_eq_one`, `isZero_of_hd_eq_one`, `compactK0_subsingleton`,
+    `superK0c_subsingleton`). `SuperK0c` carries Laurent-polynomial and quotient-ring scalar
     actions (`superK0cModule`, `superK0cQuotientModule`); `T_smul_superK0c_mk` identifies the action
     with the actual internal shift. The field comparison is linear over both coefficient rings
     (`Field.superK0LinearEquiv`, `Field.superK0QuotientLinearEquiv`). `superK0cMap` uniquely descends
