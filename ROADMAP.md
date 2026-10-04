@@ -548,9 +548,11 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `Aⁿ = 0` for `n < 0` and `A⁰ = ℤ · 1` (not positive: `ℤ` is not semisimple) and a field `K`,
     `K ⊗ A = K ᵍ⊗[ℤ] A` (`DG.ExtendScalars`, `K` in degree `0`) is positive
     (`DG.ExtendScalars.isPositive`), and `K₀(K ⊗ A) ≃ ℤ`, `[K ⊗ A] ↦ 1`, when `1` has infinite
-    order in `A` (`DG.ExtendScalars.K0EquivInt`). Open: the `DGAlgebra K` structure on `K ⊗ A`,
-    base change of dg modules and bimodules, and its comparison with derived induction along
-    `A → K ⊗ A`.
+    order in `A` (`DG.ExtendScalars.K0EquivInt`). `K ⊗ A` is a dg `K`-algebra
+    (`DG.ExtendScalars.algebra`, `dgAlgebra`, via the central elements `k ⊗ 1`) with the dg ring map
+    `DG.ExtendScalars.unitHom : A → K ⊗ A`; base change of dg modules is extension of scalars along
+    it (`DG.DGModuleCat.extendScalars`). Open: the model `K ⊗_ℤ M ≅ (K ⊗ A) ⊗_A M` for dg modules
+    and bimodules, and its comparison with derived induction.
 6.4 Formality: a dg algebra `A` is formal if it is connected to `H(A)` (zero differential) by
     a zigzag of quasi-isomorphisms; Keller's theorem then gives `D(A) ≃ D(H(A))` and
     `K₀(A) ≅ K₀(H(A))`. Criterion: if `H(A)` is a free (super)commutative graded algebra on
