@@ -130,6 +130,40 @@ theorem d_tmul_one (k : DegreeZeroRing K) : d (k ᵍ⊗ₜ[ℤ] (1 : A) : Extend
   rw [GradedTensorProduct.d_tmul', DegreeZeroRing.d_eq_zero, d_one,
     GradedTensorProduct.zero_tmul, GradedTensorProduct.tmul_zero, add_zero]
 
+/-- `k ⊗ 1` is central in `K ⊗ A`, since `K` sits in degree `0` and is commutative. -/
+theorem tmul_one_mul_comm (k : DegreeZeroRing K) (x : ExtendScalars K A) :
+    (k ᵍ⊗ₜ[ℤ] (1 : A) : ExtendScalars K A) * x = x * (k ᵍ⊗ₜ[ℤ] (1 : A)) := by
+  induction x using GradedTensorProduct.induction_on_tmul (R := ℤ) with
+  | zero => rw [mul_zero, zero_mul]
+  | @tmul i j a ha b hb =>
+    rw [GradedTensorProduct.tmul_mul_tmul 𝒦 𝒜 k (one_mem_grading (A := A)) ha b,
+      GradedTensorProduct.tmul_mul_tmul 𝒦 𝒜 (i' := 0) a hb (DegreeZeroRing.mem_grading_zero K k) 1,
+      zero_mul, mul_zero, koszulSign_zero, one_smul, one_smul, one_mul, mul_one, mul_comm]
+  | add x y hx hy => rw [mul_add, add_mul, hx, hy]
+
+variable (K A) in
+/-- `K ⊗ A` is a `K`-algebra, `k ↦ k ⊗ 1`. -/
+instance algebra : Algebra K (ExtendScalars K A) :=
+  RingHom.toAlgebra' ((_root_.GradedTensorProduct.includeLeft 𝒦 𝒜).toRingHom.comp
+    (DegreeZeroRing.of K).toRingHom) fun k x => tmul_one_mul_comm (DegreeZeroRing.of K k) x
+
+theorem algebraMap_apply (k : K) :
+    algebraMap K (ExtendScalars K A) k = (DegreeZeroRing.of K k) ᵍ⊗ₜ[ℤ] (1 : A) := rfl
+
+variable (K A) in
+/-- `K ⊗ A` is a dg `K`-algebra. -/
+instance dgAlgebra : DGAlgebra K (ExtendScalars K A) where
+  algebraMap_mem' k := tmul_one_mem (DegreeZeroRing.of K k)
+  d_algebraMap' k := d_tmul_one (DegreeZeroRing.of K k)
+
+variable (K A) in
+/-- The dg ring map `A → K ⊗ A`, `a ↦ 1 ⊗ a`. -/
+def unitHom : A →ᵈᵍ+* ExtendScalars K A :=
+  (GradedTensorProduct.includeRightDGAlgHom ℤ (DegreeZeroRing K) A).toDGRingHom
+
+theorem unitHom_apply (a : A) :
+    unitHom K A a = ((1 : DegreeZeroRing K) ᵍ⊗ₜ[ℤ] a : ExtendScalars K A) := rfl
+
 variable (K A) in
 /-- `K → (K ⊗ A)⁰`, `k ↦ k ⊗ 1`. -/
 def toDegreeZero : DegreeZeroRing K →+* degreeZeroSubring (ExtendScalars K A) :=
