@@ -176,6 +176,7 @@ import DG.HalfGraded.DiagonalConeRecovery
 import DG.HalfGraded.DiagonalCone
 import DG.HalfGraded.Field
 import DG.HalfGraded.Hom
+import DG.HalfGraded.HomQuasiIso
 import DG.HalfGraded.InternalZero
 import DG.HalfGraded.DiagonalConeNaturality
 import DG.HalfGraded.DiagonalDerivedCone

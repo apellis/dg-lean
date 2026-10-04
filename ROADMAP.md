@@ -836,7 +836,11 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     the rings). Open: an arbitrary parameter `k`, and derived tensor products with bimodules.
     Generic half-graded morphisms: `HalfGradedDGRing.Hom.weightFunctor` and
     `Hom.K0Map` give actual derived-induction maps, Laurent-linear for arbitrary
-    common `k`; generic quasi-isomorphism invariance remains open (issue #6 B).
+    common `k`. A quasi-isomorphism (`Hom.IsQuasiIso`: bijective on the cohomology of every
+    weight component of the regraded rings) has a quasi-equivalence as weight functor
+    (`Hom.isQuasiEquivalence_weightFunctor`) and induces `K₀(C_H) ≃ₗ[ℤ[q, q⁻¹]] K₀(C_{H'})` and
+    `SuperK0c H ≃ₗ SuperK0c H'` (`Hom.K0LinearEquiv`, `Hom.superK0cLinearEquiv`,
+    `DG/HalfGraded/HomQuasiIso.lean`).
     Positivity (`HalfGraded/Positive.lean`, `DG.HalfGradedDGRing.IsPositive`): `k > 0`,
     `A^{j,•} = 0` for `j < 0` and `0 < j < k`, `d = 0` on `A^{0,•}`, and `A^{0,•}`
     (`internalZeroSubring`) graded semisimple as a `ℤ/2`-graded ring (`DG.IsGradedSemisimpleRing`,
