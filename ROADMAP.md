@@ -798,6 +798,21 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     universes. A standalone forward homotopy functor/comparison and bundled
     arrow-to-triangle functor naturality remain open. No cone functor on arbitrary
     derived arrows or equivalence with the whole target is asserted.
+    `DiagonalBlocks.lean` proves the block decomposition: every dg module `M` over the
+    diagonal weight category is the direct sum of its four blocks
+    `(toCatModule (recover 0 (M⟨r⟩)))⟨-r⟩`, `r = 0, …, 3` (an isomorphism of dg modules,
+    `isIso_blocksMap`), hence every object `X` of the derived category satisfies
+    `X ≅ ⨁_{r=0}^{3} (toDerived (recoveryDerived 0 (X⟨r⟩)))⟨-r⟩` (`blocksDerivedIso`).
+    A fully faithful coproduct-preserving functor reflects compact objects
+    (`IsCompact.of_map_of_fullyFaithful`), so weight-zero derived recovery preserves compact
+    objects. `DiagonalK0.lean` computes, for an arbitrary dg ring `A`,
+    `K₀(D(C_H)^c) ≃ₗ[ℤ[q,q⁻¹]] (ℤ[q,q⁻¹] ⧸ (q⁴ - 1)) ⊗[ℤ] K₀(D(A)^c)` (`Diagonal.K0LinearEquiv`)
+    and `SuperK0c H ≃ₗ[ℤ[q,q⁻¹]] (ℤ[q,q⁻¹] ⧸ (1 + q²)) ⊗[ℤ] K₀(D(A)^c)`
+    (`Diagonal.superK0LinearEquiv`), with `[toDerived X] ↦ 1 ⊗ [X]`; along the way,
+    `q²ᵏ` acts trivially on `K₀(D(C_H)^c)` for every half-graded dg ring
+    (`HalfGradedDGRing.T_two_mul_smul_compactK0`). Open: an arbitrary parameter `k` for the
+    diagonal construction, and transport of triangulated functors `D(A) ⥤ D(B)` with the
+    compatibility of the induced map with `id ⊗ K₀(F)`.
     Generic half-graded morphisms: `HalfGradedDGRing.Hom.weightFunctor` and
     `Hom.K0Map` give actual derived-induction maps, Laurent-linear for arbitrary
     common `k`; generic quasi-isomorphism invariance remains open (issue #6 B).
