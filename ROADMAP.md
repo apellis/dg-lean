@@ -592,7 +592,8 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `DG.IsPositive.K0KunnethEquiv : K₀(A) ⊗[ℤ] K₀(B) ≃ₗ[ℤ] K₀(A ⊗_k B)`,
     `[A e] ⊗ [B f] ↦ [(A ⊗ B)(e ⊗ f)]`, when `A⁰`, `B⁰` are split semisimple over `k`
     (`IsSplitSemisimple`: `e A⁰ e = k e` for simple `e`); `DG.IsPositive.tensorProduct`,
-    `DG.isSemisimpleRing_tensorProduct`.
+    `DG.isSemisimpleRing_tensorProduct`. The isomorphism is induced by the derived external tensor
+    product (`DG.DerivedCategory.K0ExternalTensorOver_eq_K0KunnethEquiv`; see Tier 8).
 
 ## Tier 7 — Internal gradings
 
@@ -934,8 +935,12 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
   followed by derived induction along `DG.GradedTensorProduct.intComparison : A ᵍ⊗[ℤ] B → A ᵍ⊗[R] B`
   (triangulated in each variable, preserves compact objects, via
   `DG.DGRingHom.derivedInduction_isTriangulated` and `DG.DGRingHom.isCompact_derivedInduction_obj`).
-  Open: the dg module `M ⊗_R N` over `A ᵍ⊗[R] B` and its identification with the induced module,
-  and the induced bilinear map `K₀(A) × K₀(B) → K₀(A ⊗ B)` compared with 6.5.
+  On `K₀`: `DG.DerivedCategory.K0ExternalTensor` (`[X] ⊗ [Y] ↦ [X ⊠ᴸ Y]`) and
+  `DG.DerivedCategory.K0ExternalTensorOver R`, with `[A e] ⊗ [B f] ↦ [(A ⊗ B)(e ⊗ f)]`
+  (`DG.ExternalTensor.leftCornerTensorIso`, `DG.DerivedCategory.K0ExternalTensorOver_leftCorner`);
+  over a field it is the Künneth isomorphism of 6.5
+  (`DG.DerivedCategory.K0ExternalTensorOver_eq_K0KunnethEquiv`).
+  Open: the dg module `M ⊗_R N` over `A ᵍ⊗[R] B` and its identification with the induced module.
 - t-structures on `D(A)` for non-positively/positively graded `A` (Mathlib has the definition
   of a t-structure).
   — done for non-positively graded dg rings: `DG.DerivedCategory.tStructure`, with heart

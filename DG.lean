@@ -228,6 +228,7 @@ import DG.K0.Compact
 import DG.K0.DGCategory
 import DG.K0.DGRing
 import DG.K0.Euler
+import DG.K0.ExternalTensor
 import DG.K0.ExtendScalars
 import DG.K0.Field
 import DG.K0.Homological
