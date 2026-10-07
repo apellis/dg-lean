@@ -121,6 +121,7 @@ import DG.Compact.Triangulated
 import DG.Derived.Bar
 import DG.Derived.Basic
 import DG.Derived.Comparison
+import DG.Derived.ComparisonRing
 import DG.Derived.ConnectiveResolution
 import DG.Derived.Coproducts
 import DG.Derived.FiniteCell
@@ -203,11 +204,13 @@ import DG.Homotopy.CohomologyComparison
 import DG.Homotopy.CohomologyLinear
 import DG.Homotopy.CohomologySequence
 import DG.Homotopy.Comparison
+import DG.Homotopy.ComparisonRing
 import DG.Homotopy.ConeCochain
 import DG.Homotopy.ConeComp
 import DG.Homotopy.ConeQuotient
 import DG.Homotopy.Coproducts
 import DG.Homotopy.Forget
+import DG.Homotopy.ForgetRing
 import DG.Homotopy.ForgetTriangulated
 import DG.Homotopy.HomShift
 import DG.Homotopy.HomologyFunctor
