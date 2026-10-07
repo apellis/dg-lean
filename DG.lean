@@ -276,6 +276,7 @@ import DG.Module.TensorProduct
 import DG.Module.ExternalTensor
 import DG.Module.ExternalTensorShift
 import DG.Module.ExternalTensorCone
+import DG.Module.ExternalTensorOver
 import DG.Module.TensorProductOver
 import DG.Module.ULift
 import DG.Monoidal.Complex
