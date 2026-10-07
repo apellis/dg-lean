@@ -954,8 +954,15 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
   bounded-below modules or `A` without positive degrees and bounded-above modules,
   `DG.IsBoundedMinimal`), `DG.IsKProjective.bijective_of_isQuasiIso`,
   `DG.IsKProjective.exists_bijective_of_isBoundedMinimal` (`DG/Derived/Minimal.lean`). No field
-  or condition on `A⁰` is needed. Open: existence (ordered finite-cell models over positive dg
-  rings; minimal resolutions over connective dg rings with `A⁰` a division ring).
+  or condition on `A⁰` is needed.
+  — existence over positive dg rings: ordered finite-cell modules are minimal and bounded below
+  when `A^{<0} = 0` and `d(A⁰) = 0` (`DG.FiniteCellFiltration.IsOrdered.isMinimal`,
+  `DG.FiniteCellFiltration.isBoundedBelow`); hence every compact object of `D(A)` has a minimal
+  ordered finite-cell model with simple cells (`DG.IsPositive.exists_isBoundedMinimal_of_isCompact`,
+  from Schnürer's theorem), unique up to isomorphism of dg modules
+  (`DG.IsPositive.exists_bijective_of_iso`; `DG/Positive/Minimal.lean`).
+  Open: minimal resolutions of arbitrary (non-compact) dg modules; minimal resolutions over
+  connective dg rings with `A⁰` a division ring; invariance of the list of cells.
 - Perfect complexes over a ring and `K₀(D^{perf}(R)) ≅ K₀(R\text{-proj})` (comparison with
   Mathlib's `ModuleCat`).
   — done: `DG.perfectK0Equiv` (any ring, in Mathlib's derived category); compact objects of
