@@ -952,7 +952,10 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
   (`DG.ExternalTensor.leftCornerTensorIso`, `DG.DerivedCategory.K0ExternalTensorOver_leftCorner`);
   over a field it is the Künneth isomorphism of 6.5
   (`DG.DerivedCategory.K0ExternalTensorOver_eq_K0KunnethEquiv`).
-  Open: the dg module `M ⊗_R N` over `A ᵍ⊗[R] B` and its identification with the induced module.
+  The dg module `M ⊗_R N` over `A ᵍ⊗[R] B`: `DG.ExternalTensorOver R A B M N` (Koszul rule
+  `DG.ExternalTensorOver.tmul_smul_tmul`, functoriality `DG.ExternalTensorOver.tensorDGHom`; for
+  `R = ℤ` it is the product over `ℤ`, `DG.ExternalTensorOver.intEquiv`). Open: its identification
+  with the induced module, and `Q P ⊠ᴸ_R Q P' ≅ Q (P ⊗_R P')` for K-projective `P`, `P'`.
 - t-structures on `D(A)` for non-positively/positively graded `A` (Mathlib has the definition
   of a t-structure).
   — done for non-positively graded dg rings: `DG.DerivedCategory.tStructure`, with heart
