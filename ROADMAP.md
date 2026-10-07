@@ -568,7 +568,12 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     (`DG.ExtendScalars.extendScalarsEquiv`), naturally in `M` (`DG.ExtendScalars.extendScalarsIso`).
     Derived: derived induction along `unitHom` is `K ⊗_ℤ -` on K-projective modules
     (`DG.ExtendScalars.derivedInductionObjIso`), and `K₀(unitHom) [P] = [K ⊗_ℤ P]` for `P`
-    K-projective and compact (`DG.ExtendScalars.K0_map_mk`). Open: bimodules.
+    K-projective and compact (`DG.ExtendScalars.K0_map_mk`). Extension of scalars and base change
+    preserve K-projectivity (`DG.IsKProjective.extendScalars`, `DG.ExtendScalars.isKProjective_baseChange`).
+    Bimodules (`DG/Positive/ScalarExtensionBimodule.lean`): for a dg `(A, B)`-bimodule `X`, `K ⊗_ℤ X`
+    is a dg `(K ⊗ A, K ⊗ B)`-bimodule (`DG.ExtendScalars.instDGBimodule`), with left module the base
+    change of `X` and right action `(x ⊗ m) • (k ⊗ b) = x k ⊗ m b`. Open: compatibility of the derived
+    tensor product with base change.
 6.4 Formality: a dg algebra `A` is formal if it is connected to `H(A)` (zero differential) by
     a zigzag of quasi-isomorphisms; Keller's theorem then gives `D(A) ≃ D(H(A))` and
     `K₀(A) ≅ K₀(H(A))`. Criterion: if `H(A)` is a free (super)commutative graded algebra on

@@ -27,6 +27,13 @@ namespace ExtendScalars
 variable {K : Type u} [CommRing K] {A : Type u} [Ring A] [DGAddCommGroup A] [DGRing A]
   {P : DGModuleCat.{u} A} (hP : IsKProjective.{u} A P)
 
+variable (K) in
+include hP in
+/-- Base change preserves K-projectivity. -/
+theorem isKProjective_baseChange :
+    IsKProjective.{u} (ExtendScalars K A) ((baseChange K A).obj P) :=
+  (hP.extendScalars (unitHom K A)).of_dgModuleEquiv (extendScalarsEquiv K A P).symm
+
 section Derived
 
 variable [CatModule.HasDerivedCategory.{w₁, u} (SingleObj A)]

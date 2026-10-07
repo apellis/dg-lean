@@ -103,6 +103,32 @@ theorem IsKProjective.toCatModuleObj {P : DGModuleCat.{u} B} (hP : IsKProjective
   · exact DGModuleHom.ext fun _ => rfl
   · exact DGModuleHom.ext fun _ => rfl
 
+omit [DGRing B] in
+/-- Conversely, a dg `B`-module which is K-projective over `SingleObj B` is K-projective. -/
+theorem IsKProjective.of_toCatModuleObj {P : DGModuleCat.{u} B}
+    (hP : CatModule.IsKProjective (DGModuleCat.toCatModuleObj P)) : IsKProjective.{u} B P := by
+  intro N _ _ _ _ hN f
+  let N' := DGModuleCat.of B N
+  have hN' : CatModule.IsAcyclic (DGModuleCat.toCatModuleObj N') := fun _ => hN
+  have h := (CatModule.homotopic_iff_toDGModuleCat.mp
+    (hP _ hN' ((DGModuleCat.toCatModule.{u} B).map (DGModuleCat.ofHom f))))
+  let e : P →ᵈᵍ[B] (CatModule.toDGModuleCat.{u} B).obj (DGModuleCat.toCatModuleObj P) :=
+    ((CatModule.singleObjEquivalence.{u} B).counitIso.inv.app P).hom
+  let e' : (CatModule.toDGModuleCat.{u} B).obj (DGModuleCat.toCatModuleObj N') →ᵈᵍ[B] N :=
+    ((CatModule.singleObjEquivalence.{u} B).counitIso.hom.app N').hom
+  refine (Homotopic.of_eq ?_).trans (((h.comp_left e).comp_right e').trans (Homotopic.of_eq ?_))
+  · exact DGModuleHom.ext fun _ => rfl
+  · exact DGModuleHom.ext fun _ => rfl
+
+/-- **Extension of scalars preserves K-projectivity**: it corresponds to induction along
+`SingleObj B ⥤ SingleObj A`, a left adjoint of the restriction functor. -/
+theorem IsKProjective.extendScalars (φ : B →ᵈᵍ+* A) {P : DGModuleCat.{u} B}
+    (hP : IsKProjective.{u} B P) :
+    IsKProjective.{u} A ((DGModuleCat.extendScalars.{u} φ).obj P) :=
+  IsKProjective.of_toCatModuleObj
+    ((hP.toCatModuleObj.of_adjunction (CatModule.inductionAdjunction φ.singleObjFunctor)).of_iso
+      ((DGRingHom.extendScalarsCompToCatModuleIso φ).app P))
+
 /-! ### Derived induction on K-projective modules -/
 
 namespace DGRingHom
