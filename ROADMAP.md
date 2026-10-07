@@ -417,8 +417,12 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `DG.DGRingHom.derivedInductionIsoDerivedTensor` (`φ^* ≅ A ⊗^L_B -`). On K-projective dg
     modules `φ^*` is extension of scalars: `φ^*(P) ≅ A ⊗_B P` (`DG.DGRingHom.derivedInductionObjIso`,
     via `DG.DGRingHom.extendScalarsCompToCatModuleIso` and `DG.IsKProjective.toCatModuleObj`), and
-    `K₀(φ) [P] = [A ⊗_B P]` for `P` also compact (`DG.DGRing.K0.map_mk_of_isKProjective`). Open:
-    general bimodules; identification of `φ_*` with derived restriction of scalars on `DGModuleCat`.
+    `K₀(φ) [P] = [A ⊗_B P]` for `P` also compact (`DG.DGRing.K0.map_mk_of_isKProjective`). For a
+    dg `(A, B)`-bimodule `M` over dg rings, K-projective as a left module: `M ⊗^L_B - : D(B) ⥤ D(A)`
+    (`DG.DGBimodule.derivedTensor`, triangulated), `M ⊗^L_B B ≅ M` (`DG.DGBimodule.derivedTensorSelfIso`),
+    preserving compact objects when `M` is compact (`DG.DGBimodule.isCompact_derivedTensor_obj`, via
+    `DG.DerivedCategory.isCompact_obj_of_isCompact_self`). Open: identification of `φ_*` with
+    derived restriction of scalars on `DGModuleCat`.
 4.5 Keller's theorem [Ke, Ex. 6.1], [BL 10.12.5.1]: if `φ : B → A` is a quasi-isomorphism of dg
     algebras, `φ^*` and `φ_*` are mutually inverse triangulated equivalences `D(B) ≃ D(A)`.
     Corollary: for a dg algebra `A`, the following are equivalent: `D(A) ≃ 0`; `H(A) = 0`;
@@ -572,8 +576,11 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     preserve K-projectivity (`DG.IsKProjective.extendScalars`, `DG.ExtendScalars.isKProjective_baseChange`).
     Bimodules (`DG/Positive/ScalarExtensionBimodule.lean`): for a dg `(A, B)`-bimodule `X`, `K ⊗_ℤ X`
     is a dg `(K ⊗ A, K ⊗ B)`-bimodule (`DG.ExtendScalars.instDGBimodule`), with left module the base
-    change of `X` and right action `(x ⊗ m) • (k ⊗ b) = x k ⊗ m b`. Open: compatibility of the derived
-    tensor product with base change.
+    change of `X` and right action `(x ⊗ m) • (k ⊗ b) = x k ⊗ m b`. Derived tensor products
+    (`DG/Positive/ScalarExtensionTensor.lean`): `(K ⊗ X) ⊗^L_{K ⊗ B} (K ⊗ B) ≅ K ⊗_ℤ X`
+    (`DG.ExtendScalars.derivedTensorBaseChangeSelfIso`) and, for `X` compact in `D(A)`,
+    `[(K ⊗ X) ⊗^L_{K ⊗ B} (K ⊗ B)] = K₀(unitHom) [X ⊗^L_B B]` (`DG.ExtendScalars.K0_mk_derivedTensor_self`).
+    Open: a natural isomorphism `(K ⊗ X) ⊗^L_{K ⊗ B} unitHom^*(-) ≅ unitHom^*(X ⊗^L_B -)`.
 6.4 Formality: a dg algebra `A` is formal if it is connected to `H(A)` (zero differential) by
     a zigzag of quasi-isomorphisms; Keller's theorem then gives `D(A) ≃ D(H(A))` and
     `K₀(A) ≅ K₀(H(A))`. Criterion: if `H(A)` is a free (super)commutative graded algebra on

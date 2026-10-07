@@ -42,6 +42,7 @@ import DG.Category.Derived.Basic
 import DG.Category.Derived.Compact
 import DG.Category.Derived.Comparison
 import DG.Category.Derived.Coproducts
+import DG.Category.Derived.DGBimodule
 import DG.Category.Derived.ExtendScalars
 import DG.Category.Derived.FiniteCell
 import DG.Category.Derived.GradedSplitting
@@ -294,6 +295,7 @@ import DG.Positive.Kunneth
 import DG.Positive.ScalarExtension
 import DG.Positive.ScalarExtensionBimodule
 import DG.Positive.ScalarExtensionDerived
+import DG.Positive.ScalarExtensionTensor
 import DG.Positive.ScalarExtensionModule
 import DG.Positive.Schnurer
 import DG.Positive.SplitTensor
