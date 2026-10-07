@@ -126,6 +126,8 @@ import DG.Derived.GradedSplitting
 import DG.Derived.Heart
 import DG.Derived.KProjective
 import DG.Derived.ExternalTensor
+import DG.Derived.ExternalTensorCompact
+import DG.Derived.ExternalTensorTriangulated
 import DG.Derived.LocalizationCoproducts
 import DG.Derived.Morita
 import DG.Derived.Perfect
@@ -206,6 +208,7 @@ import DG.Homotopy.HomologyFunctor
 import DG.Homotopy.Homotopy
 import DG.Homotopy.HomotopyCategory
 import DG.Homotopy.ExternalTensor
+import DG.Homotopy.ExternalTensorTriangulated
 import DG.Homotopy.KProjective
 import DG.Homotopy.Lifting
 import DG.Homotopy.Localization

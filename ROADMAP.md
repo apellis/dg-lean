@@ -918,6 +918,19 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
   `DG.CompactlyGenerates.isRepresentable`, `DG.CompactlyGenerates.isLeftAdjoint`
   (coproduct-preserving triangulated functors have right adjoints),
   `DG.CompactlyGenerates.forall_of_isLocalizing`.
+- The external tensor product: for dg rings `A`, `B`, dg modules `M` over `A` and `N` over `B`,
+  `M ⊠ N = M ⊗ N` over `A ⊗ B`, and its derived functor `D(A) × D(B) → D(A ⊗ B)`.
+  — done over `ℤ` (`A ⊗ B = A ᵍ⊗[ℤ] B`): `DG.ExternalTensor.instDGModule`,
+  `DG.ExternalTensor.homotopyFunctor` (`K(A) ⥤ K(B) ⥤ K(A ⊗ B)`), shifts and cones
+  (`DG.ExternalTensor.shiftLeftEquiv`, `shiftRightEquiv`, `coneLeftEquiv`, `coneRightEquiv`);
+  `DG.DerivedCategory.externalTensor` on K-projective resolutions (no flatness hypothesis),
+  `DG.DerivedCategory.externalTensorRegularIso` (`A ⊠ᴸ B ≅ A ⊗ B`); triangulated in each
+  variable (`DG.ExternalTensor.commShiftLeft`, `commShiftRight`,
+  `DG.DerivedCategory.externalTensor_obj_isTriangulated`,
+  `DG.DerivedCategory.externalTensor_flip_obj_isTriangulated`, via the triangulated equivalence
+  `DG.DerivedCategory.kProjectiveEquivalence`); compact objects are preserved
+  (`DG.DerivedCategory.isCompact_externalTensor`). Open: a commutative base ring `R`
+  (`A ᵍ⊗[R] B`), and the induced bilinear map `K₀(A) × K₀(B) → K₀(A ⊗ B)` compared with 6.5.
 - t-structures on `D(A)` for non-positively/positively graded `A` (Mathlib has the definition
   of a t-structure).
   — done for non-positively graded dg rings: `DG.DerivedCategory.tStructure`, with heart
