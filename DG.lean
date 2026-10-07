@@ -177,6 +177,9 @@ import DG.HalfGraded.DiagonalImageEquivalence
 import DG.HalfGraded.DiagonalShift
 import DG.HalfGraded.DiagonalShiftCoherence
 import DG.HalfGraded.DiagonalTransport
+import DG.HalfGraded.DiagonalBimodule
+import DG.HalfGraded.DiagonalBimoduleHom
+import DG.HalfGraded.DiagonalTensor
 import DG.HalfGraded.DiagonalRecoveryTriangulated
 import DG.HalfGraded.DiagonalDerivedTriangulated
 import DG.HalfGraded.DiagonalCompact

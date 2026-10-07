@@ -886,9 +886,15 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     block of index `4` identified with that of index `0` through `X⟨4⟩ ≅ X⟦2⟧` from `Π Π ≅ 𝟭`); its
     maps on `K₀` and `SuperK0c` are `id ⊗ K₀(F)` (`Diagonal.K0LinearEquiv_transport`,
     `Diagonal.superK0LinearEquiv_transport`). This applies to derived tensor products with dg
-    bimodules (`DG.DGBimodule.derivedTensor`). Open: an arbitrary parameter `k`; the identification
-    of the transport of `M ⊗^L_B -` with the derived tensor product with the diagonal regrading of
-    `M` over the weight dg categories.
+    bimodules (`DG.DGBimodule.derivedTensor`). The diagonal regrading of a dg `(A, B)`-bimodule `M`
+    is a dg bimodule `Mᵈ` over the weight dg categories (`Diagonal.bimodule`, `DiagonalBimodule.lean`;
+    K-projective left modules when `M` is K-projective over `A`); restriction to a weight identifies
+    its Hom modules, `ι_r^* HOM_{C_A}(Mᵈ, -) ≅ HOM_A(M, -) ∘ ι_r^*` (`Diagonal.homFunctorRestrictIso`,
+    `DiagonalBimoduleHom.lean`); and `Mᵈ ⊗^L_{C_B} - ≅ (M ⊗^L_B -)ᵈ` as functors
+    (`Diagonal.derivedTensorTransportIso`, `DiagonalTensor.lean`, through the natural block
+    decomposition `Diagonal.blocksNatIso`), with `K₀`/`SuperK0c` maps `id ⊗ K₀(M ⊗^L_B -)`
+    (`Diagonal.K0LinearEquiv_derivedTensor`, `Diagonal.superK0LinearEquiv_derivedTensor`).
+    Open: an arbitrary parameter `k`.
     Generic half-graded morphisms: `HalfGradedDGRing.Hom.weightFunctor` and
     `Hom.K0Map` give actual derived-induction maps, Laurent-linear for arbitrary
     common `k`. A quasi-isomorphism (`Hom.IsQuasiIso`: bijective on the cohomology of every

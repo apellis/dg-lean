@@ -24,8 +24,9 @@ and on `SuperK0c` are `id ⊗ K₀(F)` (`DG.Diagonal.K0LinearEquiv_transport`,
 
 Applied to a derived tensor product `F = M ⊗^L_B -` with a dg bimodule
 (`DG.DGBimodule.derivedTensor`), this gives the half-graded functor induced by `M` together with
-its `K₀` and super `K₀` maps. The identification of `Fᵈ` with the derived tensor product with the
-diagonal regrading of `M` over the weight dg categories is not formalized here.
+its `K₀` and super `K₀` maps. Its identification with the derived tensor product with the
+diagonal regrading of `M` over the weight dg categories is `DG.Diagonal.derivedTensorTransportIso`
+(`DG/HalfGraded/DiagonalTensor.lean`).
 -/
 
 open CategoryTheory Limits LaurentPolynomial
