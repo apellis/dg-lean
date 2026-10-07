@@ -558,9 +558,12 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     itself need not be semisimple), so 6.3 computes `K₀(K ⊗ A)`. If `A⁰ = ℤ · 1` (not positive:
     `ℤ` is not semisimple), `K ⊗ A` is positive for `K` semisimple (`DG.ExtendScalars.isPositive`),
     and `K₀(K ⊗ A) ≃ ℤ`, `[K ⊗ A] ↦ 1`, when `K` is a field and `1` has infinite order in `A`
-    (`DG.ExtendScalars.K0EquivInt`). Base change of dg modules is extension of scalars along
-    `unitHom` (`DG.DGModuleCat.extendScalars`). Open: the model `K ⊗_ℤ M ≅ (K ⊗ A) ⊗_A M` for dg
-    modules and bimodules, and its comparison with derived induction.
+    (`DG.ExtendScalars.K0EquivInt`). Base change of dg modules
+    (`DG/Positive/ScalarExtensionModule.lean`): `K ⊗_ℤ M` is a dg `K ⊗ A`-module, the external
+    tensor product of `K` and `M` (`DG.ExtendScalars.baseChange`), and it is extension of scalars
+    along `unitHom`: `(K ⊗ A) ⊗_A M ≅ K ⊗_ℤ M`, `x ⊗ m ↦ x • (1 ⊗ m)`
+    (`DG.ExtendScalars.extendScalarsEquiv`), naturally in `M` (`DG.ExtendScalars.extendScalarsIso`).
+    Open: bimodules, and the comparison with derived induction.
 6.4 Formality: a dg algebra `A` is formal if it is connected to `H(A)` (zero differential) by
     a zigzag of quasi-isomorphisms; Keller's theorem then gives `D(A) ≃ D(H(A))` and
     `K₀(A) ≅ K₀(H(A))`. Criterion: if `H(A)` is a free (super)commutative graded algebra on
