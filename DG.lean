@@ -172,6 +172,7 @@ import DG.HalfGraded.DiagonalEssentialImage
 import DG.HalfGraded.DiagonalImageEquivalence
 import DG.HalfGraded.DiagonalShift
 import DG.HalfGraded.DiagonalShiftCoherence
+import DG.HalfGraded.DiagonalTransport
 import DG.HalfGraded.DiagonalRecoveryTriangulated
 import DG.HalfGraded.DiagonalDerivedTriangulated
 import DG.HalfGraded.DiagonalCompact
@@ -236,6 +237,7 @@ import DG.K0.Homological
 import DG.K0.LeftCorner
 import DG.K0.Morita
 import DG.K0.Orthonormal
+import DG.K0.PiFunctor
 import DG.K0.PerfectComplex
 import DG.K0.PositiveCategory
 import DG.K0.PositiveCategoryBasis

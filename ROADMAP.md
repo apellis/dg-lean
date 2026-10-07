@@ -862,7 +862,17 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `recoveryDerivedIso`), so `K₀` of the induced weight functor is `id ⊗ K₀(φ)` under
     `K0LinearEquiv` and `superK0LinearEquiv` (`K0LinearEquiv_K0Map_ofDGRingHom`,
     `superK0LinearEquiv_superK0cMap_ofDGRingHom`; dg modules and Hom groups in the universe of
-    the rings). Open: an arbitrary parameter `k`, and derived tensor products with bimodules.
+    the rings). `DiagonalTransport.lean`: every triangulated `F : D(A) ⥤ D(B)` has a diagonal
+    transport `Fᵈ X = ∏_{r<4} (ι_B (F (R₀ (X⟨r⟩))))⟨-r⟩` (`Diagonal.transport`), triangulated
+    (via `DG.piFunctor_isTriangulated`, products of triangulated functors, `DG/K0/PiFunctor.lean`),
+    preserving compact objects when `F` does, with `Fᵈ ∘ ι_A ≅ ι_B ∘ F`
+    (`Diagonal.transportToDerivedIso`) and `Fᵈ (X⟨n⟩) ≅ (Fᵈ X)⟨n⟩` (`Diagonal.transportShiftIso`, the
+    block of index `4` identified with that of index `0` through `X⟨4⟩ ≅ X⟦2⟧` from `Π Π ≅ 𝟭`); its
+    maps on `K₀` and `SuperK0c` are `id ⊗ K₀(F)` (`Diagonal.K0LinearEquiv_transport`,
+    `Diagonal.superK0LinearEquiv_transport`). This applies to derived tensor products with dg
+    bimodules (`DG.DGBimodule.derivedTensor`). Open: an arbitrary parameter `k`; the identification
+    of the transport of `M ⊗^L_B -` with the derived tensor product with the diagonal regrading of
+    `M` over the weight dg categories.
     Generic half-graded morphisms: `HalfGradedDGRing.Hom.weightFunctor` and
     `Hom.K0Map` give actual derived-induction maps, Laurent-linear for arbitrary
     common `k`. A quasi-isomorphism (`Hom.IsQuasiIso`: bijective on the cohomology of every

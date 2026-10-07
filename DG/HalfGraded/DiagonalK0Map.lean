@@ -15,7 +15,8 @@ groups (`DG.Diagonal.superK0LinearEquiv_superK0cMap`). The induced map on `K₀`
 
 Typical instances: derived induction along a morphism of dg rings together with derived induction
 along the induced weight dg functor, or derived tensor products with a dg bimodule and with its
-diagonal counterpart. Constructing such a `G` from `F` is not done here.
+diagonal counterpart. Every triangulated `F` has such a `G`, its diagonal transport
+(`DG.Diagonal.transport`, `DG/HalfGraded/DiagonalTransport.lean`).
 -/
 
 open CategoryTheory Limits LaurentPolynomial TensorProduct
