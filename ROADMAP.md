@@ -967,8 +967,13 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
   ordered finite-cell model with simple cells (`DG.IsPositive.exists_isBoundedMinimal_of_isCompact`,
   from Schnürer's theorem), unique up to isomorphism of dg modules
   (`DG.IsPositive.exists_bijective_of_iso`; `DG/Positive/Minimal.lean`).
-  Open: minimal resolutions of arbitrary (non-compact) dg modules; minimal resolutions over
-  connective dg rings with `A⁰` a division ring; invariance of the list of cells.
+  — existence over connective dg rings: if `A^{>0} = 0`, `d(A⁻¹) = 0` and every nonzero
+  element of `A⁰` is a unit, every dg module `M` with `Hⁱ(M) = 0` for `i > N` has a minimal
+  semi-free resolution concentrated in degrees `≤ N`
+  (`DG.exists_minimal_semiFreeResolution`, `DG.MinimalResolution.isBoundedMinimal_colim`;
+  `DG/Derived/MinimalResolution.lean`), unique up to isomorphism by the uniqueness above.
+  Open: minimal resolutions of non-compact dg modules over positive dg rings; invariance of the
+  list of cells.
 - Perfect complexes over a ring and `K₀(D^{perf}(R)) ≅ K₀(R\text{-proj})` (comparison with
   Mathlib's `ModuleCat`).
   — done: `DG.perfectK0Equiv` (any ring, in Mathlib's derived category); compact objects of
