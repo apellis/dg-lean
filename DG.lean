@@ -135,6 +135,7 @@ import DG.Derived.ExternalTensorTriangulated
 import DG.Derived.LocalizationCoproducts
 import DG.Derived.Morita
 import DG.Derived.Perfect
+import DG.Derived.PerfectCompact
 import DG.Derived.PerfectComplex
 import DG.Derived.PerfectThick
 import DG.Derived.QuasiIso
@@ -241,6 +242,7 @@ import DG.K0.LeftCorner
 import DG.K0.Morita
 import DG.K0.Orthonormal
 import DG.K0.PiFunctor
+import DG.K0.PerfectCompact
 import DG.K0.PerfectComplex
 import DG.K0.PositiveCategory
 import DG.K0.PositiveCategoryBasis

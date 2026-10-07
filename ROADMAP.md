@@ -514,8 +514,16 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     — perfect-complex step for general rings: `DG.IsPerfect.isThick` and
     `DG.perfectK0Equiv : K₀(D^perf(R)) ≃+ DG.ProjK0 R` in Mathlib's derived
     category (`DG/Derived/PerfectThick.lean`, `DG/K0/PerfectComplex.lean`).
-    Open: identify these perfect objects with compacts and transport through
-    `DG.DerivedCategory.comparisonEquivalence` to the original DG source; compute
+    — compacts are perfect complexes: for any ring, the perfect objects are the thick closure
+    of `R[0]` (`DG.IsPerfect.thickClosure_eq`, `DG.IsPerfect.le_of_isThick`); for a commutative
+    ring `R`, an object of `D(R)` is compact iff its image under
+    `DG.DerivedCategory.comparisonEquivalence` is perfect
+    (`DG.DerivedCategory.isCompact_iff_isPerfect`), hence
+    `DG.DGRing.K0.projK0Equiv : K₀(R) ≃+ DG.ProjK0 R` with `[R] ↦ [R]`
+    (`DG.DGRing.K0.projK0Equiv_self`; `DG/Derived/PerfectCompact.lean`,
+    `DG/K0/PerfectCompact.lean`).
+    Open: the same for non-commutative rings (needs a comparison
+    `DGModuleCat S ≌ CochainComplex (ModuleCat S) ℤ` for a ring `S` in degree `0`); compute
     `DG.ProjK0 ℤ ≃+ ℤ` with the regular class mapping to 1; remaining stretch items.
 
 ## Tier 6 — Positive dg algebras (Schnürer)
@@ -934,6 +942,8 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
   algebras; uniqueness up to isomorphism.
 - Perfect complexes over a ring and `K₀(D^{perf}(R)) ≅ K₀(R\text{-proj})` (comparison with
   Mathlib's `ModuleCat`).
+  — done: `DG.perfectK0Equiv` (any ring, in Mathlib's derived category); compact objects of
+  `D(R)` are the perfect complexes and `DG.DGRing.K0.projK0Equiv` for a commutative ring (5.6).
 - The derived category of a dg category (4.7) and Morita theory for dg categories.
 - Compactly generated triangulated categories and Brown representability [Ne] **(Mathlib)**.
   — done: `DG.CompactlyGenerates.exists_iso_preadditiveYoneda` (Brown representability, for a
