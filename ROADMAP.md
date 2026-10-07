@@ -520,16 +520,15 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `DG.perfectK0Equiv : K₀(D^perf(R)) ≃+ DG.ProjK0 R` in Mathlib's derived
     category (`DG/Derived/PerfectThick.lean`, `DG/K0/PerfectComplex.lean`).
     — compacts are perfect complexes: for any ring, the perfect objects are the thick closure
-    of `R[0]` (`DG.IsPerfect.thickClosure_eq`, `DG.IsPerfect.le_of_isThick`); for a commutative
-    ring `R`, an object of `D(R)` is compact iff its image under
-    `DG.DerivedCategory.comparisonEquivalence` is perfect
-    (`DG.DerivedCategory.isCompact_iff_isPerfect`), hence
+    of `R[0]` (`DG.IsPerfect.thickClosure_eq`, `DG.IsPerfect.le_of_isThick`); for any ring `R`
+    (not necessarily commutative), an object of `D(R)` is compact iff its image under
+    `DG.DegreeZero.derivedComparisonEquivalence` (4.6) is perfect
+    (`DG.DegreeZero.isCompact_iff_isPerfect`, from the general
+    `DG.DerivedCategory.isCompact_iff_isPerfect_functor_obj`), hence
     `DG.DGRing.K0.projK0Equiv : K₀(R) ≃+ DG.ProjK0 R` with `[R] ↦ [R]`
     (`DG.DGRing.K0.projK0Equiv_self`; `DG/Derived/PerfectCompact.lean`,
     `DG/K0/PerfectCompact.lean`).
-    Open: the same for non-commutative rings (needs a comparison
-    `DGModuleCat S ≌ CochainComplex (ModuleCat S) ℤ` for a ring `S` in degree `0`);
-    remaining stretch items.
+    Open: remaining stretch items.
     — `K₀(ℤ) ≃ ℤ`: the rank `DG.ProjK0.rankEquiv : DG.ProjK0 R ≃+ ℤ` when finitely generated
     projective modules are free, hence `DG.DGRing.K0.rankEquiv`, `[R] ↦ 1`, with the instances
     `DG.DGRing.K0.equivIntOfIsPrincipalIdealRing` (e.g. `R = ℤ`) and
@@ -952,7 +951,7 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
 - Perfect complexes over a ring and `K₀(D^{perf}(R)) ≅ K₀(R\text{-proj})` (comparison with
   Mathlib's `ModuleCat`).
   — done: `DG.perfectK0Equiv` (any ring, in Mathlib's derived category); compact objects of
-  `D(R)` are the perfect complexes and `DG.DGRing.K0.projK0Equiv` for a commutative ring (5.6).
+  `D(R)` are the perfect complexes and `DG.DGRing.K0.projK0Equiv`, for any ring (5.6).
 - The derived category of a dg category (4.7) and Morita theory for dg categories.
 - Compactly generated triangulated categories and Brown representability [Ne] **(Mathlib)**.
   — done: `DG.CompactlyGenerates.exists_iso_preadditiveYoneda` (Brown representability, for a

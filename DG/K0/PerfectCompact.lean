@@ -3,12 +3,12 @@ import DG.K0.DGRing
 import DG.K0.PerfectComplex
 
 /-!
-# `K₀` of a commutative ring is `K₀` of its finitely generated projective modules
+# `K₀` of a ring is `K₀` of its finitely generated projective modules
 
-Let `R` be a commutative ring, regarded as a dg ring concentrated in degree `0`. Its Grothendieck
+Let `R` be a ring, not necessarily commutative, regarded as a dg ring concentrated in degree `0`. Its Grothendieck
 group `K₀(R) := K₀(D^c(R))` (`DG.DGRing.K0 R`, roadmap 5.5) is defined with the compact objects
-of the derived category of dg modules. Under the comparison equivalence `D(R) ≌ D(Mod R)` the
-compact objects are the perfect complexes (`DG.DerivedCategory.isCompact_iff_isPerfect`), whose
+of the derived category of dg modules. Under the equivalence `D(R) ≌ D(Mod R)` the compact
+objects are the perfect complexes (`DG.DegreeZero.isCompact_iff_isPerfect`), whose
 Grothendieck group is the Grothendieck group of finitely generated projective `R`-modules
 (`DG.perfectK0Equiv`). Hence
 
@@ -23,7 +23,7 @@ module to the Euler characteristic `Σₙ (-1)ⁿ [Kⁿ]` of a perfect complex `
   a triangulated subcategory `P` onto a triangulated subcategory `P'` (`P X ↔ P' (e X)`) induces
   `K₀(P) ≃+ K₀(P')`.
 * `DG.DGRing.K0.projK0Equiv R : DG.DGRing.K0 R ≃+ DG.ProjK0 R`, with
-  `DG.DGRing.K0.projK0Equiv_self` (`[R] ↦ [R]`) and `DG.DGRing.K0.projK0Equiv_symm_mk`.
+  `DG.DGRing.K0.projK0Equiv_self` (`[R] ↦ [R]`) and `DG.DGRing.K0.projK0Equiv_mk_Q_obj`.
 -/
 
 open CategoryTheory Category Limits Pretriangulated
@@ -86,25 +86,25 @@ namespace DGRing.K0
 
 open DegreeZero _root_.DG.DerivedCategory
 
-variable (R : Type u) [CommRing R] [HasDerivedCategory.{u, u} R]
+variable (R : Type u) [Ring R] [HasDerivedCategory.{u, u} R]
 
-/-- `DG.DerivedCategory.isCompact_iff_isPerfect` in the form used by
+/-- `DG.DegreeZero.isCompact_iff_isPerfect` in the form used by
 `DG.K0.fullSubcategoryMapEquiv`. -/
 theorem compactSubcategory_iff_isPerfect [_root_.HasDerivedCategory.{w} (ModuleCat.{u} R)]
     (X : DerivedCategory R) : compactSubcategory.{u} (DerivedCategory R) X ↔
-      IsPerfect R ((comparisonEquivalence R).functor.obj X) :=
-  isCompact_iff_isPerfect R X
+      IsPerfect R ((derivedComparisonEquivalence R).functor.obj X) :=
+  DegreeZero.isCompact_iff_isPerfect R X
 
-/-- **`K₀` of a commutative ring** (roadmap 5.6): for a commutative ring `R` concentrated in
-degree `0`, the Grothendieck group `K₀(D^c(R))` of compact dg modules is isomorphic to the
+/-- **`K₀` of a ring** (roadmap 5.6): for a ring `R` concentrated in degree `0`, not necessarily
+commutative, the Grothendieck group `K₀(D^c(R))` of compact dg modules is isomorphic to the
 Grothendieck group of finitely generated projective `R`-modules. The compact objects correspond
-to the perfect complexes under `D(R) ≌ D(Mod R)` (`DG.DerivedCategory.isCompact_iff_isPerfect`),
+to the perfect complexes under `D(R) ≌ D(Mod R)` (`DG.DegreeZero.isCompact_iff_isPerfect`),
 and the class of a perfect complex `K` is sent to its Euler characteristic `Σₙ (-1)ⁿ [Kⁿ]`
 (`DG.perfectK0Equiv`). -/
 noncomputable def projK0Equiv : K0 R ≃+ ProjK0.{u} R :=
   letI := _root_.HasDerivedCategory.standard (ModuleCat.{u} R)
-  (DG.K0.fullSubcategoryMapEquiv (comparisonEquivalence R) (compactSubcategory.{u} _) (IsPerfect R)
-    (compactSubcategory_iff_isPerfect R)).trans (perfectK0Equiv R)
+  (DG.K0.fullSubcategoryMapEquiv (derivedComparisonEquivalence R) (compactSubcategory.{u} _)
+    (IsPerfect R) (compactSubcategory_iff_isPerfect R)).trans (perfectK0Equiv R)
 
 /-- The inverse of `K₀(R) ≃+ K₀(R-proj)` sends `[R]` to `[R]`. -/
 theorem projK0Equiv_symm_self :
@@ -113,23 +113,23 @@ theorem projK0Equiv_symm_self :
   let := _root_.HasDerivedCategory.standard (ModuleCat.{u} R)
   rw [projK0Equiv, AddEquiv.symm_trans_apply, perfectK0Equiv_symm_mk, AddEquiv.symm_apply_eq,
     self, DG.K0.fullSubcategoryMapEquiv_mk]
-  exact DG.K0.mk_eq_of_iso_obj (comparisonObjSelfIso R).symm
+  exact DG.K0.mk_eq_of_iso_obj (derivedComparisonObjSelfIso R).symm
 
 /-- The isomorphism `K₀(R) ≃+ K₀(R-proj)` sends `[R]` to `[R]`. -/
 theorem projK0Equiv_self :
     projK0Equiv R (self R) = ProjK0.mk (ModuleCat.of R R) (IsFGProjective.self R) := by
   rw [← projK0Equiv_symm_self, AddEquiv.apply_symm_apply]
 
-/-- The class of a dg module whose underlying complex is a perfect complex `K` is sent to the
-Euler characteristic `Σₙ (-1)ⁿ [Kⁿ]`. -/
+/-- The class of a dg module whose underlying complex of `R`-modules is a perfect complex `K` is
+sent to the Euler characteristic `Σₙ (-1)ⁿ [Kⁿ]`. -/
 theorem projK0Equiv_mk_Q_obj (M : DGModuleCat.{u} R)
-    (hM : IsPerfectComplex ((DGModuleCat.forget R R).obj M)) :
+    (hM : IsPerfectComplex ((complexFunctor R).obj M)) :
     projK0Equiv R (DG.K0.mk (⟨Q.obj M, isCompact_Q_obj_of_isPerfectComplex R M hM⟩ :
       PerfectDerivedCategory R)) = hM.eulerChar := by
   let := _root_.HasDerivedCategory.standard (ModuleCat.{u} R)
   rw [projK0Equiv, AddEquiv.trans_apply, DG.K0.fullSubcategoryMapEquiv_mk,
     ← perfectK0Equiv_mk_Q_obj hM]
-  exact congrArg _ (DG.K0.mk_eq_of_iso_obj ((QCompComparisonIso R).app M))
+  exact congrArg _ (DG.K0.mk_eq_of_iso_obj ((QCompDerivedComparisonIso R).app M))
 
 end DGRing.K0
 
