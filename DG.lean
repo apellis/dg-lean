@@ -284,5 +284,6 @@ import DG.Positive.K0
 import DG.Positive.K0Basis
 import DG.Positive.Kunneth
 import DG.Positive.ScalarExtension
+import DG.Positive.ScalarExtensionModule
 import DG.Positive.Schnurer
 import DG.Positive.SplitTensor
