@@ -211,6 +211,7 @@ import DG.Homotopy.HomologyFunctor
 import DG.Homotopy.Homotopy
 import DG.Homotopy.HomotopyCategory
 import DG.Homotopy.ExternalTensor
+import DG.Homotopy.ExternalTensorOverExtend
 import DG.Homotopy.ExternalTensorTriangulated
 import DG.Homotopy.KProjective
 import DG.Homotopy.Lifting
