@@ -929,8 +929,13 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
   `DG.DerivedCategory.externalTensor_obj_isTriangulated`,
   `DG.DerivedCategory.externalTensor_flip_obj_isTriangulated`, via the triangulated equivalence
   `DG.DerivedCategory.kProjectiveEquivalence`); compact objects are preserved
-  (`DG.DerivedCategory.isCompact_externalTensor`). Open: a commutative base ring `R`
-  (`A ᵍ⊗[R] B`), and the induced bilinear map `K₀(A) × K₀(B) → K₀(A ⊗ B)` compared with 6.5.
+  (`DG.DerivedCategory.isCompact_externalTensor`). Over a commutative ring `R`:
+  `DG.DerivedCategory.externalTensorOver R A B : D(A) ⥤ D(B) ⥤ D(A ᵍ⊗[R] B)`, the product over `ℤ`
+  followed by derived induction along `DG.GradedTensorProduct.intComparison : A ᵍ⊗[ℤ] B → A ᵍ⊗[R] B`
+  (triangulated in each variable, preserves compact objects, via
+  `DG.DGRingHom.derivedInduction_isTriangulated` and `DG.DGRingHom.isCompact_derivedInduction_obj`).
+  Open: the dg module `M ⊗_R N` over `A ᵍ⊗[R] B` and its identification with the induced module,
+  and the induced bilinear map `K₀(A) × K₀(B) → K₀(A ⊗ B)` compared with 6.5.
 - t-structures on `D(A)` for non-positively/positively graded `A` (Mathlib has the definition
   of a t-structure).
   — done for non-positively graded dg rings: `DG.DerivedCategory.tStructure`, with heart

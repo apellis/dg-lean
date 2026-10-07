@@ -14,6 +14,7 @@ import DG.Algebra.RegradingDGModuleCat
 import DG.Algebra.RegradingDivisionModuleCat
 import DG.Algebra.RegradingModuleCat
 import DG.Algebra.TensorProduct
+import DG.Algebra.TensorProductComparison
 import DG.Basic
 import DG.Bigraded.Basic
 import DG.Bigraded.Cohomology
@@ -127,6 +128,7 @@ import DG.Derived.Heart
 import DG.Derived.KProjective
 import DG.Derived.ExternalTensor
 import DG.Derived.ExternalTensorCompact
+import DG.Derived.ExternalTensorOver
 import DG.Derived.ExternalTensorTriangulated
 import DG.Derived.LocalizationCoproducts
 import DG.Derived.Morita
