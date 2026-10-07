@@ -15,9 +15,7 @@ a left dg `A`-module. The derived tensor product over dg categories
 * `DG.DGBimodule.derivedTensorSelfIso`: `M ⊗^L_B B ≅ M` in `D(A)`;
 * `DG.DerivedCategory.isCompact_obj_of_isCompact_self`: a triangulated functor out of `D(B)`
   taking `B` to a compact object preserves compact objects; so `M ⊗^L_B -` preserves compact
-  objects when `M` is compact in `D(A)` (`DG.DGBimodule.isCompact_derivedTensor_obj`);
-* derived induction along a morphism of dg rings is triangulated
-  (`DG.DGRingHom.derivedInduction_commShift`, `DG.DGRingHom.derivedInduction_isTriangulated`).
+  objects when `M` is compact in `D(A)` (`DG.DGBimodule.isCompact_derivedTensor_obj`).
 
 All dg rings and dg modules are in one universe `v`.
 -/
@@ -231,36 +229,6 @@ theorem isCompact_derivedTensor_obj
     (hc.of_iso (derivedTensorSelfIso A B M hM)) hX
 
 end DGBimodule
-
-/-! ### Derived induction is triangulated -/
-
-namespace DGRingHom
-
-variable {A B : Type v} [Ring A] [DGAddCommGroup A] [DGRing A] [Ring B] [DGAddCommGroup B]
-  [DGRing B] (φ : B →ᵈᵍ+* A)
-  [CatModule.HasDerivedCategory.{w₁, v} (SingleObj B)]
-  [CatModule.HasDerivedCategory.{w₂, v} (SingleObj A)]
-  [DG.HasDerivedCategory.{w₃, v} B] [DG.HasDerivedCategory.{w₄, v} A]
-
-/-- Derived induction along a morphism of dg rings commutes with the shifts. -/
-instance derivedInduction_commShift : (φ.derivedInduction.{w₁, w₂, w₃, w₄}).CommShift ℤ :=
-  letI := (CatModule.DerivedCategory.singleObjEquivalence B).commShiftInverse ℤ
-  inferInstanceAs (((CatModule.DerivedCategory.singleObjEquivalence B).inverse ⋙
-    CatModule.DerivedCategory.induction.{w₁, w₂, v} φ.singleObjFunctor ⋙
-      (CatModule.DerivedCategory.singleObjEquivalence A).functor).CommShift ℤ)
-
-/-- Derived induction along a morphism of dg rings is a triangulated functor. -/
-instance derivedInduction_isTriangulated :
-    (φ.derivedInduction.{w₁, w₂, w₃, w₄}).IsTriangulated := by
-  let := (CatModule.DerivedCategory.singleObjEquivalence B).commShiftInverse ℤ
-  have := (CatModule.DerivedCategory.singleObjEquivalence B).commShift_of_functor ℤ
-  have : (CatModule.DerivedCategory.singleObjEquivalence B).IsTriangulated :=
-    Equivalence.IsTriangulated.mk' _ inferInstance
-  exact inferInstanceAs (((CatModule.DerivedCategory.singleObjEquivalence B).inverse ⋙
-    CatModule.DerivedCategory.induction.{w₁, w₂, v} φ.singleObjFunctor ⋙
-      (CatModule.DerivedCategory.singleObjEquivalence A).functor).IsTriangulated)
-
-end DGRingHom
 
 end DG
 

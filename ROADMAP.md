@@ -421,9 +421,8 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     dg `(A, B)`-bimodule `M` over dg rings, K-projective as a left module: `M ⊗^L_B - : D(B) ⥤ D(A)`
     (`DG.DGBimodule.derivedTensor`, triangulated), `M ⊗^L_B B ≅ M` (`DG.DGBimodule.derivedTensorSelfIso`),
     preserving compact objects when `M` is compact (`DG.DGBimodule.isCompact_derivedTensor_obj`, via
-    `DG.DerivedCategory.isCompact_obj_of_isCompact_self`); derived induction is triangulated
-    (`DG.DGRingHom.derivedInduction_isTriangulated`). Open: identification of `φ_*` with derived
-    restriction of scalars on `DGModuleCat`.
+    `DG.DerivedCategory.isCompact_obj_of_isCompact_self`). Open: identification of `φ_*` with
+    derived restriction of scalars on `DGModuleCat`.
 4.5 Keller's theorem [Ke, Ex. 6.1], [BL 10.12.5.1]: if `φ : B → A` is a quasi-isomorphism of dg
     algebras, `φ^*` and `φ_*` are mutually inverse triangulated equivalences `D(B) ≃ D(A)`.
     Corollary: for a dg algebra `A`, the following are equivalent: `D(A) ≃ 0`; `H(A) = 0`;
