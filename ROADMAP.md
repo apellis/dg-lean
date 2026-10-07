@@ -440,7 +440,12 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     — done (except the graded stretch): `DG.DGModuleCat.cochainComplexEquivalence`,
     `DG.HomotopyCategory.comparisonEquivalence` (triangulated), `DG.DerivedCategory.comparisonEquivalence`
     (`D(R) ≌ DerivedCategory (ModuleCat R)`, with `DG.DerivedCategory.comparison_isTriangulated`);
-    `R` in degree `0` via the scoped instances of `DG.DegreeZero`.
+    `R` in degree `0` via the scoped instances of `DG.DegreeZero`. For a ring `S` which need not
+    be commutative (the action of `S` itself in place of a ground ring):
+    `DG.DegreeZero.complexEquivalence`, `DG.DegreeZero.homotopyEquivalence` (triangulated,
+    `DG.DegreeZero.mem_quasiIso_iff`), `DG.DegreeZero.derivedComparisonEquivalence`
+    (`DG/Homotopy/ForgetRing.lean`, `DG/Homotopy/ComparisonRing.lean`,
+    `DG/Derived/ComparisonRing.lean`).
 4.7 **(stretch)** dg categories: the definitions of tiers 2–4 for a small dg category `𝒜`
     (Keller's setting), with a dg algebra as the one-object case; the dg category of dg
     modules and its `HOM` complexes; the Yoneda dg functor. This is the natural level of

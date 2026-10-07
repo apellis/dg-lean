@@ -53,7 +53,7 @@ namespace DG
 
 namespace DegreeZero
 
-variable (R : Type u) [CommRing R]
+variable (R : Type u) [Ring R]
 
 /-- `R` concentrated in degree `0`, as a dg abelian group (scoped instance). -/
 scoped instance instDGAddCommGroup : DGAddCommGroup R := DGAddCommGroup.degreeZero R
@@ -61,8 +61,8 @@ scoped instance instDGAddCommGroup : DGAddCommGroup R := DGAddCommGroup.degreeZe
 /-- `R` concentrated in degree `0`, as a dg ring (scoped instance). -/
 scoped instance instDGRing : DGRing R := DGRing.degreeZero R
 
-/-- `R` concentrated in degree `0`, as a dg `R`-algebra (scoped instance). -/
-scoped instance instDGAlgebra : DGAlgebra R R := DGAlgebra.degreeZero R
+/-- A commutative ring `R` concentrated in degree `0`, as a dg `R`-algebra (scoped instance). -/
+scoped instance instDGAlgebra (R : Type u) [CommRing R] : DGAlgebra R R := DGAlgebra.degreeZero R
 
 variable {R}
 
@@ -217,10 +217,12 @@ theorem homotopic_iff_forget {M N : DGModuleCat.{v} R} (f g : M ⟶ N) :
 
 namespace ComplexSum
 
-variable (K : CochainComplex (ModuleCat.{u} R) ℤ)
+section Ring
 
-/-- The differential of `⨁ n, Kⁿ` is `R`-linear. -/
-theorem d_smul (r : R) (z : ComplexSum K) : d (r • z) = r • d z := by
+variable {S : Type u} [Ring S] (K : CochainComplex (ModuleCat.{u} S) ℤ)
+
+/-- The differential of `⨁ n, Kⁿ` is `S`-linear. -/
+theorem d_smul (r : S) (z : ComplexSum K) : d (r • z) = r • d z := by
   induction z using ComplexSum.induction_on with
   | zero => simp
   | of n x =>
@@ -229,9 +231,9 @@ theorem d_smul (r : R) (z : ComplexSum K) : d (r • z) = r • d z := by
     exact (K.d n (n + 1)).hom.map_smul r x
   | add z z' hz hz' => rw [smul_add, d_add, hz, hz', d_add, smul_add]
 
-/-- The external direct sum `⨁ n, Kⁿ` of a cochain complex of `R`-modules is a dg module over
-`R` (concentrated in degree `0`), with the componentwise action. -/
-instance instDGModule : DGModule R (ComplexSum K) where
+/-- The external direct sum `⨁ n, Kⁿ` of a cochain complex of `S`-modules is a dg module over
+the ring `S` (concentrated in degree `0`), with the componentwise action. -/
+instance instDGModule : DGModule S (ComplexSum K) where
   smul_mem i j r z hr hz := by
     obtain ⟨x, rfl⟩ := mem_grading_iff.mp hz
     rcases DegreeZero.mem_grading_iff.mp hr with rfl | rfl
@@ -245,6 +247,10 @@ instance instDGModule : DGModule R (ComplexSum K) where
     · rw [koszulSign_zero, one_smul]
     · simp
 
+end Ring
+
+variable (K : CochainComplex (ModuleCat.{u} R) ℤ)
+
 /-- The action of `R` on `⨁ n, Kⁿ` is componentwise. -/
 theorem algebraMap_smul_of (r : R) (n : ℤ) (x : K.X n) :
     algebraMap R R r • of K n x = of K n (r • x) :=
@@ -256,11 +262,13 @@ namespace DGModuleCat
 
 variable (R)
 
-/-- A cochain complex of `R`-modules as a dg module over `R`: `K ↦ ⨁ n, Kⁿ`. This is the
-inverse of the forgetful functor `DG.DGModuleCat.forget R R`. -/
+/-- A cochain complex of `S`-modules as a dg module over the ring `S` (concentrated in degree
+`0`): `K ↦ ⨁ n, Kⁿ`. For a commutative ring this is the inverse of the forgetful functor
+`DG.DGModuleCat.forget R R`. -/
 @[simps obj]
-noncomputable def ofComplex : CochainComplex (ModuleCat.{u} R) ℤ ⥤ DGModuleCat.{u} R where
-  obj K := of R (ComplexSum K)
+noncomputable def ofComplex (S : Type u) [Ring S] :
+    CochainComplex (ModuleCat.{u} S) ℤ ⥤ DGModuleCat.{u} S where
+  obj K := of S (ComplexSum K)
   map φ := ofHom
     { ComplexSum.map φ with
       map_mem' := ComplexSum.map_mem φ
@@ -269,8 +277,8 @@ noncomputable def ofComplex : CochainComplex (ModuleCat.{u} R) ℤ ⥤ DGModuleC
   map_comp φ ψ := hom_ext_apply fun z => ComplexSum.map_comp φ ψ z
 
 @[simp]
-theorem ofComplex_map_apply {K L : CochainComplex (ModuleCat.{u} R) ℤ} (φ : K ⟶ L)
-    (z : ComplexSum K) : (ofComplex R).map φ z = ComplexSum.map φ z := rfl
+theorem ofComplex_map_apply {S : Type u} [Ring S] {K L : CochainComplex (ModuleCat.{u} S) ℤ}
+    (φ : K ⟶ L) (z : ComplexSum K) : (ofComplex S).map φ z = ComplexSum.map φ z := rfl
 
 /-- The underlying complex of `⨁ n, Kⁿ` is `K`. -/
 noncomputable def ofComplexCompForgetIso : ofComplex R ⋙ forget R R ≅ 𝟭 _ :=

@@ -5,7 +5,7 @@ import DG.Homotopy.Forget
 /-!
 # The dg abelian group of a cochain complex
 
-For a cochain complex `K` of `R`-modules, `DG.ComplexSum K` is the external direct sum
+For a cochain complex `K` of `R`-modules (`R` any ring), `DG.ComplexSum K` is the external direct sum
 `⨁ n, Kⁿ`, internally graded by its summands (`DG.summand`) and with the differential acting
 componentwise, `d (ι_n x) = ι_{n+1} (d x)`. This is the inverse construction to the underlying
 cochain complex of a dg module (`DG.DGModuleCat.toComplex`):
@@ -28,7 +28,9 @@ noncomputable section
 
 namespace DG
 
-variable {R : Type u} [CommRing R]
+section Ring
+
+variable {R : Type u} [Ring R]
 
 /-- The external direct sum `⨁ n, Kⁿ` of the components of a cochain complex of modules. -/
 def ComplexSum (K : CochainComplex (ModuleCat.{u} R) ℤ) : Type u :=
@@ -165,6 +167,14 @@ theorem map_comp (φ : K ⟶ L) (ψ : L ⟶ M) (z : ComplexSum K) :
   | add z z' hz hz' => rw [map_add, map_add, map_add, hz, hz']
 
 end Map
+
+end ComplexSum
+
+end Ring
+
+namespace ComplexSum
+
+variable {R : Type u} [CommRing R] {K : CochainComplex (ModuleCat.{u} R) ℤ}
 
 /-! ### The underlying cochain complex -/
 
