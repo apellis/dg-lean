@@ -41,6 +41,7 @@ import DG.Category.Derived.Basic
 import DG.Category.Derived.Compact
 import DG.Category.Derived.Comparison
 import DG.Category.Derived.Coproducts
+import DG.Category.Derived.ExtendScalars
 import DG.Category.Derived.FiniteCell
 import DG.Category.Derived.GradedSplitting
 import DG.Category.Derived.HomotopyCoproducts
@@ -222,6 +223,7 @@ import DG.K0.Compact
 import DG.K0.DGCategory
 import DG.K0.DGRing
 import DG.K0.Euler
+import DG.K0.ExtendScalars
 import DG.K0.Field
 import DG.K0.Homological
 import DG.K0.LeftCorner
@@ -284,6 +286,7 @@ import DG.Positive.K0
 import DG.Positive.K0Basis
 import DG.Positive.Kunneth
 import DG.Positive.ScalarExtension
+import DG.Positive.ScalarExtensionDerived
 import DG.Positive.ScalarExtensionModule
 import DG.Positive.Schnurer
 import DG.Positive.SplitTensor
