@@ -130,6 +130,7 @@ import DG.Derived.KProjective
 import DG.Derived.ExternalTensor
 import DG.Derived.ExternalTensorCompact
 import DG.Derived.ExternalTensorOver
+import DG.Derived.ExternalTensorOverKProjective
 import DG.Derived.ExternalTensorTriangulated
 import DG.Derived.LocalizationCoproducts
 import DG.Derived.Morita
@@ -212,6 +213,7 @@ import DG.Homotopy.HomologyFunctor
 import DG.Homotopy.Homotopy
 import DG.Homotopy.HomotopyCategory
 import DG.Homotopy.ExternalTensor
+import DG.Homotopy.ExternalTensorKProjective
 import DG.Homotopy.ExternalTensorOverExtend
 import DG.Homotopy.ExternalTensorTriangulated
 import DG.Homotopy.KProjective

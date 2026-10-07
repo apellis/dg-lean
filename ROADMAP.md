@@ -966,8 +966,11 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
   `DG.ExternalTensorOver.tmul_smul_tmul`, functoriality `DG.ExternalTensorOver.tensorDGHom`; for
   `R = ℤ` it is the product over `ℤ`, `DG.ExternalTensorOver.intEquiv`), and it is induced from the
   product over `ℤ`: `DG.ExternalTensorOver.extendEquiv :
-  (A ⊗_R B) ⊗_{A ⊗_ℤ B} (M ⊗_ℤ N) ≅ M ⊗_R N`. Open: `Q P ⊠ᴸ_R Q P' ≅ Q (P ⊗_R P')` for
-  K-projective `P`, `P'`.
+  (A ⊗_R B) ⊗_{A ⊗_ℤ B} (M ⊗_ℤ N) ≅ M ⊗_R N`. For K-projective `P`, `P'`: `P ⊠ P'` and
+  `P ⊗_R P'` are K-projective (`DG.ExternalTensor.isKProjective`,
+  `DG.ExternalTensorOver.isKProjective`, via `DG.IsKProjective.tensorProductOver` and the `HOM`–`⊗`
+  adjunction), and `Q P ⊠ᴸ_R Q P' ≅ Q (P ⊗_R P')`
+  (`DG.DerivedCategory.externalTensorOverObjIso`).
 - t-structures on `D(A)` for non-positively/positively graded `A` (Mathlib has the definition
   of a t-structure).
   — done for non-positively graded dg rings: `DG.DerivedCategory.tStructure`, with heart
