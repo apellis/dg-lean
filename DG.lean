@@ -247,6 +247,7 @@ import DG.K0.PerfectComplex
 import DG.K0.PositiveCategory
 import DG.K0.PositiveCategoryBasis
 import DG.K0.ProjectiveModules
+import DG.K0.ProjectiveRank
 import DG.K0.Rel
 import DG.K0.ShiftedObjects
 import DG.K0.Triangulated

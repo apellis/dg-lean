@@ -523,8 +523,12 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     (`DG.DGRing.K0.projK0Equiv_self`; `DG/Derived/PerfectCompact.lean`,
     `DG/K0/PerfectCompact.lean`).
     Open: the same for non-commutative rings (needs a comparison
-    `DGModuleCat S ≌ CochainComplex (ModuleCat S) ℤ` for a ring `S` in degree `0`); compute
-    `DG.ProjK0 ℤ ≃+ ℤ` with the regular class mapping to 1; remaining stretch items.
+    `DGModuleCat S ≌ CochainComplex (ModuleCat S) ℤ` for a ring `S` in degree `0`);
+    remaining stretch items.
+    — `K₀(ℤ) ≃ ℤ`: the rank `DG.ProjK0.rankEquiv : DG.ProjK0 R ≃+ ℤ` when finitely generated
+    projective modules are free, hence `DG.DGRing.K0.rankEquiv`, `[R] ↦ 1`, with the instances
+    `DG.DGRing.K0.equivIntOfIsPrincipalIdealRing` (e.g. `R = ℤ`) and
+    `DG.DGRing.K0.equivIntOfIsLocalRing` (`DG/K0/ProjectiveRank.lean`).
 
 ## Tier 6 — Positive dg algebras (Schnürer)
 
