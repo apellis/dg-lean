@@ -134,6 +134,7 @@ import DG.Derived.ExternalTensorOver
 import DG.Derived.ExternalTensorOverKProjective
 import DG.Derived.ExternalTensorTriangulated
 import DG.Derived.LocalizationCoproducts
+import DG.Derived.Minimal
 import DG.Derived.Morita
 import DG.Derived.Perfect
 import DG.Derived.PerfectCompact
