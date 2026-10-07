@@ -948,6 +948,14 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
   Open: a general commutative ground ring, the normalized version with `Ā`.
 - Minimal models over a field (`d = 0` on `A^0`, indecomposables) for positive/connected dg
   algebras; uniqueness up to isomorphism.
+  — uniqueness done (minimal semi-free models of dg modules, not Sullivan models): `DG.IsMinimal`
+  (`d(P)` in the decomposables `A^{≠0} P`), `DG.DGHomotopyEquiv.bijective_hom` (a homotopy
+  equivalence between minimal modules is bijective, for `A` without negative degrees and
+  bounded-below modules or `A` without positive degrees and bounded-above modules,
+  `DG.IsBoundedMinimal`), `DG.IsKProjective.bijective_of_isQuasiIso`,
+  `DG.IsKProjective.exists_bijective_of_isBoundedMinimal` (`DG/Derived/Minimal.lean`). No field
+  or condition on `A⁰` is needed. Open: existence (ordered finite-cell models over positive dg
+  rings; minimal resolutions over connective dg rings with `A⁰` a division ring).
 - Perfect complexes over a ring and `K₀(D^{perf}(R)) ≅ K₀(R\text{-proj})` (comparison with
   Mathlib's `ModuleCat`).
   — done: `DG.perfectK0Equiv` (any ring, in Mathlib's derived category); compact objects of
