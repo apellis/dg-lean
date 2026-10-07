@@ -549,15 +549,18 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     `DG.idemEquiv_iff_nonempty_linearEquiv`), `DG.IsPositive.K0EquivIntOfDivisionRing`,
     `DG.IsPositive.K0EquivIntOfField`; via `DG.IsSemisimpleCellFamily.basis` and Euler
     characteristics of homological functors over division rings (`DG.Homological.eulerChar`).
-    Extension of scalars from `ℤ` (`DG/Positive/ScalarExtension.lean`): for a dg ring `A` with
-    `Aⁿ = 0` for `n < 0` and `A⁰ = ℤ · 1` (not positive: `ℤ` is not semisimple) and a field `K`,
-    `K ⊗ A = K ᵍ⊗[ℤ] A` (`DG.ExtendScalars`, `K` in degree `0`) is positive
-    (`DG.ExtendScalars.isPositive`), and `K₀(K ⊗ A) ≃ ℤ`, `[K ⊗ A] ↦ 1`, when `1` has infinite
-    order in `A` (`DG.ExtendScalars.K0EquivInt`). `K ⊗ A` is a dg `K`-algebra
-    (`DG.ExtendScalars.algebra`, `dgAlgebra`, via the central elements `k ⊗ 1`) with the dg ring map
-    `DG.ExtendScalars.unitHom : A → K ⊗ A`; base change of dg modules is extension of scalars along
-    it (`DG.DGModuleCat.extendScalars`). Open: the model `K ⊗_ℤ M ≅ (K ⊗ A) ⊗_A M` for dg modules
-    and bimodules, and its comparison with derived induction.
+    Extension of scalars from `ℤ` (`DG/Positive/ScalarExtension.lean`): for a commutative ring `K`
+    and a dg ring `A`, `K ⊗ A = K ᵍ⊗[ℤ] A` (`DG.ExtendScalars`, `K` in degree `0`) is a dg
+    `K`-algebra (`DG.ExtendScalars.algebra`, `dgAlgebra`, via the central elements `k ⊗ 1`) with
+    the dg ring map `DG.ExtendScalars.unitHom : A → K ⊗ A`; its degree-`0` part is `K ⊗_ℤ A⁰`
+    (`DG.ExtendScalars.degreeZeroEquiv`). If `Aⁿ = 0` for `n < 0`, `d(A⁰) = 0` and `K ⊗_ℤ A⁰` is
+    semisimple, then `K ⊗ A` is positive (`DG.ExtendScalars.isPositive_of_isSemisimpleRing`; `A⁰`
+    itself need not be semisimple), so 6.3 computes `K₀(K ⊗ A)`. If `A⁰ = ℤ · 1` (not positive:
+    `ℤ` is not semisimple), `K ⊗ A` is positive for `K` semisimple (`DG.ExtendScalars.isPositive`),
+    and `K₀(K ⊗ A) ≃ ℤ`, `[K ⊗ A] ↦ 1`, when `K` is a field and `1` has infinite order in `A`
+    (`DG.ExtendScalars.K0EquivInt`). Base change of dg modules is extension of scalars along
+    `unitHom` (`DG.DGModuleCat.extendScalars`). Open: the model `K ⊗_ℤ M ≅ (K ⊗ A) ⊗_A M` for dg
+    modules and bimodules, and its comparison with derived induction.
 6.4 Formality: a dg algebra `A` is formal if it is connected to `H(A)` (zero differential) by
     a zigzag of quasi-isomorphisms; Keller's theorem then gives `D(A) ≃ D(H(A))` and
     `K₀(A) ≅ K₀(H(A))`. Criterion: if `H(A)` is a free (super)commutative graded algebra on
