@@ -414,8 +414,11 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     — done in the dg-category setting (see D.4) for bimodules `B` with K-projective left
     modules; for a dg ring map `φ : B → A`: `DG.DGRingHom.derivedInduction`,
     `DG.DGRingHom.derivedRestriction`, `DG.DGRingHom.derivedInductionAdjunction` (`φ^* ⊣ φ_*`),
-    `DG.DGRingHom.derivedInductionIsoDerivedTensor` (`φ^* ≅ A ⊗^L_B -`). Open: general
-    bimodules; identification of `φ_*` with derived restriction of scalars on `DGModuleCat`.
+    `DG.DGRingHom.derivedInductionIsoDerivedTensor` (`φ^* ≅ A ⊗^L_B -`). On K-projective dg
+    modules `φ^*` is extension of scalars: `φ^*(P) ≅ A ⊗_B P` (`DG.DGRingHom.derivedInductionObjIso`,
+    via `DG.DGRingHom.extendScalarsCompToCatModuleIso` and `DG.IsKProjective.toCatModuleObj`), and
+    `K₀(φ) [P] = [A ⊗_B P]` for `P` also compact (`DG.DGRing.K0.map_mk_of_isKProjective`). Open:
+    general bimodules; identification of `φ_*` with derived restriction of scalars on `DGModuleCat`.
 4.5 Keller's theorem [Ke, Ex. 6.1], [BL 10.12.5.1]: if `φ : B → A` is a quasi-isomorphism of dg
     algebras, `φ^*` and `φ_*` are mutually inverse triangulated equivalences `D(B) ≃ D(A)`.
     Corollary: for a dg algebra `A`, the following are equivalent: `D(A) ≃ 0`; `H(A) = 0`;
@@ -563,7 +566,9 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     tensor product of `K` and `M` (`DG.ExtendScalars.baseChange`), and it is extension of scalars
     along `unitHom`: `(K ⊗ A) ⊗_A M ≅ K ⊗_ℤ M`, `x ⊗ m ↦ x • (1 ⊗ m)`
     (`DG.ExtendScalars.extendScalarsEquiv`), naturally in `M` (`DG.ExtendScalars.extendScalarsIso`).
-    Open: bimodules, and the comparison with derived induction.
+    Derived: derived induction along `unitHom` is `K ⊗_ℤ -` on K-projective modules
+    (`DG.ExtendScalars.derivedInductionObjIso`), and `K₀(unitHom) [P] = [K ⊗_ℤ P]` for `P`
+    K-projective and compact (`DG.ExtendScalars.K0_map_mk`). Open: bimodules.
 6.4 Formality: a dg algebra `A` is formal if it is connected to `H(A)` (zero differential) by
     a zigzag of quasi-isomorphisms; Keller's theorem then gives `D(A) ≃ D(H(A))` and
     `K₀(A) ≅ K₀(H(A))`. Criterion: if `H(A)` is a free (super)commutative graded algebra on
