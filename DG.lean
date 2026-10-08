@@ -124,6 +124,7 @@ import DG.Derived.Basic
 import DG.Derived.Comparison
 import DG.Derived.ComparisonRing
 import DG.Derived.ConnectedK0
+import DG.Derived.ConnectedTensor
 import DG.Derived.ConnectiveResolution
 import DG.Derived.Coproducts
 import DG.Derived.FiniteCell

@@ -642,6 +642,9 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     and derived induction `D(ℤ) ⥤ D(A)` along `ℤ → A` satisfies the transport hypotheses under
     the cohomological conditions above (`DG/Derived/IntegralHeart.lean`, by the structure
     theorem for finitely generated abelian groups and the triangles of `ℤ --m--> ℤ → ℤ/m`).
+    Tensor products: for connected `A`, `B` with `Z¹ = 0`, `H²` torsion-free and `B¹` free of
+    finite rank, the graded tensor product `A ⊗ B` has `H¹ = 0` and `H²` torsion-free
+    (`DG.ConnectedTensor.cohomology_one_eq_zero`, `DG.ConnectedTensor.cohomology_two_torsionFree`).
 
 ## Tier 7 — Internal gradings
 
