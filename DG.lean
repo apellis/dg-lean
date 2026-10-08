@@ -209,6 +209,7 @@ import DG.HalfGraded.SuperK0
 import DG.HalfGraded.SuperK0Linear
 import DG.HalfGraded.Vanishing
 import DG.Homotopy.Abelian
+import DG.Homotopy.BimoduleTensor
 import DG.Homotopy.ChangeOfRings
 import DG.Homotopy.CohomologyComparison
 import DG.Homotopy.CohomologyLinear
