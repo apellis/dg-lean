@@ -109,6 +109,11 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     restriction and extension of scalars: `DG.DGModuleCat.restrictScalars`,
     `DG.DGModuleCat.extendScalars`, `DG.DGModuleCat.extendRestrictScalarsAdj`,
     `DG.DGModuleCat.restrictScalars_preservesFiniteLimits`;
+    tensor product with a dg `(A, B)`-bimodule, `M ⊗_B -`, on dg modules and homotopy categories
+    (`DG.DGModuleCat.tensorFunctor`, `DG.HomotopyCategory.tensorFunctor`; homotopies `1 ⊗ h`,
+    `DG.DGHomotopy.lTensor`), with `B ⊗_B - ≅ 𝟭`, `M' ⊗_A (M ⊗_B -) ≅ (M' ⊗_A M) ⊗_B -` and
+    Morita equivalence from invertible dg bimodules on dg modules and homotopy categories
+    (`DG.DGModuleCat.moritaEquivalence`, `DG.HomotopyCategory.moritaEquivalence`);
     the abelian category `DGModuleCat A` **(Mathlib)**: it is `R`-linear,
     abelian, with arbitrary (co)products, and the forgetful functor to
     `CochainComplex (ModuleCat R) ℤ` is exact and faithful. Restriction of scalars along a
