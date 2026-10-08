@@ -1030,6 +1030,12 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
   — done over `ℤ` (`A ⊗ B = A ᵍ⊗[ℤ] B`): `DG.ExternalTensor.instDGModule`,
   `DG.ExternalTensor.homotopyFunctor` (`K(A) ⥤ K(B) ⥤ K(A ⊗ B)`), shifts and cones
   (`DG.ExternalTensor.shiftLeftEquiv`, `shiftRightEquiv`, `coneLeftEquiv`, `coneRightEquiv`);
+  bimodules: for dg `(A, A')`- and `(B, B')`-bimodules, `M ⊗ N` is a dg `(A ⊗ B, A' ⊗ B')`-bimodule
+  (`DG.ExternalTensor.instDGBimodule`, right action `(m ⊗ n)(a' ⊗ b') = (-1)^{|n||a'|} m a' ⊗ n b'`),
+  with the interchange isomorphism `(M ⊗ N) ⊗_{A' ⊗ B'} (P ⊗ Q) ≅ (M ⊗_{A'} P) ⊗ (N ⊗_{B'} Q)`
+  (`DG.ExternalTensor.interchangeEquiv`, right linear by `interchange_op_smul`), `A ⊗ B ≅ A ⊗ B`
+  as bimodules (`DG.ExternalTensor.regularEquiv`) and tensor products of isomorphisms
+  (`DG.ExternalTensor.tensorEquiv`);
   `DG.DerivedCategory.externalTensor` on K-projective resolutions (no flatness hypothesis),
   `DG.DerivedCategory.externalTensorRegularIso` (`A ⊠ᴸ B ≅ A ⊗ B`); triangulated in each
   variable (`DG.ExternalTensor.commShiftLeft`, `commShiftRight`,

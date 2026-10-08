@@ -295,6 +295,8 @@ import DG.Module.Shift
 import DG.Module.Sub
 import DG.Module.SubQuotient
 import DG.Module.TensorProduct
+import DG.Module.ExternalBimodule
+import DG.Module.ExternalInterchange
 import DG.Module.ExternalTensor
 import DG.Module.ExternalTensorShift
 import DG.Module.ExternalTensorCone
