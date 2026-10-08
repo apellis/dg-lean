@@ -115,6 +115,7 @@ import DG.Compact.Basic
 import DG.Compact.Brown
 import DG.Compact.CellTower
 import DG.Compact.Generation
+import DG.Compact.HeartTower
 import DG.Compact.HomotopyColimit
 import DG.Compact.Thick
 import DG.Compact.Triangulated
@@ -122,11 +123,13 @@ import DG.Derived.Bar
 import DG.Derived.Basic
 import DG.Derived.Comparison
 import DG.Derived.ComparisonRing
+import DG.Derived.ConnectedK0
 import DG.Derived.ConnectiveResolution
 import DG.Derived.Coproducts
 import DG.Derived.FiniteCell
 import DG.Derived.GradedSplitting
 import DG.Derived.Heart
+import DG.Derived.IntegralHeart
 import DG.Derived.KProjective
 import DG.Derived.ExternalTensor
 import DG.Derived.ExternalTensorCompact
@@ -136,6 +139,7 @@ import DG.Derived.ExternalTensorTriangulated
 import DG.Derived.LocalizationCoproducts
 import DG.Derived.Minimal
 import DG.Derived.MinimalResolution
+import DG.Derived.ModuleHeart
 import DG.Derived.Morita
 import DG.Derived.Perfect
 import DG.Derived.PerfectCompact
