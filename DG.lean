@@ -8,6 +8,7 @@ import DG.Algebra.Decompose
 import DG.Algebra.Equiv
 import DG.Algebra.Hochschild
 import DG.Algebra.Hom
+import DG.Algebra.HomInv
 import DG.Algebra.Opposite
 import DG.Algebra.Regrading
 import DG.Algebra.RegradingDGModuleCat
@@ -43,6 +44,7 @@ import DG.Category.Derived.Compact
 import DG.Category.Derived.Comparison
 import DG.Category.Derived.Coproducts
 import DG.Category.Derived.DGBimodule
+import DG.Category.Derived.DGBimoduleVanish
 import DG.Category.Derived.ExtendScalars
 import DG.Category.Derived.FiniteCell
 import DG.Category.Derived.GradedSplitting
@@ -148,7 +150,10 @@ import DG.Derived.PerfectComplex
 import DG.Derived.PerfectThick
 import DG.Derived.QuasiIso
 import DG.Derived.Resolution
+import DG.Derived.RightBasisMorita
+import DG.Derived.RightDual
 import DG.Derived.TStructure
+import DG.Derived.TriangularBasis
 import DG.Derived.Zero
 import DG.Examples.EndComplex
 import DG.Examples.Koszul
@@ -220,6 +225,7 @@ import DG.Homotopy.ConeCochain
 import DG.Homotopy.ConeComp
 import DG.Homotopy.ConeQuotient
 import DG.Homotopy.Coproducts
+import DG.Homotopy.DualAdjunction
 import DG.Homotopy.Forget
 import DG.Homotopy.ForgetRing
 import DG.Homotopy.ForgetTriangulated
@@ -238,6 +244,7 @@ import DG.Homotopy.ModuleCat
 import DG.Homotopy.Pretriangulated
 import DG.Homotopy.Products
 import DG.Homotopy.Regular
+import DG.Homotopy.RightContractible
 import DG.Homotopy.SemiFree
 import DG.Homotopy.Shift
 import DG.Homotopy.ShiftLinear
@@ -264,6 +271,7 @@ import DG.K0.ProjectiveModules
 import DG.K0.ProjectiveRank
 import DG.K0.Rel
 import DG.K0.ShiftedObjects
+import DG.K0.TriangularBasis
 import DG.K0.Triangulated
 import DG.Lie.Basic
 import DG.Lie.ChevalleyEilenberg
@@ -289,6 +297,8 @@ import DG.Module.Opposite
 import DG.Module.PUnit
 import DG.Module.Prod
 import DG.Module.Quotient
+import DG.Module.Regrade
+import DG.Module.RestrictScalars
 import DG.Module.Right
 import DG.Module.SeqColimit
 import DG.Module.Shift
