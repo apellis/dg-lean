@@ -120,7 +120,11 @@ Throughout, `R` is a commutative ring, `A` a dg algebra over `R` (cohomologicall
     `M^∨ = HOM_A(M, A)` as a dg `(A, E)`-bimodule with its dual basis (`DG.RightDual`,
     `DG.RightBasis.dualBasis`), the adjunction `M^∨ ⊗_E - ⊣ M ⊗_A -`
     (`DG.RightBasis.dualAdjunction`) and, when `E` acts fully, `M ⊗_A M^∨ ≅ E` and
-    `M^∨ ⊗_E M ≅ A` (`DG.FullAction.mulEquiv`, `DG.FullAction.evEquiv`);
+    `M^∨ ⊗_E M ≅ A` (`DG.FullAction.mulEquiv`, `DG.FullAction.evEquiv`); transposition
+    `f ↦ f^∨`, `f^∨(φ) = (-1)^{|f||φ|} φ ∘ f`, is a morphism of dg rings
+    `END_{Aᵒᵖ}(M) → END_A(M^∨)ᵒᵖ` (`DG.RightDual.transposeRingHom`), an isomorphism of dg
+    `ℤ`-algebras when `M` has a finite homogeneous basis (`DG.RightBasis.transposeEquiv`,
+    `DG/Derived/RightDualEnd.lean`);
     the abelian category `DGModuleCat A` **(Mathlib)**: it is `R`-linear,
     abelian, with arbitrary (co)products, and the forgetful functor to
     `CochainComplex (ModuleCat R) ℤ` is exact and faithful. Restriction of scalars along a
@@ -944,6 +948,10 @@ D.5 Tiers 5–7 for `C`: the representable modules are compact and generate `D(C
     (`Diagonal.derivedTensorTransportIso`, `DiagonalTensor.lean`, through the natural block
     decomposition `Diagonal.blocksNatIso`), with `K₀`/`SuperK0c` maps `id ⊗ K₀(M ⊗^L_B -)`
     (`Diagonal.K0LinearEquiv_derivedTensor`, `Diagonal.superK0LinearEquiv_derivedTensor`).
+    Transport is functorial (`DiagonalTransportComp.lean`): `F ≅ F'` gives `Fᵈ ≅ F'ᵈ`
+    (`Diagonal.transportMapIso`), `(F ⋙ G)ᵈ ≅ Fᵈ ⋙ Gᵈ` (`Diagonal.transportCompIso`),
+    `(𝟭)ᵈ ≅ 𝟭` (`Diagonal.transportIdIso`), so equivalences transport to equivalences
+    (`Diagonal.transportEquivalence`, `Diagonal.transportFullyFaithful`).
     Open: an arbitrary parameter `k`.
     Generic half-graded morphisms: `HalfGradedDGRing.Hom.weightFunctor` and
     `Hom.K0Map` give actual derived-induction maps, Laurent-linear for arbitrary

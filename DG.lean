@@ -152,6 +152,7 @@ import DG.Derived.QuasiIso
 import DG.Derived.Resolution
 import DG.Derived.RightBasisMorita
 import DG.Derived.RightDual
+import DG.Derived.RightDualEnd
 import DG.Derived.TStructure
 import DG.Derived.TriangularBasis
 import DG.Derived.Zero
@@ -191,6 +192,7 @@ import DG.HalfGraded.DiagonalTransport
 import DG.HalfGraded.DiagonalBimodule
 import DG.HalfGraded.DiagonalBimoduleHom
 import DG.HalfGraded.DiagonalTensor
+import DG.HalfGraded.DiagonalTransportComp
 import DG.HalfGraded.DiagonalRecoveryTriangulated
 import DG.HalfGraded.DiagonalDerivedTriangulated
 import DG.HalfGraded.DiagonalCompact
