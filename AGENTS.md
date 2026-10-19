@@ -16,6 +16,9 @@ public. Keep it mathematical and technical.
   result as done, run `#print axioms` on it in a scratch file and check the closure is
   contained in `propext`, `Classical.choice`, `Quot.sound`. Compilation alone is not the
   acceptance criterion; source fidelity is.
+- `scripts/NonVacuity.lean` (run by CI) applies each headline theorem to concrete data with every
+  hypothesis proved. When a headline theorem is added or its hypotheses change, add or update its
+  example there.
 - Read [docs/CONVENTIONS.md](docs/CONVENTIONS.md) before writing definitions. Do not
   introduce alternative sign or grading conventions.
 - Work through [ROADMAP.md](ROADMAP.md) in order within a tier; later tiers depend on earlier
