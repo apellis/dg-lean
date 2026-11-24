@@ -128,4 +128,41 @@ example : (HalfGradedDGRing.clifford ℚ 1).IsPositive :=
 example : ∃ a ∈ (HalfGradedDGRing.clifford ℚ 1).hgrading (0, 1), a ≠ 0 :=
   HalfGradedDGRing.clifford_odd_ne_zero 1
 
+/-! ### Dimension shift from Webster Lemma 6.8 -/
+
+open CategoryTheory.Limits CategoryTheory.Pretriangulated
+
+open scoped ZeroObject
+
+private def zeroDGSequence : ShortComplex (DGModuleCat.{0} ℤ) :=
+  ShortComplex.mk (𝟙 (0 : DGModuleCat.{0} ℤ)) (𝟙 (0 : DGModuleCat.{0} ℤ)) (by
+    exact (isZero_zero _).eq_of_src _ _)
+
+private theorem zeroDGSequence_shortExact : zeroDGSequence.ShortExact := by
+  refine ShortComplex.ShortExact.mk' (ShortComplex.exact_of_isZero_X₂ zeroDGSequence (isZero_zero (DGModuleCat.{0} ℤ))) ?_ ?_
+  · change Mono (𝟙 (0 : DGModuleCat.{0} ℤ))
+    infer_instance
+  · change Epi (𝟙 (0 : DGModuleCat.{0} ℤ))
+    infer_instance
+
+example : ∃ δ : DG.DerivedCategory.Q.obj zeroDGSequence.X₃ ⟶
+    (DG.DerivedCategory.Q.obj zeroDGSequence.X₁)⟦(1 : ℤ)⟧,
+    Triangle.mk (DG.DerivedCategory.Q.map zeroDGSequence.f)
+      (DG.DerivedCategory.Q.map zeroDGSequence.g) δ ∈ distTriang (DG.DerivedCategory ℤ) :=
+  DG.DerivedCategory.exists_distinguished_of_shortExact zeroDGSequence zeroDGSequence_shortExact
+
+example : IsZero ((DG.DerivedCategory.homologyFunctor ℤ 1).obj
+    (DG.DerivedCategory.Q.obj zeroDGSequence.X₃)) := by
+  apply DG.DerivedCategory.isZero_homology_obj_of_shortExact ℤ
+    (𝟭 (DG.DerivedCategory ℤ)) zeroDGSequence zeroDGSequence_shortExact
+  · intro n _
+    exact Functor.map_isZero _ (DG.DerivedCategory.Q.map_isZero (isZero_zero (DGModuleCat.{0} ℤ)))
+  · intro n _
+    exact Functor.map_isZero _ (DG.DerivedCategory.Q.map_isZero (isZero_zero (DGModuleCat.{0} ℤ)))
+  · change Mono ((DG.DerivedCategory.homologyFunctor ℤ 0).map
+      (DG.DerivedCategory.Q.map (𝟙 (0 : DGModuleCat.{0} ℤ))))
+    rw [CategoryTheory.Functor.map_id, CategoryTheory.Functor.map_id]
+    infer_instance
+  · decide
+
 end NonVacuity
