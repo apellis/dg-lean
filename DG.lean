@@ -106,6 +106,7 @@ import DG.Category.SingleObj
 import DG.Category.SubQuotient
 import DG.Category.Tensor.Basic
 import DG.Category.Tensor.Coproducts
+import DG.Category.Tensor.GradedFiltration
 import DG.Category.Tensor.Symmetry
 import DG.Category.Tensor.Bimodule
 import DG.Category.Tensor.Hom
