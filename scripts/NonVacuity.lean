@@ -165,6 +165,35 @@ example : IsZero ((DG.DerivedCategory.homologyFunctor ℤ 1).obj
     infer_instance
   · decide
 
+/-! ### A split extension in the proof of Webster Lemma 6.8 -/
+
+private def splitDGSequence : ShortComplex (DGModuleCat.{0} ℤ) :=
+  ShortComplex.mk (DGModuleCat.ofHom (DGModuleHom.inl ℤ ℤ))
+    (DGModuleCat.ofHom (DGModuleHom.snd ℤ ℤ)) (by ext; rfl)
+
+private theorem splitDGSequence_shortExact : splitDGSequence.ShortExact :=
+  (DGModuleCat.shortExact_iff _).2 ⟨
+    fun _ _ h => congrArg Prod.fst h,
+    fun ⟨x, _⟩ => ⟨fun hy => ⟨x, Prod.ext rfl hy.symm⟩,
+      fun ⟨_, h⟩ => (congrArg Prod.snd h).symm⟩,
+    fun y => ⟨(0, y), rfl⟩⟩
+
+private theorem H1_Z : IsZero ((DG.DerivedCategory.homologyFunctor ℤ 1).obj
+    (DG.DerivedCategory.Q.obj (DGModuleCat.of ℤ ℤ))) := by
+  let : Subsingleton (cocycles ℤ 1) := ⟨fun x y => by
+    apply Subtype.ext
+    have hx := DegreeZero.mem_grading_iff.mp (mem_cocycles.mp x.2).1
+    have hy := DegreeZero.mem_grading_iff.mp (mem_cocycles.mp y.2).1
+    exact (hx.resolve_left (by decide)).trans (hy.resolve_left (by decide)).symm⟩
+  let := (cohomology.mk_surjective ℤ 1).subsingleton
+  exact ModuleCat.isZero_iff_subsingleton.mpr
+    ((DG.DerivedCategory.cohomologyAddEquiv ℤ (DGModuleCat.of ℤ ℤ) 1).surjective.subsingleton)
+
+example : IsZero ((DG.DerivedCategory.homologyFunctor ℤ 1).obj
+    (DG.DerivedCategory.Q.obj (DGModuleCat.of ℤ (ℤ × ℤ)))) :=
+  DG.DerivedCategory.isZero_homology_middle_of_shortExact ℤ
+    (𝟭 (DG.DerivedCategory ℤ)) splitDGSequence splitDGSequence_shortExact 1 H1_Z H1_Z
+
 /-! ### Exactness of ordinary bimodule tensor for Webster Lemma 6.8 -/
 
 section OrdinaryBimoduleTensor
