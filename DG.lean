@@ -114,6 +114,7 @@ import DG.Category.Tensor.ShiftedCorner
 import DG.Category.Tensor.Bimodule
 import DG.Category.Tensor.Hom
 import DG.Category.Tensor.Induction
+import DG.Category.Tensor.ResolutionBalance
 import DG.Category.Tensor.RightModule
 import DG.Category.Tensor.SingleObj
 import DG.Category.Tensor.YonedaHom
