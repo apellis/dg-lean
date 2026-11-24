@@ -319,3 +319,28 @@ example : CatTensorProduct.shiftLeftDGEquiv N M (-1) mapsDegreeZero
   exact CatTensorProduct.shiftLeftDGEquiv_tmul N M (-1) mapsDegreeZero X shiftedX y
 
 end NonVacuity.CoendShift
+
+namespace NonVacuity.CoendGradedFiltration
+
+open DGOpposite
+
+private abbrev C := SingleObj ℤ
+private abbrev X : C := SingleObj.star ℤ
+private abbrev R := CatModule.representable (op X)
+private abbrev N := CatModule.cone (𝟙 R)
+private abbrev M := CatModule.representable X
+
+private theorem mapsDegreeZero {Y Z : C} (f : Y ⟶ Z) :
+    f ∈ grading (0 : ℤ) := mem_degreeZeroGrading_zero ℤ (f : ℤ)
+
+private theorem acyclicCoefficient : CatModule.IsAcyclic N :=
+  (CatModule.isQuasiIso_iff_isAcyclic_cone (𝟙 R)).mp (CatModule.isQuasiIso_id R)
+
+example : DG.IsAcyclic (CatTensorProduct N M) :=
+  CatTensorProduct.isAcyclic_of_graded_split_union N mapsDegreeZero
+    (fun _ => M) (fun _ => 𝟙 M) (fun _ => CatModule.Cochain.ofHom (𝟙 M))
+    (fun _ _ _ => rfl) (fun _ _ _ => 𝟙 M) (fun _ _ _ => Category.id_comp _)
+    (fun _ x => ⟨0, x, rfl⟩)
+    (fun _ => CatTensorProduct.isAcyclic_rid acyclicCoefficient X)
+
+end NonVacuity.CoendGradedFiltration
