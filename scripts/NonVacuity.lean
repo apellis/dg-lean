@@ -297,6 +297,29 @@ example : CatTensorProduct.transposeHom N M mapsDegreeZero
 
 end NonVacuity.CoendSymmetry
 
+namespace NonVacuity.CoendShift
+
+open DGOpposite
+
+private abbrev C := SingleObj ℤ
+private abbrev X : C := SingleObj.star ℤ
+private abbrev N := CatModule.representable (op X)
+private abbrev M := CatModule.representable X
+
+private theorem mapsDegreeZero {Y Z : C} (f : Y ⟶ Z) :
+    f ∈ grading (0 : ℤ) := mem_degreeZeroGrading_zero ℤ (f : ℤ)
+
+private def x : N.obj (op X) := 𝟙 (op X)
+private def y : M.obj X := 𝟙 X
+private def shiftedX : (CatModule.shift (-1) N).obj (op X) := CatModule.shift.mk (-1) x
+
+example : CatTensorProduct.shiftLeftDGEquiv N M (-1) mapsDegreeZero
+    (CatTensorProduct.tmul (M := M) X shiftedX y) =
+      Shift.mk (-1) (CatTensorProduct.tmul (N := N) (M := M) X x y) := by
+  exact CatTensorProduct.shiftLeftDGEquiv_tmul N M (-1) mapsDegreeZero X shiftedX y
+
+end NonVacuity.CoendShift
+
 namespace NonVacuity.CoendGradedFiltration
 
 open DGOpposite
