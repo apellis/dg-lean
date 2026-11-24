@@ -177,4 +177,35 @@ example : (DG.HomotopyCategory.tensorFunctor ℤ ℤ (B := ℤ)).IsTriangulated 
 
 end OrdinaryBimoduleTensor
 
+/-! ### Degree-zero tensor cohomology in Webster Lemma 6.8 -/
+
+section OrdinaryTensorHomology
+
+local instance : Fact (∀ x : ℤ, x ∈ grading 0) :=
+  ⟨fun _ => DegreeZero.mem_grading_iff.mpr (Or.inl rfl)⟩
+
+example : Function.Exact
+    (DG.TensorProductOver.map (LinearMap.id : ℤ →ₗ[ℤᵐᵒᵖ] ℤ) (0 : ℤ →ₗ[ℤ] ℤ))
+    (DG.TensorProductOver.map (LinearMap.id : ℤ →ₗ[ℤᵐᵒᵖ] ℤ) (LinearMap.id : ℤ →ₗ[ℤ] ℤ)) := by
+  apply DG.TensorProductOver.exact_map_id_of_surjective
+  · intro x
+    simp [eq_comm]
+  · exact Function.surjective_id
+
+example : Function.Bijective (cohomology.map
+    (DGModuleHom.lTensor ℤ ℤ (DGModuleHom.id : ℤ →ᵈᵍ[ℤ] ℤ)) 0) := by
+  apply DG.tensor_aug_bijective_H0
+  · rw [cohomology.map_id]
+    exact Function.bijective_id
+  · intro x hx
+    exact (DegreeZero.mem_grading_iff.mp hx).resolve_left one_ne_zero
+
+example : (DGModuleCat.of ℤ ℤ) ≃+
+    (DG.DerivedCategory.homologyFunctor ℤ 0).obj
+      (DG.DerivedCategory.Q.obj (DGModuleCat.of ℤ ℤ)) :=
+  DG.DerivedCategory.degreeZeroHomologyQEquiv _
+    (fun _ => DegreeZero.mem_grading_iff.mpr (Or.inl rfl)) (fun _ => rfl)
+
+end OrdinaryTensorHomology
+
 end NonVacuity
