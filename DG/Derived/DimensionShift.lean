@@ -58,6 +58,20 @@ theorem isZero_homology_obj₃_of_concentrated_triangle
     · have h' : IsZero ((F.shift (n + 1)).obj T.obj₁) := by rw [e]; exact hK _ h
       exact h'.eq_of_tgt _ _
 
+/-- In a distinguished triangle, vanishing cohomology in a degree for both outer
+terms implies vanishing in that degree for the middle term. -/
+theorem isZero_homology_obj₂_of_distinguished (T : Triangle (DerivedCategory.{w, v} A))
+    (hT : T ∈ distTriang (DerivedCategory.{w, v} A)) (n : ℤ)
+    (h₁ : IsZero ((homologyFunctor R n).obj T.obj₁))
+    (h₃ : IsZero ((homologyFunctor R n).obj T.obj₃)) :
+    IsZero ((homologyFunctor R n).obj T.obj₂) := by
+  let H := homologyFunctor (A := A) R 0
+  have e : H.shift n = homologyFunctor R n := rfl
+  rw [← e]
+  exact (H.homologySequence_exact₂ T hT n).isZero_X₂
+    (show (H.shift n).map T.mor₁ = 0 by rw [e]; exact h₁.eq_of_src _ _)
+    (show (H.shift n).map T.mor₂ = 0 by rw [e]; exact h₃.eq_of_tgt _ _)
+
 end DG.DerivedCategory
 
 namespace DG.DerivedCategory
@@ -78,5 +92,16 @@ theorem isZero_homology_obj_of_shortExact (F : DerivedCategory.{w, v} B ⥤ Deri
     (n : ℤ) (hn : n ≠ 0) : IsZero ((homologyFunctor R n).obj (F.obj (Q.obj S.X₃))) := by
   obtain ⟨δ, hT⟩ := exists_distinguished_of_shortExact S hS
   exact isZero_homology_obj₃_of_concentrated_triangle R _ (F.map_distinguished _ hT) hK hP h₀ n hn
+
+/-- A triangulated functor preserves vanishing in a fixed cohomological degree
+under extensions of DG modules. This is the extension step for the filtered kernel
+in the proof of Webster's Lemma 6.8. -/
+theorem isZero_homology_middle_of_shortExact (F : DerivedCategory.{w, v} B ⥤ DerivedCategory.{w, v} A)
+    [F.CommShift ℤ] [F.IsTriangulated] (S : ShortComplex (DGModuleCat.{v} B)) (hS : S.ShortExact)
+    (n : ℤ) (h₁ : IsZero ((homologyFunctor R n).obj (F.obj (Q.obj S.X₁))))
+    (h₃ : IsZero ((homologyFunctor R n).obj (F.obj (Q.obj S.X₃)))) :
+    IsZero ((homologyFunctor R n).obj (F.obj (Q.obj S.X₂))) := by
+  obtain ⟨δ, hT⟩ := exists_distinguished_of_shortExact S hS
+  exact isZero_homology_obj₂_of_distinguished R _ (F.map_distinguished _ hT) n h₁ h₃
 
 end DG.DerivedCategory
