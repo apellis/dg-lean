@@ -129,6 +129,7 @@ import DG.Derived.ConnectedK0
 import DG.Derived.ConnectedTensor
 import DG.Derived.ConnectiveResolution
 import DG.Derived.Coproducts
+import DG.Derived.DegreeZeroHomology
 import DG.Derived.DimensionShift
 import DG.Derived.FiniteCell
 import DG.Derived.GradedSplitting
@@ -220,6 +221,7 @@ import DG.HalfGraded.Vanishing
 import DG.Homotopy.Abelian
 import DG.Homotopy.BimoduleTensor
 import DG.Homotopy.OrdinaryBimoduleTensorTriangulated
+import DG.Homotopy.OrdinaryTensorHomology
 import DG.Homotopy.ChangeOfRings
 import DG.Homotopy.CohomologyComparison
 import DG.Homotopy.CohomologyLinear
@@ -317,6 +319,7 @@ import DG.Module.ExternalTensorShift
 import DG.Module.ExternalTensorCone
 import DG.Module.ExternalTensorOver
 import DG.Module.TensorProductOver
+import DG.Module.TensorProductOverExact
 import DG.Module.TensorProductOverProd
 import DG.Module.ULift
 import DG.Monoidal.Complex
