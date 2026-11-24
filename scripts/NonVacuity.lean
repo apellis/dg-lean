@@ -345,6 +345,28 @@ example : DG.IsAcyclic (CatTensorProduct N M) :=
 
 end NonVacuity.CoendGradedFiltration
 
+namespace NonVacuity.ShiftedCornerCoend
+
+open DGOpposite
+
+private abbrev C := SingleObj ℤ
+private abbrev X : C := SingleObj.star ℤ
+private abbrev R := CatModule.representable (op X)
+private abbrev N := CatModule.cone (𝟙 R)
+private abbrev E := DGCategory.Idempotent.id X
+
+private theorem mapsDegreeZero {Y Z : C} (f : Y ⟶ Z) :
+    f ∈ grading (0 : ℤ) := mem_degreeZeroGrading_zero ℤ (f : ℤ)
+
+private theorem acyclicCoefficient : CatModule.IsAcyclic N :=
+  (CatModule.isQuasiIso_iff_isAcyclic_cone (𝟙 R)).mp (CatModule.isQuasiIso_id R)
+
+example : DG.IsAcyclic (CatTensorProduct N (CatModule.shift (-1) (CatModule.corner E))) :=
+  CatTensorProduct.isAcyclic_shift_right N (CatModule.corner E) (-1) mapsDegreeZero
+    (CatTensorProduct.isAcyclic_corner (N := N) acyclicCoefficient E)
+
+end NonVacuity.ShiftedCornerCoend
+
 namespace NonVacuity.CoendCone
 
 open DGOpposite

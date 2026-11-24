@@ -110,6 +110,7 @@ import DG.Category.Tensor.Coproducts
 import DG.Category.Tensor.GradedFiltration
 import DG.Category.Tensor.Symmetry
 import DG.Category.Tensor.Shift
+import DG.Category.Tensor.ShiftedCorner
 import DG.Category.Tensor.Bimodule
 import DG.Category.Tensor.Hom
 import DG.Category.Tensor.Induction
