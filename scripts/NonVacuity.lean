@@ -165,4 +165,16 @@ example : IsZero ((DG.DerivedCategory.homologyFunctor ℤ 1).obj
     infer_instance
   · decide
 
+/-! ### Exactness of ordinary bimodule tensor for Webster Lemma 6.8 -/
+
+section OrdinaryBimoduleTensor
+
+local instance : Fact (∀ x : ℤ, x ∈ grading 0) :=
+  ⟨fun _ => DegreeZero.mem_grading_iff.mpr (Or.inl rfl)⟩
+
+example : (DG.HomotopyCategory.tensorFunctor ℤ ℤ (B := ℤ)).IsTriangulated := by
+  infer_instance
+
+end OrdinaryBimoduleTensor
+
 end NonVacuity
