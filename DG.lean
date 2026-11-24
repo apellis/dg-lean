@@ -105,6 +105,7 @@ import DG.Category.ShiftedObjects
 import DG.Category.SingleObj
 import DG.Category.SubQuotient
 import DG.Category.Tensor.Basic
+import DG.Category.Tensor.Cone
 import DG.Category.Tensor.Coproducts
 import DG.Category.Tensor.GradedFiltration
 import DG.Category.Tensor.Symmetry
