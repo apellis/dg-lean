@@ -344,3 +344,22 @@ example : DG.IsAcyclic (CatTensorProduct N M) :=
     (fun _ => CatTensorProduct.isAcyclic_rid acyclicCoefficient X)
 
 end NonVacuity.CoendGradedFiltration
+
+namespace NonVacuity.CoendCone
+
+open DGOpposite
+
+private abbrev C := SingleObj ℤ
+private abbrev X : C := SingleObj.star ℤ
+private abbrev N := CatModule.representable (op X)
+private abbrev M := CatModule.representable X
+
+private theorem mapsDegreeZero {Y Z : C} (f : Y ⟶ Z) :
+    f ∈ grading (0 : ℤ) := mem_degreeZeroGrading_zero ℤ (f : ℤ)
+
+example :
+    DGAddEquiv (CatTensorProduct (CatModule.cone (𝟙 N)) M)
+      (DG.Cone (CatTensorProduct.mapLeftInt M (𝟙 N))) :=
+  CatTensorProduct.coneLeftDGEquiv M mapsDegreeZero (𝟙 N)
+
+end NonVacuity.CoendCone
