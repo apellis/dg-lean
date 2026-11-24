@@ -406,3 +406,28 @@ example : DG.cohomology (CatTensorProduct N M) 0 ≃+
     (fun _ h => CatTensorProduct.isAcyclic_rid h (op X)) 0
 
 end NonVacuity.CoendResolutionBalance
+
+namespace NonVacuity.CoendReindex
+open DGOpposite
+open scoped DG.DegreeZero
+
+private abbrev C := SingleObj ℤ
+private abbrev X : C := SingleObj.star ℤ
+private abbrev M := CatModule.representable X
+
+private theorem degreeZero {Y Z : C} (f : Y ⟶ Z) :
+    f ∈ DG.grading (0 : ℤ) :=
+  mem_degreeZeroGrading_zero ℤ (f : ℤ)
+
+private def idFullyFaithful : (𝟭 C).FullyFaithful where
+  preimage f := f
+  map_preimage _ := rfl
+  preimage_map _ := rfl
+
+example (P : CatModule.{0} (DGOpposite C)) (hP : CatModule.IsAcyclic P) :
+    DG.IsAcyclic (CatTensorProduct P (CatModule.precompObj (𝟭 C) M)) :=
+  CatTensorProduct.isAcyclic_precomp_of_coend (𝟭 C) degreeZero degreeZero
+    Function.bijective_id idFullyFaithful M
+    (fun _ h => CatTensorProduct.isAcyclic_rid h X) P hP
+
+end NonVacuity.CoendReindex
