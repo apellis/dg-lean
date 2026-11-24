@@ -236,7 +236,9 @@ D.2 Dg modules over a dg category: the abelian category `DGModuleCat C`, represe
     `DG.CatModule.inductionRepresentableIso`. The double opposite has its canonical dg functor
     `DG.DGOpposite.doubleUnopFunctor`. Coends commute with coproducts in their left-module variable
     (`DG.CatTensorProduct.directSumDGEquiv`), and acyclicity follows from acyclicity of the coends with
-    the summands (`DG.CatTensorProduct.isAcyclic_directSum`).
+    the summands (`DG.CatTensorProduct.isAcyclic_directSum`). For a category with morphisms in
+    degree zero, `DG.CatTensorProduct.transposeDGEquiv` gives the signed exchange with the coend
+    over the opposite category.
 D.3 Tier 3 for dg modules over `C`: Hom complexes, shifts, cones, homotopies, the homotopy
     category, its triangulated structure, compatibility with the one-object case.
     — done: `DG.CatModule.Cochain`, `DG.CatModule.HOM`, `DG.CatModule.DGHomotopy`,
