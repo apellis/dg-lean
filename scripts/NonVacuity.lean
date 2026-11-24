@@ -238,3 +238,28 @@ example : (DGModuleCat.of ℤ ℤ) ≃+
 end OrdinaryTensorHomology
 
 end NonVacuity
+
+
+namespace NonVacuity.CoendCoproduct
+
+private abbrev C := SingleObj ℤ
+private abbrev X : C := SingleObj.star ℤ
+private abbrev R := CatModule.representable (DGOpposite.op X)
+private abbrev N := CatModule.cone (𝟙 R)
+private abbrev F (_ : Bool) := CatModule.representable X
+
+private theorem acyclicCoefficient : CatModule.IsAcyclic N :=
+  (CatModule.isQuasiIso_iff_isAcyclic_cone (𝟙 R)).mp (CatModule.isQuasiIso_id R)
+
+example : IsAcyclic (CatTensorProduct N (CatModule.directSum F)) :=
+  CatTensorProduct.isAcyclic_directSum N F
+    (fun _ => CatTensorProduct.isAcyclic_rid acyclicCoefficient X)
+
+private def two : X ⟶ X := by
+  change ℤ
+  exact 2
+
+example : (DGOpposite.doubleUnopFunctor C).map
+    (DGOpposite.homOp (DGOpposite.homOp two)) = two := rfl
+
+end NonVacuity.CoendCoproduct

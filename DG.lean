@@ -92,6 +92,7 @@ import DG.Category.Homotopy.Triangulated
 import DG.Category.Linear
 import DG.Category.Module
 import DG.Category.Opposite
+import DG.Category.DoubleOpposite
 import DG.Category.Positive
 import DG.Category.Resolution.Generator
 import DG.Category.Resolution.KProjective
@@ -104,6 +105,7 @@ import DG.Category.ShiftedObjects
 import DG.Category.SingleObj
 import DG.Category.SubQuotient
 import DG.Category.Tensor.Basic
+import DG.Category.Tensor.Coproducts
 import DG.Category.Tensor.Bimodule
 import DG.Category.Tensor.Hom
 import DG.Category.Tensor.Induction
