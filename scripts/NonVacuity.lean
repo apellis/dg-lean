@@ -263,3 +263,36 @@ example : (DGOpposite.doubleUnopFunctor C).map
     (DGOpposite.homOp (DGOpposite.homOp two)) = two := rfl
 
 end NonVacuity.CoendCoproduct
+
+
+namespace NonVacuity.CoendSymmetry
+
+open DGOpposite
+
+private abbrev C := SingleObj ℤ
+private abbrev X : C := SingleObj.star ℤ
+private abbrev N := CatModule.shift (-1) (CatModule.representable (op X))
+private abbrev M := CatModule.shift (-1) (CatModule.representable X)
+
+private theorem mapsDegreeZero {Y Z : C} (f : Y ⟶ Z) :
+    f ∈ grading (0 : ℤ) := mem_degreeZeroGrading_zero ℤ (f : ℤ)
+
+private def x : N.obj (op X) := Shift.mk (-1) (𝟙 (op X))
+private def y : M.obj X := Shift.mk (-1) (𝟙 X)
+
+private theorem hx : x ∈ grading (1 : ℤ) := by
+  change Shift.mk (-1) (𝟙 (op X)) ∈ grading (M := Shift (-1) ((op X) ⟶ (op X))) (1 : ℤ)
+  simpa only [zero_sub, neg_neg] using Shift.mk_mem_grading (n := -1)
+    (id_mem_grading (op X))
+
+private theorem hy : y ∈ grading (1 : ℤ) := by
+  change Shift.mk (-1) (𝟙 (X)) ∈ grading (M := Shift (-1) ((X) ⟶ (X))) (1 : ℤ)
+  simpa only [zero_sub, neg_neg] using Shift.mk_mem_grading (n := -1)
+    (id_mem_grading X)
+
+example : CatTensorProduct.transposeHom N M mapsDegreeZero
+    (CatTensorProduct.tmul X x y) = -CatTensorProduct.tmul (op X) y x := by
+  rw [CatTensorProduct.transposeHom_tmul_of_mem N M mapsDegreeZero X hx hy]
+  simp only [one_mul, koszulSign, Int.negOnePow_one, Units.neg_smul, one_smul]
+
+end NonVacuity.CoendSymmetry
