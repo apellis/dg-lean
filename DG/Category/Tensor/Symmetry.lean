@@ -235,3 +235,48 @@ def transposeDGEquiv : DGAddEquiv (CatTensorProduct N M) (CatTensorProduct P N) 
     (fun X _ _ hn => transposeFamily_d N M X hn)
 
 end DG.CatTensorProduct
+
+noncomputable section
+
+namespace DG.CatTensorProduct
+open CategoryTheory DGOpposite
+
+universe w v u
+variable {C : Type u} [Category.{v} C] [Preadditive C]
+  [∀ X Y : C, DGAddCommGroup (X ⟶ Y)] [DGCategory C]
+  {N N' : CatModule.{w} (DGOpposite C)} {M M' : CatModule.{w} C}
+  (f : N ⟶ N') (g : M ⟶ M')
+  (h₀ : ∀ {X Y : C} (p : X ⟶ Y), p ∈ grading (0 : ℤ))
+
+/-- The map between the restrictions along double unop. -/
+def transposeLeftModuleMap (g : M ⟶ M') :
+    transposeLeftModule M ⟶ transposeLeftModule M' :=
+  (CatModule.precomp (doubleUnopFunctor C)).map g
+
+/-- The signed coend exchange commutes with changes to either input module. -/
+theorem transposeHom_natural :
+    (transposeHom N' M' h₀).comp (map f g) =
+      (map (transposeLeftModuleMap g) f).comp (transposeHom N M h₀) := by
+  apply addHom_ext
+  intro X n m
+  simp only [AddMonoidHom.comp_apply, map_tmul]
+  induction n using DG.induction_on with
+  | h_zero => simp
+  | h_add n n' hn hn' => simp only [map_add, add_tmul, ← hn, ← hn']
+  | @h_homogeneous a n =>
+    induction m using DG.induction_on with
+    | h_zero => simp
+    | h_add m m' hm hm' => simp only [map_add, tmul_add, ← hm, ← hm']
+    | @h_homogeneous b m =>
+      rw [transposeHom_tmul_of_mem N' M' h₀ X (f.map_mem n.property) (g.map_mem m.property),
+        transposeHom_tmul_of_mem N M h₀ X n.property m.property]
+      let F := map (transposeLeftModuleMap g) f
+      have hmap : F (koszulSign (a*b) • tmul (op X) (M := N) m.val n.val) =
+          koszulSign (a*b) • F (tmul (op X) (M := N) m.val n.val) :=
+        map_units_zsmul F _ _
+      rw [hmap]
+      unfold F
+      erw [map_tmul]
+      rfl
+
+end DG.CatTensorProduct

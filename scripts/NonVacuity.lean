@@ -385,3 +385,24 @@ example :
   CatTensorProduct.coneLeftDGEquiv M mapsDegreeZero (𝟙 N)
 
 end NonVacuity.CoendCone
+
+namespace NonVacuity.CoendResolutionBalance
+
+open DGOpposite
+
+private abbrev C := SingleObj ℤ
+private abbrev X : C := SingleObj.star ℤ
+private abbrev N := CatModule.representable (op X)
+private abbrev M := CatModule.representable X
+
+private theorem mapsDegreeZero {Y Z : C} (f : Y ⟶ Z) :
+    f ∈ grading (0 : ℤ) := mem_degreeZeroGrading_zero ℤ (f : ℤ)
+
+example : DG.cohomology (CatTensorProduct N M) 0 ≃+
+    DG.cohomology (CatTensorProduct N M) 0 :=
+  CatTensorProduct.resolutionCohomologyEquiv mapsDegreeZero
+    (𝟙 N) (CatModule.isQuasiIso_id N) (𝟙 M) (CatModule.isQuasiIso_id M)
+    (fun _ h => CatTensorProduct.isAcyclic_rid h X)
+    (fun _ h => CatTensorProduct.isAcyclic_rid h (op X)) 0
+
+end NonVacuity.CoendResolutionBalance
