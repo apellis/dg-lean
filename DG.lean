@@ -129,6 +129,7 @@ import DG.Derived.ConnectedK0
 import DG.Derived.ConnectedTensor
 import DG.Derived.ConnectiveResolution
 import DG.Derived.Coproducts
+import DG.Derived.DimensionShift
 import DG.Derived.FiniteCell
 import DG.Derived.GradedSplitting
 import DG.Derived.Heart
@@ -153,6 +154,7 @@ import DG.Derived.Resolution
 import DG.Derived.RightBasisMorita
 import DG.Derived.RightDual
 import DG.Derived.RightDualEnd
+import DG.Derived.ShortExactTriangle
 import DG.Derived.TStructure
 import DG.Derived.TriangularBasis
 import DG.Derived.Zero
